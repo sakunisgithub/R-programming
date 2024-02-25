@@ -1,0 +1,153 @@
+---
+title: "Linear Regression and Gradient Discent"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+raw_data <- read.csv("D:\\Programming Languages\\R\\Data Set\\Housing_price.csv", header = TRUE, stringsAsFactors = FALSE)
+```
+
+```{r}
+learning_data <- data.frame("Area" = raw_data$area, "Price" = raw_data$price)
+```
+
+```{r}
+learning_data$Area <- learning_data$Area / 1000
+learning_data$Price <- learning_data$Price / 1000
+```
+
+
+```{r}
+plot(learning_data$Area, learning_data$Price,
+     xlab = "Area (1000 square feet)",
+     ylab = "Price (1000 dollars)",
+     main = "Area vs Price of House",
+     pch = 19,
+     cex = 0.5,
+     col = "blue")
+```
+
+
+```{r}
+library(rugarch)
+library(rgl)
+library(fGarch)
+
+J <- Vectorize(function(a, b){
+  
+  total_square_error <- sum( (a * learning_data$Area + b - learning_data$Price)^2)
+  
+  cost <- total_square_error / (2 * length(learning_data$Area))
+  
+  return(cost)
+})
+
+a <- seq(from = -20, to = 20, length = 500)
+b <- seq(from = -20, to = 20, length = 500)
+
+z <- outer(a, b, FUN = "J")
+
+persp3d(a, b, z,
+        xlab = "a",
+        ylab = "b",
+        zlab = "J(a, b)",
+        col = "lightblue")
+```
+
+
+```{r}
+contour(a, b, z)
+```
+
+
+```{r}
+p <- seq(from = -50, to = 50, length = 1000)
+q <- seq(from = -50, to = 50, length = 1000)
+
+s <- Vectorize(function(m, n){
+  return((10*m + n - 15)^2)
+})
+r <- outer(p, q, s)
+
+persp3d(p, q, r,
+        col = "red")
+```
+
+
+```{r}
+compute_gradient <- function(x, y, w, b)
+{
+  dj_dw = dj_db = 0
+  
+  dj_dw <- (1/545) * (sum ((w*x + b - y)*x) )
+  
+  dj_db <- (1/545) * (sum(w*x + b - y))
+  
+  gradients <- c(dj_dw, dj_db)
+  
+  return(gradients)
+}
+```
+
+```{r}
+gradient_descent <- function(x, y, w_initial, b_initial, learning_rate, iterations, gradient_function)
+{
+  w = w_initial
+  b = b_initial
+  
+  i = 0
+  
+  while (i < iterations) {
+    
+    w = w - learning_rate * gradient_function(x, y, w, b)
+    b = b - learning_rate * gradient_function(x, y, w, b)
+    
+    i = i + 1
+  }
+  
+  final_coefficients <- c(w, b)
+  
+  return(final_coefficients)
+}
+```
+
+
+```{r}
+w_init = b_init = 0
+
+alpha = 1.0e-2
+
+number_of_iteration <- 10000
+
+final_w_and_b <- gradient_descent(learning_data$Area, learning_data$Price, w_init, b_init, alpha, number_of_iteration, compute_gradient)
+
+final_w_and_b
+```
+
+```{r}
+
+learning_rate_alpha <- 0.0001
+
+w <- 15; b <- 0
+
+i = 0
+
+while (i < number_of_iteration) {
+  temp_1 <- w - (learning_rate_alpha * (1/545) * (sum( (w*learning_data$Area + b - learning_data$Price) * (learning_data$Area) )))
+  
+  temp_2 <- b - (learning_rate_alpha * (1/545) * (sum( w*learning_data$Area + b - learning_data$Price) ))
+  
+  w <- temp_1
+  b <- temp_2
+  
+  print(w)
+  print(b)
+  
+  i = i + 1
+}
+
+w ; b
+```
+

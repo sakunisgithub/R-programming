@@ -1,0 +1,239 @@
+---
+title: "matrices"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+*Creating a matrix from a dataset*
+```{r}
+data <- 1:8
+first_matrix <- matrix(data, nrow = 4, ncol = 2, byrow = TRUE)
+first_matrix
+```
+```{r}
+mode(first_matrix)
+attributes(first_matrix)
+as.matrix(first_matrix)
+is.matrix(first_matrix)
+```
+
+```{r}
+# adding rownames and columnnames
+rownames(first_matrix) <- c("row1", "row2", "row3", "row4")
+
+first_matrix
+
+colnames(first_matrix) <- c("col1", "col2")
+
+first_matrix
+```
+
+```{r}
+# row names and column names can also be added while creating the matrix
+
+second_matrix <- matrix(data, 
+                        nrow = 4, 
+                        ncol = 2, 
+                        byrow = TRUE,
+                        dimnames = list(c("r1", "r2", "r3", "r4"),
+                                        c("c1", "c2")))
+
+second_matrix
+
+# REMEMBER that, dimnames must be a list
+# the order of the matrix and lengths of row names or column names should not differ
+```
+
+```{r}
+# dimension or order of a matrix
+dim(second_matrix)
+nrow(second_matrix)
+ncol(second_matrix)
+```
+
+```{r}
+# cbind and rbind
+a <- 1:3
+b <- 4:6
+c <- cbind(a,b) # two columns with names a and b
+c 
+
+d <- rbind(a,b) # two rows with names a and b
+d
+
+c1 <- cbind(c, 7:9)
+c1 # the column having 7 8 9 will not have any name
+
+x <- 10:12
+c2 <- cbind(c1, x)
+c2 # the column having 10 11 12 will have name x
+
+d1 <- rbind(d, 7:9)
+d1 # the row having 7 8 9 will not have any name
+
+d2 <- rbind(d1, x)
+d2 # the row having 10 11 12 will have name x
+
+rbind(c, c)
+cbind(c, c)
+
+# Recycling Rule
+rbind(c, 1)
+cbind(c, 1)
+```
+
+```{r}
+# creating matrix with all identical elements
+new_matrix <- matrix(data = 5, nrow = 4, ncol = 3)
+#or
+#new_matrix <- matrix(5, nrow = 4, ncol = 3)
+# this is an application of Recycling Rule
+new_matrix
+
+
+
+# matrix with NA
+new_mat <- matrix(NA, nrow = 3, ncol = 3)
+new_mat
+```
+
+```{r}
+# creating a diagonal matrix
+
+diagonal_matrix <- diag(x = 1, nrow = 3, ncol = 3)
+diagonal_matrix
+
+
+# diagonal matrix with diagonals as 5
+diagonal_matrix_1 <- diag(x = 5, nrow = 3, ncol = 3)
+diagonal_matrix_1
+
+
+diagonal_matrix_2 <- diag(c(1, 2, 3), nrow = 3, ncol = 3)
+diagonal_matrix_2
+```
+
+```{r}
+# transpose of a matrix
+first_matrix
+first_transposed <- t(first_matrix)
+first_transposed
+```
+
+```{r}
+# multiplication
+a <- matrix(data = 1:6, nrow = 2, ncol = 3, byrow = TRUE)
+b <- matrix(data = 6:1, nrow = 3, ncol = 2, byrow = TRUE)
+
+a
+b
+
+# scalar multiplication
+new_a <- a * 4
+new_a
+
+
+c <- matrix(data = 1:6, nrow = 2, ncol = 3, byrow = TRUE)
+
+# addition
+a + c
+
+# subtraction
+a - c
+
+
+# element-wise multiplication
+a * c
+
+
+# conventional matrix multiplication
+a %*% b
+
+
+# inverse of a matrix
+x <- matrix(c(1, 3, 5, 9, 7, 2, 5, 10, 6), nrow = 3, ncol = 3, byrow = TRUE)
+x
+solve(x)
+
+
+
+x[1,1]
+x[1,3]
+
+
+# determinant of a matrix
+det(x)
+```
+
+```{r}
+# solving system of linear equations
+A <- matrix(c(2, -3, 4, 1, 0, 1, 0, -1, 4), nrow = 3, ncol = 3, byrow = TRUE)
+A
+
+b <- matrix(c(-4, 0, 2), nrow = 3, ncol = 1, byrow = TRUE)
+b
+
+solve(A, b)
+```
+
+```{r}
+# eigen values and eigen vectors
+
+alpha_matrix <- matrix(1:16, nrow = 4, ncol = 4, byrow = TRUE)
+eigen(alpha_matrix)
+
+t <- eigen(alpha_matrix)
+
+t$values
+t$vectors
+```
+
+```{r}
+# extracting sub matrices to new vectors
+my_mat <- matrix(data = 1:15, nrow = 5, ncol = 3, byrow = TRUE)
+my_mat
+
+# extracting rows
+my_mat[1,]
+my_mat[2,]
+
+# extracting columns
+my_mat[,1]
+my_mat[,2]
+
+# extracting sub-matrices
+sub_mat <- my_mat[3:5, 1:2]
+sub_mat
+
+
+# prints the matrix except the 2nd column
+my_mat[,-2]
+
+# prints the matrix except the 3rd row
+my_mat[-3,]
+```
+
+
+```{r}
+# extracting submatrices to new matrices, not vectors
+
+my_mat
+
+# extracting the 2nd col and creating a new 5X1 matrix
+mat_sub <- my_mat[,2,drop = FALSE]
+mat_sub
+
+# extracting the 3rd row and creating a new 1X3 matrix
+mat_sub_2 <- my_mat[3,,drop = FALSE]
+mat_sub_2
+```
+
+```{r}
+my_mat <- matrix(1:12, nrow = 3, ncol = 4, byrow = TRUE)
+my_mat
+
+rowSums(my_mat)
+colSums(my_mat)
+```
+

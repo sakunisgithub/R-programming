@@ -1,0 +1,139 @@
+---
+title: "2019 SEC"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# Q 1.(a)
+x <- c(5, 11, 9)
+x ^ 3
+```
+
+```{r}
+# Q 1.(c)
+x <- exp(-2) - 2
+y <- abs(x - 10)
+x < y
+```
+
+```{r}
+# Q 1.(d)
+seq(from = 0, by = 0.5, length = 15)
+```
+
+```{r}
+# Q 1. (e)
+names <- c("Tina", "Lily", "Mili", "Hili")
+names <- paste(names)
+typeof(names)
+```
+
+```{r}
+# Q 1. (f)
+x <- rep(7 : 9, 4)
+sort(x)
+```
+
+```{r}
+# Q 1. (g)
+paste("Give a 2X2 matrix as input")
+num_1 = as.numeric(readline(prompt = "Enter Q[1][1] = "))
+num_2 = as.numeric(readline(prompt = "Enter Q[1][2] = "))
+num_3 = as.numeric(readline(prompt = "Enter Q[2][1] = "))
+num_4 = as.numeric(readline(prompt = "Enter Q[2][2] = "))
+
+elements <- c(num_1, num_2, num_3, num_4)
+
+mat = matrix(elements, nrow = 2, ncol = 2, byrow = TRUE)
+mat
+```
+
+```{r}
+# Q 1. (h)
+paste(c(1, 2, 3, 4), c(5, 6, 7, 8), sep = "%%")
+```
+
+```{r}
+# Q 1. (i)
+plot(c(1, 2, 3, 4), c(1, 2, 2, 1), xlab = "x label")
+```
+
+```{r}
+# Q 1. (j)
+A <- matrix(c(2, 4, 9, 1, 1, 3), nrow = 2)
+t(A)
+```
+
+```{r}
+# Q 1. (k)
+data <- mtcars
+boxplot(data)
+```
+
+```{r}
+# Q 1. (l)
+# my_data <- read.csv("D:\\.datasets\\dat.CSV", stringsAsFactors = FALSE, header = TRUE)
+```
+
+```{r}
+# Q 1. (m)
+B <- matrix(c(2, 3, 4, 0, 1, 9, 0, 1, 9), nrow = 3, byrow = TRUE)
+A <- B[1:2, 1:2]
+A
+```
+
+```{r}
+# Q 1. (n)
+rpois(n = 10, lambda = 2)
+```
+
+```{r}
+# Q 1. (o)
+x <- c(2, 3, 9, 5, 4, 11, 1, 1)
+sum_of_values = 0
+for (i in x) {
+  sum_of_values = sum_of_values + i
+}
+
+mean_of_values = sum_of_values/length(x)
+
+sum_of_square_of_values = 0
+for (i in x) {
+  sum_of_square_of_values = sum_of_square_of_values + i^2
+}
+
+variance_of_values = (sum_of_square_of_values/length(x)) - (mean_of_values^2)
+
+variance_of_values
+```
+
+```{r}
+# Q 2. (h)
+
+# We assume that the dataset is a comma seperated value file and is present in a certain directory in our system.
+# 
+# whole_data <- read.csv("D:\\all_datasets\\height_weight_sex_dataset.csv", stringsAsFactors = FALSE, header = TRUE)
+# 
+# boys_data <- subset(whole_data, sex == "M")
+# girls_data <- subset(whole_data, sex == "F")
+# 
+# heights_limit <- range(c(boys_data$height, girls_data$height))
+# weights_limit <- range(c(boys_data$weight, girls_data$weight))
+# 
+# plot(boys_data$height , boys_data$weight,
+#      xlab = "Heights",
+#      ylab = "Weights",
+#      main = "Scatterplot of Height-Weight",
+#      col = "blue",
+#      xlim = heights_limit,
+#      ylim = weights_limit)
+# 
+# points(girls_data$height, girls_data$weight, col = "red")
+# 
+# legend("topleft",
+#        legend = c("Boys", "Girls"),
+#        fill = c("blue", "red"))
+```
+

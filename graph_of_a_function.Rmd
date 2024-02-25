@@ -1,0 +1,28 @@
+---
+title: "graph_of_a_function"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+curve(sin, 0, 2*pi)
+```
+
+```{r}
+f <- function(x) (x^2 + 4*x + 4)
+curve(f, -4, 4)
+```
+
+
+```{r}
+curve(cos, 0, pi/2)
+
+```
+
+
+```{r}
+# the plot() function also works
+plot(sin, 0, 2*pi)
+```
+

@@ -1,0 +1,24 @@
+---
+title: "degree_to_radian_and_vice_versa"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+x <- 5.1784
+x
+
+# install.packages("units") 
+library("units")
+
+x_rad <- as_units(x, "radians") # sets the unit radian to x
+x_rad
+
+x_deg <- set_units(x_rad, "degrees") # changes x_rad to equivalent value in degrees
+x_deg
+
+x_rad <- set_units(x_deg, "radians") # changes x_deg to equivalent value in radians
+x_rad
+```
+

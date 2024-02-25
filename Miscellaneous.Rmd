@@ -1,0 +1,910 @@
+---
+title: "miscellaneous"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+```{r}
+# different operators
+
+# arithmetic operators
+
+1+2 # addition
+
+2-1 # subtraction
+
+2*3 # multiplication
+
+4/2 # division
+5/2 
+
+5%%2 # modulous
+4%%2 
+10%%3 
+
+10%/%3 # integer division
+4%/%2
+100%/%5
+10%/%3
+
+# comparison operators
+
+1<2
+1>2
+2==2
+1==2
+1<=2
+2<=2
+1>=2
+2>=2
+1!=2
+
+
+
+
+# logical operators
+
+# remember that only 0 is FALSE and all other non-zero values are TRUE
+
+x <- 5
+y <- 7
+
+x & y
+x && y
+
+x <- c(1, 5, 0)
+y <- c(2, 0, 0)
+
+x & y
+x && y
+
+# & is for element wise comparison of two vectors
+# && is for comparing two elements, if the operands of && are vectors, then it compares only the first corresponding elements and returns the result with a warning message, if one operand of && is a vector and the other is a number, then recycling rule is applied
+
+
+a <- 1 ; b <- 0
+a || b
+
+a <- c(1, 2, 0)
+b <- c(0, 1, 1)
+
+a | b
+
+xor(a, b)
+# xor means "one and only one" is true
+```
+
+```{r}
+# different types of numbers
+
+5/0
+
+5/Inf
+5+Inf
+5-Inf
+5*Inf
+
+0/0
+0/Inf
+0*Inf # important
+0+Inf
+0-Inf
+
+Inf/Inf
+Inf+Inf
+Inf-Inf
+Inf*Inf
+```
+
+```{r}
+# types of assignments
+x <- c(1, 2, 3, 4, 5) # type 1
+x
+mode(x)
+c(10, 11, 12, 13, 14, 15) -> y # type 2
+y
+assign("a", c(20, 21, 22, 23, 24, 25)) # type 3
+a
+b <- c(x, y, a)
+b
+c <- 1:10 # type 4 (generally for numbers in arithmetic progression)
+c
+d <- 5:-5
+d
+```
+
+```{r}
+# seq function
+x <- seq(from = 1, to = 10, by = 1)
+x
+y <- seq(1, 20, 1) # from-to-by is the default order of arguments in seq
+y
+z <- seq(length = 10, from = 5, by = 3) # generate 10 numbers starting from 5 with common difference = 3
+z
+seq(along.with = y) # generates a vector along with y i.e. with equal length of y
+seq(along.with = y, from = 15, by = 2) # generates a vector with length equal to y, starting from 15 and increment by 2
+# by default, from = 1, and by = 1
+```
+
+```{r}
+# rep function
+rep(1, times = 2) # rep(1, 2)
+x <- 1:4
+rep(x, times = 2) # repeats the vector x, 2 times
+rep(x, each = 4) # repeats each element of x, 4 times
+rep(x, each = 4, times = 3) # repeates each element of x, 4 times -- and repeats this task 3 times
+```
+
+```{r}
+# unique function
+x <- rep(c(5, 3, 1, 2, 4), c(2, 3, 1, 4, 5))
+x
+y <- unique(x) # stores the unique values of x in y
+y
+table(x) # prints the unique values of x with their frequencies
+```
+
+```{r}
+# two vectors
+x <- 1:5
+6:10 -> y
+x+y # corresponding elements are added
+y-x # corresponding elements are subtracted
+x*y # corresponding elements are multiplied, this is called Hadamard Product
+y/x # corresponding elements are divided
+
+x%*%y # multiplies corresponding elements and returns the total sum, in other words it does sum(x*y)
+```
+
+```{r}
+# two vectors of unequal length
+x <- c(1, 2, 3, 4, 5)
+y <- c(1, 2, 3)
+# here x and y are two vectors of unequal length.
+# now whenever we do some operations, y will be treated(not any real changes) as y <- c(1, 2, 3, 1, 2) i.e. the shorter one will adjust its length by cyclically repeating its elements. the program will also generate a warning message, but not an error message
+x + y
+x * y
+x - y
+x / y
+
+y + x
+y - x
+
+x^y # or x**y (same as python)
+y^x
+```
+
+```{r}
+x <- 1:10
+sum(x)
+prod(x)
+min(x)
+max(x)
+mean(x)
+sd(x)
+var(x)
+range(x)
+
+summary(x) # summary of vector x
+
+cumsum(x) # cumulative sum of the elements of vector x
+cumprod(c) # cumulative product of the elements of vector x
+cummax(x) # cumulative maximum
+cummin(x) # cumulative minimum
+```
+
+```{r}
+# some in-built functions
+abs(c(0, -1, 2, 3, -5, 6))
+sqrt(c(4, 16, 36))
+round(1.35)
+round(1.123456789, digits = 5)
+```
+
+```{r}
+x <- 1:10
+x[1];x[2];x[10] # prints values at 1st, 2nd and 10th position
+x[15] # prints NA as the position is invalid
+x>5 # returns TRUE or FALSE for each element depending upon whether the element is greater than 5 or not
+sum(x>5) # returns how many numbers are greater than 5 in the vector x
+which(x>3) # returns the vector consisting of the indices of the elements that are greater than 3 in vector x
+x[1:5] # returns the elements of position 1 to 5
+x[c(2, 6, 8)] # returns the elements of position 2,6,8
+x[-5] # returns all the elements of x except that in index 5
+x[-c(2, 6, 8)] # returns all the elements of x except that in index 2, 6 and 8
+
+# REMEMBER that all these do not make any change to initial x
+```
+
+```{r}
+x <- 1:5
+x[c(T, T, F, F, T)] # length(x) == length(c(T, T, F, F, T)) 
+# If c[i] == T, x[i] gets printed, else x[i] is not printed
+# REMEMBER that this does not make any change to x
+
+# If length(x) & length(c(T, T, F, F, T)) differ, then the printing action is done cyclically. 
+# Let length(x) = 13 and length(c(T, T, F, F, T))= 5, then the first 5 elements of x will be printed according to c(T, T, F, F, T), the next 5 elements of x will again be printed according to c(T, T, F, F, T) and again the rest 3 elements will be printed according to c(T, T, F, F, T)
+```
+
+```{r}
+x <- 1:10
+x[x>3] # does the same thing as x[which(x>3)]
+x[x>2 & x<7]
+x[x<5 | x>9]
+
+9 %in% x # checks whether 9 is present in x...returns TRUE or FALSE accordingly
+11 %in% x
+
+y <- c(5, 7, 11, 13, 3, 8, 15, 20, 17, 19)
+x %in% y # for each element in x, checks whether it is present in y or not and then returns TRUE or FALSE accordingly 
+
+intersect(x, y) # prints the common elements of x and y
+intersect(9, y) # prints numeric(0) as 9 is not present in y
+
+union(x, y) # union of x and y
+setdiff(x, y) # prints the values present in x but not in y
+setdiff(y, x) # prints the values present in y but not in x
+setequal(x, y) # checks whether x and y are equal or not
+
+a <- 1:5
+b <- 1:5
+setequal(a, b)
+```
+
+```{r}
+x <- 1:12
+
+median(x)
+
+quantile(x) # gives all the quantiles
+quantile(x, probs = 0.75) # gives the 75% quantile
+```
+
+```{r}
+w <- c(2, 3, 4, 3, 2)
+x <- c(5, 10, 12, 14, 15)
+wm <- weighted.mean(x, w) # calculates the weighted mean where x is the vector having the values and w is the vector having the weights
+wm
+```
+
+```{r}
+x <- 1:10
+mad(x) # median absolute deviation of x i.e. the median of the absolute differences of the values from the median
+```
+
+```{r}
+x <- 15:25
+y <- 10:20
+cov(x, y) # covariance
+cor(x, y) # correlation
+```
+
+```{r}
+a <- c(1, 4, 3, 5, 15, 11, 10, 9, 2, 13, 10, 1)
+sort(a) # sorting in ascending order
+sort(a, decreasing = TRUE) # sorting in descending order, by default decreasing is set to FALSE
+```
+
+```{r}
+a <- c(1, 4, 3, 5, 15, 11, 10, 9, 2, 13, 10, 1)
+order(a) # returns a vector, the first element of the vector is the position of the smallest number in the argument vector, here a. the second element of the returned vector is the position of the second smallest number in the argument vector
+ord <- order(a)
+a[ord] # same as sort(a)
+```
+
+```{r}
+a <- c(1, 5, 3, 10, 2, 8)
+a[order(a)] # sorting a
+b <- c(11, 12, 13, 14, 15, 16)
+b[order(a)] # sorting b with the same order of a
+```
+
+```{r}
+paste("a", "b", "c")
+paste("a", "b", "c", sep = "") # by default sep = " " i.e. space
+paste("a", 1:5, sep = "-")
+```
+
+```{r}
+sprintf("%s scored %d runs", "Dhoni", 224)
+```
+
+```{r}
+x <- 20:1
+which(x%%2 == 0) # returns the indices of the even elements
+x[which(x%%2 == 0)] # returns the even elements
+```
+
+```{r}
+# some inbuilt vectors
+
+LETTERS # all the letters of the English alphabet in upper case
+letters # all the letters of the English alphabet in lower case
+month.name # the 12 month names
+month.abb # the abbreviations of the month names
+pi # pi
+```
+
+```{r}
+factor(c("Tue", "Mon", "Wed", "Thu", "Fri", "Mon", "Tue", "Thu", "Mon", "Wed", "Wed", "Fri"), levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
+# levels are the unique values
+```
+
+```{r}
+x <- 1:10
+length(x)
+
+a <- c(1, 1, 1, 1, 1, 2, 2, 3, 3, 1, 4, 5, 7, 5, 6, 7)
+unique(a) # prints the unique elements in a
+
+rev(a) # reverses a
+```
+
+```{r}
+my_name <- "Mahendra Singh Dhoni"
+toupper(my_name)
+tolower(my_name)
+```
+
+```{r}
+# matrix
+
+# creating a matrix
+x <- 1:12
+my_matrix <- matrix(x, nrow = 3, ncol = 4, byrow = TRUE)
+my_matrix
+
+# creating a diagonal matrix
+my_diagonal_matrix <- diag(c(1, 2, 3, 4))
+my_diagonal_matrix
+
+# creating an identity matrix
+my_identity_matrix <- diag(4) # identity matrix of order 4
+my_identity_matrix
+```
+
+```{r}
+x <- 1:12
+my_matrix <- matrix(x, nrow = 3, ncol = 4, byrow = TRUE)
+my_matrix
+
+# adding column to a matrix
+cbind(my_matrix, c(5, 5, 5))
+
+# adding row to a matrix
+rbind(my_matrix, c(4, 4, 4, 4))
+```
+
+```{r}
+x <- 1:12
+my_matrix <- matrix(x, nrow = 3, ncol = 4, byrow = TRUE)
+my_matrix
+
+# index
+my_matrix[2, 3] # element of the 2nd row and 3rd column of my_matrix
+
+my_matrix[1,] # the first row
+
+my_matrix[,1] # the first column
+```
+
+```{r}
+x <- 1:12
+my_matrix <- matrix(x, nrow = 3, ncol = 4, byrow = TRUE)
+my_matrix
+
+my_matrix[-1, -1] # removes the first row and first column
+
+my_matrix[-1,] # removes the first row
+
+my_matrix[, -1] # removes the first column
+
+my_matrix[1, -2] # prints the first row, without the second element
+
+my_matrix[-2, 3] # prints the third column, without the second element
+```
+
+```{r}
+matrix_a <- matrix(1:8, nrow = 4, ncol = 2, byrow = TRUE)
+matrix_a
+
+dim(matrix_a) # dimension of matrix_a
+
+nrow(matrix_a) # number of rows
+
+ncol(matrix_a) # number of columns
+
+matrix_b <- matrix(8:1, nrow = 4, ncol = 2, byrow = TRUE)
+matrix_b
+
+# addition of two matrices
+matrix_a + matrix_b 
+
+# subtraction of two matrices
+matrix_b - matrix_a
+
+# multiplication by a scalar
+2*matrix_a
+
+# entry-wise multiplication (Hadamard Multiplication)
+matrix_a * matrix_b
+
+# usual matrix multiplication
+first_matrix <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE)
+second_matrix <- matrix(c(6, 5, 4, 3, 2, 1), nrow = 3, ncol = 2, byrow = TRUE)
+first_matrix
+second_matrix
+first_matrix %*% second_matrix
+```
+
+```{r}
+A <- matrix(c(1, 3, 2, 4), ncol = 2)
+A
+B <- matrix(5:2, ncol = 2)
+B
+
+crossprod(A, B) # cross product of A & B, I have never studied the process of cross product of matrices. what I understood from this function is that, first column of A * first column of B = first row and first column element of the cross product, first column of A * second column of B = first row, second column element of the cross product and so on....
+
+crossprod(A) # cross product of A & A
+```
+
+```{r}
+my_mat <- matrix(1:6, nrow = 3, ncol = 2, byrow = TRUE)
+my_mat
+
+# transpose of a matrix
+t(my_mat)
+```
+
+```{r}
+mat <- matrix(1:4, nrow = 2, ncol = 2, byrow = TRUE)
+mat
+
+# determinant of a matrix
+det(mat)
+
+# diagonal of a matrix
+diag(mat)
+```
+
+```{r}
+# scatter plot
+x <- c(10, 11, 15, 13, 17, 20)
+plot(x, main = "My Plot", xlab = "Index", ylab = "Values", type = "b", lty = 5, lwd = 2, col = "orange")
+```
+
+```{r}
+# bar plot
+values <- c(1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 1)
+my_frequency_table <- table(values)
+# my_frequency_table
+
+barplot(my_frequency_table, 
+        col = "orange", 
+        main = "My Bar Plot", 
+        xlab = "Values", 
+        ylab = "Frequencies", 
+        border = "blue", 
+        #density = c(30, 40, 10, 20, 50)
+        )
+
+barplot(my_frequency_table, col = "red", horiz = TRUE)
+```
+
+
+```{r}
+# stacked bar plot
+my_data <- matrix(c(1, 3, 4, 5, 2, 4, 3, 6, 2, 1, 2, 1), ncol = 3)
+my_data
+
+barplot(my_data, 
+        main = "My Stacked Bar Plot", 
+        names.arg = c("A", "B", "C"), 
+        col = c("red", "green", "blue", "yellow"), 
+        ylab = "Frequencies", 
+        xlab = "Values")
+
+barplot(my_data, 
+        main = "My Stacked Bar Plot", 
+        names.arg = c("A", "B", "C"), 
+        col = c("red", "green", "blue", "yellow"), 
+        ylab = "Frequencies", 
+        xlab = "Values",
+        beside = TRUE)
+```
+
+```{r}
+# checking whether a vector is empty or not
+vector_1 <- vector() # creates an empty vector
+length(vector_1) == 0 # returns TRUE if the argument vector is empty otherwise returns FALSE
+
+vector_2 <- 1:5
+length(vector_2) == 0
+```
+
+```{r}
+# scatter plot
+x <- c(10, 15, 16, 20, 25, 28, 32)
+y <- x^2
+plot(x, y,
+     main = "Scatterplot",
+     xlab = "x-values",
+     ylab = "y-values")
+
+z <- 150 + 5*x
+lines(x, z) # draws a line in an existing graph by joining the co-ordinates (x, z)
+```
+
+```{r}
+# multiple line diagram
+
+x <- c(10, 15, 19, 22, 25, 28, 32)
+y <- c(20, 23, 10, 20, 15, 10, 30)
+z <- c(11, 18, 15, 26, 23, 15, 20)
+
+# plotting x vs y
+plot(x, y,
+     main = "Scatterplot",
+     xlab = "x-values",
+     ylab = "y & z values",
+     xaxt = "n",
+     type = "l",
+     col = "red",
+     lwd = 2)
+axis(side = 1, at = x) # the x-axis labels
+
+# plotting x vs z
+lines(x, z, col = "blue", lwd = 2, lty = 2)
+
+# adding a legend
+legend("topleft", 
+       legend = c("y", "z"), 
+       col = c("red", "blue"),
+       bty = "n",
+       lty = 1:2,
+       lwd = 2)
+```
+
+```{r}
+# multiple plots in one sheet
+
+par(mfrow = c(2, 2))
+
+# 1st plot
+x <- 1:5
+y <- seq(from = 2, to = 10, by = 2)
+plot(x, y,
+     main = "Line Plot",
+     type = "l",
+     col = "blue",
+     lwd = 2)
+
+# 2nd plot
+a <- 1:5
+b <- seq(from = 2, to = 10, by = 2)
+plot(a, b,
+     main = "Scatter Plot",
+     type = "p",
+     col = "green",
+     lwd = 2)
+
+# 3rd plot
+p <- rep(c(1.5, 2.5, 3.5, 4.5, 5.5), c(2, 3, 4, 2, 1))
+hist(p, 
+     main = "Histogram",
+     col = "red")
+
+# 4th plot
+boxplot(quakes$mag,
+        main = "Box Plot", 
+        col = "orange")
+```
+
+*User-defined Functions*
+```{r}
+# user-defined functions
+
+my_first_function <- function(x, y)
+{
+  print(x+y)
+}
+
+my_first_function(1, 2)
+```
+
+
+```{r}
+# the return statement
+
+my_second_funtion <- function(a, b)
+{
+  add = a + b
+  product = a * b
+  difference = abs(a-b)
+  
+  return(c(add, product, difference))
+}
+
+my_second_funtion(5, 10)
+```
+
+
+```{r}
+# accessing the result by indices
+result_1 = my_second_funtion(5, 10)
+result_1[1]
+result_1[2]
+result_1[3]
+```
+
+
+```{r}
+# returning values with names
+
+my_second_funtion <- function(a, b)
+{
+  add = a + b
+  product = a * b
+  difference = abs(a-b)
+  
+  output <- list(add, product, difference) 
+  names(output) <- c("add", "product", "difference") 
+  
+  return(output)
+}
+
+my_second_funtion(5, 10)
+
+result_2 <- my_second_funtion(5, 10)
+result_2$add
+result_2$product
+result_2$difference
+```
+
+```{r}
+# default arguments
+
+my_function <- function(a = 1, b = 2)
+{
+  return(a - b)
+}
+
+my_function() # the default value in used
+
+my_function(5, 7) # the values when function is called is used (in the order they are written)
+
+my_function(a = 5) # takes a as 5 but as b is not mentioned it takes the default value of b
+
+my_function(b = 1) # takes b as 1 but as a is not mentioned it takes the default value of a
+
+my_function(b = 10, a = 5) # order does not matter here as the values are declared explicitly
+```
+
+```{r}
+# stopping execution of a function if inputs are not of the desired kind
+
+# stopifnot function
+
+my_function_3 <- function(x = 5, y = 3)
+{
+  stopifnot(typeof(x)=="double", typeof(y) == "double")
+  
+  return(x+y)
+}
+
+# my_function_3("dhoni", 7) # this stops the execution of my_function_3 and produces an error message
+
+my_function_3()
+```
+
+```{r}
+# recursive function
+
+# factorial
+
+# number = as.numeric(readline(prompt = "Enter n :: "))
+
+number = 5
+
+factorial_function <- function(num)
+{
+  if (num == 0)
+    return(1)
+  else
+    prod = num * factorial_function(num-1)
+  
+  return(prod)
+}
+
+factorial_function(number)
+```
+
+```{r}
+# for loop
+
+# iterating a vector
+numbers <- c(1, 2, 3, 4, 3, 2, 1)
+for (i in numbers) 
+{
+  print(i)
+}
+
+n = 10
+# increasing for loop
+# n = as.numeric(readline(prompt = "Enter number :: "))
+for (i in 1:n) 
+{
+  print(i)
+}
+
+# decreasing for loop
+# n = as.numeric(readline(prompt = "Enter number :: "))
+for (i in n:1) 
+{
+  print(i)
+}
+```
+
+```{r}
+# while loop
+
+# be safe from creating an infinite loop
+num = 5
+
+while (num > 0) {
+  print(num)
+  num = num - 1
+}
+```
+
+```{r}
+# if-else
+
+# age = as.numeric(readline(prompt = "Enter your age = "))
+
+age = 19
+
+if (age < 0)
+{
+  print("Invalid Input")
+
+} else if (age < 18) 
+{
+  print("You cannot vote ! Still a child")
+
+} else 
+{
+  print("You can vote")
+}
+```
+
+```{r}
+# one-liner if-else
+
+a = 10
+b = 15
+# a = as.numeric(readline(prompt = "Enter a = "))
+# b = as.numeric(readline(prompt = "Enter b = "))
+
+# numeric vs numeric comparison
+greater <- ifelse(a<b, b, a)
+greater
+
+# vector vs numeric comparison (each element of the vector is compared with the numeric)
+highest <- ifelse(c(5, 6, 3, 4)>5, 1, 0)
+highest
+```
+
+```{r}
+# switch statement
+
+my_function_4 <- function(x, type)
+{
+  switch(type, "mean"=mean(x), "sort"=sort(x), "sum"=sum(x))
+}
+
+my_function_4(1:10, "mean")
+my_function_4(c(8, 1, 7, 2, 6, 3, 5, 4), "sort")
+my_function_4(1:10, "median") # does not produces any error.....it just does nothing
+my_function_4(1:10, "sum")
+```
+
+```{r}
+# repeat loop
+
+a = 1
+repeat{
+  print(a)
+  a = a+1
+  if (a == 6) break
+}
+```
+
+```{r}
+# vectors
+
+A <- c(10, 20, 30)
+
+A
+
+A[1]
+
+A[c(1, 3)]
+
+names(A) <- c("Sakuni", "Dronacharya", "Arjun")
+
+A
+
+A["Sakuni"]
+
+A[1]
+
+A[c("Dronacharya", "Arjun")]
+```
+
+```{r}
+mode(A)
+typeof(A)
+class(A)
+```
+
+```{r}
+# matrices from vector
+B <- c(10, 11, 12, 13)
+dim(B)
+
+dim(B) <- c(2, 2)
+B
+
+dim(B)
+
+dim(B) <- c(4, 1)
+B
+```
+
+```{r}
+X <- 1:5
+typeof(X)
+mode(X)
+class(X)
+```
+
+```{r}
+v <- c(1:5, list(6, 7, list(8, 9, 10)), recursive = TRUE)
+v
+# if recursive = TRUE attribute is not given, v will become a list
+typeof(v)
+class(v)
+mode(v)
+```
+
+```{r}
+l <- list(1, 2, 3, 4, 5)
+
+l
+l[1]
+l[[1]]
+```
+
+```{r}
+l <- list(first = 1, mid = 2, last = 3)
+l
+```
+
+```{r}
+new_list <- list(10, 20, 30, 40, 50)
+
+new_list[1]
+class(new_list[1])
+mode(new_list[1])
+typeof(new_list[1])
+
+new_list[[2]]
+class(new_list[[2]])
+mode(new_list[[2]])
+typeof(new_list[[2]])
+```
+

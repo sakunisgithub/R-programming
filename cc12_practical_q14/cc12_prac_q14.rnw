@@ -1,0 +1,333 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{graphicx}
+
+\title{CC12 Practical Q14}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
+@
+
+$\bullet$ The cost of maintenance of shipping tractors seems to increase with the age of the tractor.
+	\begin{enumerate}[(a)]
+	\item Fit the model $Y = \beta_0 + \beta_1 X + \epsilon$.
+	\item Is the model suitable ?
+	
+	\end{enumerate}
+	
+	\vspace{20pt}
+	
+	\begin{table}[!htbp]
+	\def\arraystretch{1.5}
+	
+	\begin{center}
+	\begin{tabular}{|>{\centering}m{2cm}|>{\centering\arraybackslash}m{3cm}|}
+	
+	
+	\hline
+	
+	Age (Years) & 6 month's cost \\
+	
+	$x$ & $y$ \\\hline\hline
+	
+	4.5 & 619 \\
+	
+	\hline
+	
+	4.5 & 1049 \\
+	
+	\hline
+	
+	4.5 & 1033 \\
+	
+	\hline
+	
+	4.0 & 495 \\
+	
+	\hline
+	
+	4.0 & 729 \\
+	
+	\hline
+	
+	4.0 & 681 \\
+	
+	\hline
+	
+	5.0 & 890 \\
+	
+	\hline
+	
+	5.0 & 1522 \\
+	
+	\hline
+	
+	5.5 & 987 \\
+	
+	\hline
+	
+	5.0 & 1194 \\
+	
+	\hline
+	
+	0.5 & 163 \\
+	
+	\hline
+	
+	0.5 & 182 \\
+	
+	\hline
+	
+	6.0 & 764 \\
+	
+	\hline
+	
+	6.0 & 1373 \\
+	
+	\hline
+	
+	1.0 & 978 \\
+	
+	\hline
+	
+	1.0 & 466 \\
+	
+	\hline 
+	
+	1.0 & 549 \\
+	
+	\hline
+	
+	\end{tabular}
+	\end{center}
+	
+	\end{table}
+
+
+
+
+\newpage
+
+
+$\bullet$ \textbf{Loading the data-set and other initials}
+
+<<>>=
+tractor_maintainance_cost_data <- read.csv("D:\\data_sets\\cc12_prac_q14_data.csv")
+
+dim(tractor_maintainance_cost_data)
+
+names(tractor_maintainance_cost_data)
+@
+
+<<>>=
+tractor_maintainance_cost_data
+@
+
+\newpage
+
+<<>>=
+library(tidyverse)
+@
+
+\newpage
+
+$\bullet$ \textbf{Scatterplot of Age of Tractor vs 6 month's Maintenance Cost}
+
+<<>>=
+tractor_maintainance_cost_data %>%
+  ggplot(aes(x = years, y = cost)) +
+  geom_point(size = 1.5, col = "blue") +
+  scale_x_discrete(limits = tractor_maintainance_cost_data$years) +
+  labs(x = "Age (Years)", y = "Cost", title = "Scatterplot of Age vs Cost")
+@
+
+
+\newpage
+
+$\bullet$ \textbf{Test for Normality :: Q-Q Plot}
+
+<<>>=
+tractor_maintainance_cost_data %>%
+  ggplot(aes(sample = cost)) +
+  geom_qq(size = 2, col = "blue") +
+  geom_qq_line(linewidth = 1, col = "red") +
+  labs(x = "Theoretical Quantiles", y = "Sample Quantiles", title = "Q-Q Plot")
+@
+
+We see that it is a good fit. So normality assumption holds.
+
+\newpage
+
+$\bullet$ \textbf{Test for Normality :: Shapiro-Wilk Test}
+
+<<>>=
+shapiro.test(tractor_maintainance_cost_data$cost)
+@
+
+The p-value is much higher than 0.05. So we fail to reject the null hypothesis that the data is sampled from a normal population.
+
+
+
+\newpage
+
+<<>>=
+fit1 <- lm(cost ~ years, data = tractor_maintainance_cost_data)
+@
+
+Let us have the diagonal elements of the hat matrix.
+
+<<>>=
+h <- hatvalues(fit1)
+# lm.influence(fit1)$hat
+h
+@
+
+\newpage
+
+$\bullet$ \textbf{Detection of Outliers}
+
+<<>>=
+standardised_residuals <- fit1$residuals / sqrt( mean(fit1$residuals^2) * (1 - h) )
+
+standardised_residuals
+@
+
+<<>>=
+which(abs(standardised_residuals) > 3)
+@
+
+None of the absolute values of the standardized residuals is more than 3. So we drop of the suspicion of presence of any outlier.
+
+\newpage
+
+$\bullet$ \textbf{Detection of High Leverage Observations}
+
+<<>>=
+which(h > (3*1)/17)
+@
+
+So 11th and 12th value of the covariate(here years) are high leverage observations.
+
+<<>>=
+tractor_maintainance_cost_data[which(h > (3*1)/17), 1]
+@
+
+\newpage
+
+$\bullet$ \textbf{Detection of Influential Observations}
+
+<<>>=
+cooks_distance <- cooks.distance(fit1)
+
+cooks_distance
+@
+
+<<>>=
+which(cooks_distance > 4/17)
+@
+
+So 15th observation is an influential observation.
+
+<<>>=
+tractor_maintainance_cost_data[which(cooks_distance > 4/17),]
+@
+
+
+\newpage
+
+$\bullet$ \textbf{Test for Homoscedasticity :: Goldfeld-Quandt Test}
+
+<<>>=
+library(lmtest)
+@
+
+<<>>=
+gqtest(fit1, order.by = ~years, data = tractor_maintainance_cost_data)
+@
+
+p-value is much higher than 0.05. So we fail to reject the null hypothesis that homoscedasticity is present.
+
+
+\vspace{50pt}
+
+$\bullet$ \textbf{Test for Homoscedasticity :: Breusch-Pagan Test}
+
+<<>>=
+library(lmtest)
+@
+
+<<>>=
+bptest(fit1)
+@
+
+p-value is much higher than 0.05. So we fail to reject the null hypothesis that homoscedasticity is present.
+
+\newpage
+
+$\bullet$ \textbf{Test for Auto-correlation :: Durbin-Watson Test}
+
+<<>>=
+library(car)
+@
+
+<<>>=
+durbinWatsonTest(fit1)
+@
+
+p-value is much higher than 0.05. So we fail to reject the null hypothesis that the residuals are not auto-correlated.
+
+\newpage
+
+<<>>=
+summary(fit1)
+@
+
+\newpage
+
+$\bullet$ \textbf{Residual Plot}
+
+<<>>=
+df1 <- data.frame(sample_no = 1:length(fit1$residuals), residuals = fit1$residuals)
+@
+
+<<>>=
+df1 %>%
+  ggplot(aes(x = sample_no, y = residuals)) +
+  geom_point(size = 1.5, col = "red") +
+  geom_hline(yintercept = 0, linewidth = 1, col = "blue") +
+  scale_x_discrete(limits = 1:length(fit1$residuals)) +
+  labs(x = "Observation Number", y = "Residual", title = "Residual Plot")
+@
+
+
+\newpage
+
+$\bullet$ \textbf{Model Checking}
+
+Let us have a look at R-squared for the model.
+<<>>=
+summary(fit1)$r.squared
+@
+
+Let us have a look at Adjusted R-squared for the model.
+<<>>=
+summary(fit1)$adj.r.squared
+@
+
+
+\end{document}

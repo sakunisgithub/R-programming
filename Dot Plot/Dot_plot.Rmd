@@ -1,0 +1,33 @@
+---
+title: "Dot Plot"
+author: "Ananda Biswas"
+date: "2022-09-16"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r}
+# simple dot plot
+x <- seq(1,10)
+y <- 2*x + 1
+print(x)
+print(y)
+plot(x,y)
+```
+
+
+```{r}
+# labeling the plot
+x <- seq(7)
+y <- c(3,4,5,6,5,4,4)
+z <- c(4,4,5,6,7,5,4)
+
+par(mfrow=c(2,1), bty="o")
+
+plot(x,y, xlab = "weekdays", ylab = "sale", main = "Sale of The Times of India", col = "red",cex.lab = 0.95,cex.main = 0.85, col.lab=5, col.main=4, pch="*")
+
+plot(x,z, xlab = "weekdays", ylab = "sale", main = "Sale of The Telegraph", col = "blue")
+```
+

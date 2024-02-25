@@ -1,0 +1,220 @@
+---
+title: "DEEPAK NITRITE Analysis"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(readxl)
+raw_data <- read_excel(file.choose())
+raw_data
+```
+
+```{r}
+sapply(raw_data, class) # get class of all columns
+```
+
+```{r}
+raw_data <- raw_data[,3 : 15] #removing first two columns as they were of no use in our analysis
+raw_data
+```
+
+```{r}
+sapply(raw_data, class)
+```
+
+```{r}
+str(raw_data)
+```
+
+```{r}
+summary(raw_data$`Open Price`)
+```
+
+```{r}
+summary(raw_data$`Close Price`)
+```
+
+```{r}
+summary(raw_data$`High Price`)
+```
+
+```{r}
+summary(raw_data$`Low Price`)
+```
+
+```{r}
+summary(raw_data$`Close Price`)
+```
+
+```{r}
+summary(raw_data$`Average Price`)
+```
+
+```{r}
+summary(raw_data$`Total Traded Quantity`)
+```
+
+```{r}
+summary(raw_data$`% Dly Qt to Traded Qty`)
+```
+
+```{r}
+#Line Plot of Daily Average Price
+plot(y = raw_data$`Average Price`,
+     x = raw_data$Date,
+     type = "l",
+     xlab = "Date",
+     ylab = "Average Price",
+     main = "Daily Average Price of FY 2021-22",
+     col = "red",
+     lwd = 3)
+abline(h = 2145, col = "blue", lwd = 2)
+```
+
+```{r}
+plot(raw_data$Date,
+     raw_data$`Total Traded Quantity`,
+     type = "l",
+     main = "Total Traded Quantity with respect to Time", 
+     xlab = "Time", 
+     ylab = "Total Traded Quantity", 
+     col = "blue",
+     lwd = 2) 
+# xaxt = "n" means nohting on the x axis Similarly we can use yaxt = "n" to  mean nothing on the y axis
+# axis(1,                                 # 1 indicates x axis
+#     raw_data$Date,
+#     format(raw_data$Date, "%y"))        #displays the dates in the set format
+```
+
+```{r}
+#raw_data$Date <- as.numeric(as.character(raw_data$Date))
+plot(raw_data$Date,
+     raw_data$Turnover,
+     type = "l",
+     main = "Turnover with respect to Time", 
+     xlab = "Time", 
+     ylab = "Turnover in Rupees", 
+     col = "red",
+     lwd = 2) 
+```
+
+```{r}
+barplot(raw_data$`Total Traded Quantity`,
+     main = "Total Traded Quantity with respect to Time", 
+     xlab = "Time", 
+     ylab = "Total Traded Quantity", 
+     col = "blue") 
+```
+
+```{r}
+april_turnover = sum(raw_data[1:19,10])
+may_turnover = sum(raw_data[20:39,10])
+june_turnover = sum(raw_data[40:61,10])
+july_turnover = sum(raw_data[62:82,10])
+august_turnover = sum(raw_data[83:103,10])
+september_turnover = sum(raw_data[104:124,10])
+october_turnover = sum(raw_data[125:144,10])
+november_turnover = sum(raw_data[145:164,10])
+december_turnover = sum(raw_data[165:187,10])
+january_turnover = sum(raw_data[188:207,10])
+february_turnover = sum(raw_data[208:227,10])
+march_turnover = sum(raw_data[228:248,10])
+
+month_wise_turnover <- c(april_turnover, may_turnover, june_turnover, july_turnover, august_turnover, september_turnover, october_turnover, november_turnover, december_turnover, january_turnover, february_turnover, march_turnover)
+
+barplot(month_wise_turnover,
+        seq(12),
+        xlab = "Months (April 2021 - March 2022)",
+        ylab = "Turnover",
+        main = "Month-wise Total Turnover",
+        col = "cyan")
+```
+
+```{r}
+barplot(raw_data$`Turnover`,
+     main = "Turnover with respect to Time", 
+     xlab = "Time", 
+     ylab = "Turnover", 
+     col = "red") 
+```
+
+```{r}
+plot(seq(12),
+     month_wise_turnover,
+     type = "b",
+     xlab = "Months (April 2021 - March 2022)",
+     ylab = "Turnover",
+     main = "Month-wise Total Turnover",
+     col = "red",
+     lwd = 3)
+```
+
+```{r}
+plot(y = raw_data$`No. of Trades`,
+     x = raw_data$Date,
+     xlab = "Time",
+     ylab = "Number of Trade",
+     main = "Number of Trades in 2021-22 FY",
+     col = "magenta",
+     type = "l",
+     lwd = 2)
+```
+
+```{r}
+plot(y = raw_data$`Total Traded Quantity`,
+     x = raw_data$Date,
+     type = "l",
+     xlab = "Time",
+     ylab = "Quantity",
+     main = "Total Traded Quantity with Deliverable Quantity",
+     col = "red",
+     lwd = 2)
+lines(y = raw_data$`Deliverable Qty`,
+      x = raw_data$Date,
+      type = "l",
+      col = "blue",
+      lwd = 2)
+legend("topright", 
+       legend = c("Traded Quantity", "Deliverable Quantity"), 
+       col = c("red", "blue"), 
+       lwd = 2,
+       cex = 1)
+```
+
+```{r}
+plot(y = raw_data$`% Dly Qt to Traded Qty`,
+     x = raw_data$Date,
+     type = "l",
+     xlab = "Time",
+     ylab = "% Quantity",
+     main = "% Deliverable Quantity of Total Traded Quantity",
+     col = "red",
+     lwd = 2)
+abline(h = 28.43, col = "blue", lwd = 2)
+```
+
+```{r}
+plot(y = raw_data$`High Price`,
+     x = raw_data$Date,
+     type = "l",
+     xlab = "Time",
+     ylab = "Price",
+     main = "Daily High Price vs Low Price vs Average Price",
+     col = "green",
+     lwd = 2)
+lines(y = raw_data$`Low Price`,
+      x = raw_data$Date,
+      type = "l",
+      col = "red",
+      lwd = 2)
+lines(y = raw_data$`Average Price`,
+      x = raw_data$Date,
+      type = "l",
+      col = "blue",
+      lwd = 2)
+```
+
+
+

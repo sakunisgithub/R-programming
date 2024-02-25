@@ -1,0 +1,73 @@
+---
+title: "Monte Carlo Simulation"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+
+```{r, echo = T}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Generating $N(0, 1)$ Random Numbers*
+
+First we shall generate 2 sets of $U(0, 1)$ random numbers (say, $x_1$ and $x_2$) and then we shall pass the numbers through $$ f(x) = \sqrt{-2lnx_1} \sin{2\pi x_2} $$ and get $N(0, 1)$ random numbers.
+
+```{r}
+n <- as.numeric(readline(prompt = "Enter the amount of random numbers = "))
+
+seed_value_1 <- as.numeric(readline(prompt = "Enter the seed value for set 1 = "))
+
+seed_value_2 <- as.numeric(readline(prompt = "Enter the seed value for set 2 = "))
+```
+
+
+```{r}
+numbers_1 <- c(seed_value_1)
+
+a = 21
+b = 31
+m = 100
+  
+for (i in 2:(n+1)) {
+    numbers_1 <- append(numbers_1, (a * numbers_1[i-1] + b) %% m, after = length(numbers_1))
+}
+
+numbers_1 <- numbers_1 / max(numbers_1)
+
+numbers_1 <- numbers_1[-1]
+
+numbers_2 <- c(seed_value_2)
+  
+for (i in 2:(n+1)) {
+    numbers_2 <- append(numbers_2, (a * numbers_2[i-1] + b) %% m, after = length(numbers_2))
+}
+
+numbers_2 <- numbers_2 / max(numbers_2)
+
+numbers_2 <- numbers_2[-1]
+```
+
+```{r}
+standard_normal_numbers <- c()
+
+for (i in 1:length(numbers_1)) {
+  temp <- sqrt((-2) * log(numbers_1[i])) * sin(2 * pi * numbers_2[i])
+  
+  standard_normal_numbers <- append(standard_normal_numbers, temp, after = length(standard_normal_numbers))
+}
+```
+
+```{r}
+hist(standard_normal_numbers, main = "Histogram Plot of Generated N(0, 1) Random Numbers", breaks = 15)
+```
+

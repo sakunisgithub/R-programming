@@ -1,0 +1,103 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{002 Some Basics}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<>>=
+library(faraway)
+@
+
+\section*{Loading the dataset and having a first look at it}
+
+<<>>=
+pima
+@
+
+<<>>=
+dim(pima)
+@
+
+<<>>=
+names(pima)
+@
+
+<<>>=
+head(pima)
+@
+
+<<>>=
+?pima
+@
+
+<<>>=
+summary(pima)
+@
+
+We learn that missing values are replaced by 0 in the variables glucose, diastolic, triceps, insulin, bmi.\\
+We don't want that, so we shall replace 0s by NAs.\\
+
+<<>>=
+pima$glucose[pima$glucose == 0] = NA
+
+pima$diastolic[pima$diastolic == 0] = NA
+
+pima$triceps[pima$triceps == 0] = NA
+
+pima$insulin[pima$insulin == 0] = NA
+
+pima$bmi[pima$bmi == 0] = NA
+@
+
+We see that the variable "test" takes only two values; 0 and 1. So we shall treat it as a categorical variable (also called factors in R), not a quantitative variable.
+
+<<>>=
+pima$test = factor(pima$test)
+@
+
+We shall use levels for variable "test".
+<<>>=
+levels(pima$test) = c("negative", "positive")
+@
+
+<<>>=
+summary(pima$test)
+@
+
+$\bullet$ Observe how the summary of the variable "test" changed.
+
+\section*{Visualization}
+
+<<>>=
+plot(diabetes ~ test, pima)
+@
+
+<<>>=
+plot(diabetes ~ diastolic, pima)
+
+# same as plot(pima$diastolic, pima$diabetes)
+@
+
+<<>>=
+plot(diabetes ~ test, pima)
+@
+
+<<>>=
+hist(pima$diastolic)
+@
+
+<<>>=
+pairs(pima)
+@
+
+
+\end{document}

@@ -1,0 +1,157 @@
+---
+title: "Monte Carlo Simulation"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+params:
+  number_of_random_numbers: n
+  seed: seed
+  constant_a: a
+  constant_b: b
+  constant_m: m
+  number_of_uniform_0_1_random_numbers: unif_n
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+give_inputs <- function(){
+  # n = as.numeric(readline(prompt = "Enter the number of random numbers you want to generate = "))
+  
+  n = as.integer(params$number_of_random_numbers)
+  
+  # our_seed = as.numeric(readline(prompt = "Enter seed = "))
+  
+  our_seed = as.integer(params$seed)
+
+  # a = as.numeric(readline(prompt = "Enter the value of the constant a = "))
+  
+  a = as.integer(params$constant_a)
+  
+  # b = as.numeric(readline(prompt = "Enter the value of the constant b = "))
+  
+  b = as.integer(params$constant_b)
+  
+  # m = as.numeric(readline(prompt = "Enter the value of the constant m = "))
+  
+  m = as.integer(params$constant_m)
+  
+  our_inputs <- c(n, our_seed, a, b, m)
+  
+  return(our_inputs)
+}
+```
+
+```{r}
+give_random_numbers <- function(inputs){
+    
+  n = inputs[1]
+    
+  seed_value = inputs[2]
+    
+  a = inputs[3]
+    
+  b = inputs[4] 
+    
+  m = inputs[5]
+  
+  numbers <- c(seed_value)
+  
+  for (i in 2:(n+1)) {
+    numbers <- append(numbers, (a * numbers[i-1] + b) %% m, after = length(numbers))
+  }
+  
+  return(numbers[-1])
+}
+```
+
+
+\section{Linear Congruence Method}
+
+Here we use the recursive relation :
+
+$$ x_n = ax_{n-1} + b \hspace{3pt}\textrm{(mod m)}$$
+
+where $x_0$ is the seed value provided by the user, $a$, $b$ and $m$ are constants that can also be provided by the user.
+
+```{r}
+my_inputs <- give_inputs()
+
+our_random_numbers <- give_random_numbers(my_inputs)
+
+print(our_random_numbers)
+```
+
+
+
+
+\section{Generating $U(0, 1)$ Random Numbers}
+
+```{r}
+my_inputs <- give_inputs()
+
+my_inputs[1] <- as.integer(params$number_of_uniform_0_1_random_numbers)
+
+our_random_numbers <- give_random_numbers(my_inputs)
+
+our_random_numbers <- our_random_numbers / max(our_random_numbers)
+
+print(our_random_numbers)
+```
+
+
+```{r}
+hist(our_random_numbers, main = "Histogram Plot of U(0, 1) random numbers")
+```
+
+
+\section{Generating $U(a, b)$ Random Numbers using CDF Inversion Method}
+
+```{r}
+numbers_1 <- c(73)
+
+n = 25000
+a = 21
+b = 31
+m = 100
+  
+for (i in 2:(n+1)) {
+    numbers_1 <- append(numbers_1, (a * numbers_1[i-1] + b) %% m, after = length(numbers_1))
+}
+
+numbers_1 <- numbers_1 / max(numbers_1)
+
+numbers_1 <- numbers_1[-1]
+
+numbers_2 <- c(89)
+  
+for (i in 2:(n+1)) {
+    numbers_2 <- append(numbers_2, (a * numbers_2[i-1] + b) %% m, after = length(numbers_2))
+}
+
+numbers_2 <- numbers_2 / max(numbers_2)
+
+numbers_2 <- numbers_2[-1]
+```
+
+
+```{r}
+standard_normal_numbers <- c()
+
+for (i in 1:length(numbers_1)) {
+  temp <- sqrt((-2) * log(numbers_1[i])) * sin(2 * pi * numbers_2[i])
+  
+  standard_normal_numbers <- append(standard_normal_numbers, temp, after = length(standard_normal_numbers))
+}
+```
+
+```{r}
+numbers <- standard_normal_numbers
+hist(numbers)
+```
+

@@ -1,0 +1,127 @@
+---
+title: "Practical Session In R Using Hepatitis-C Data"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+*Important Packages*
+```{r}
+library(readxl)
+```
+
+*Import DataSets*
+```{r}
+library(readxl)
+raw_data = read_excel(file.choose())
+#knitr::kable(raw_data) used to show the table in a scrolling format
+raw_data
+```
+
+*Data Information*
+```{r}
+str(raw_data)
+```
+
+*Data Preparation*
+```{r}
+data = edit(raw_data)
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+data # This is our data
+```
+
+```{r}
+df = data[,2:14] # Removing the 1st column
+df
+```
+```{r}
+summary(df)
+```
+
+*Missing Value imputation*
+```{r}
+df$ALB[is.na(df$ALB)]<-median(df$ALB, na.rm = TRUE)
+df$ALP[is.na(df$ALP)]<-median(df$ALP, na.rm = TRUE)
+df$ALT[is.na(df$ALT)]<-median(df$ALT, na.rm = TRUE)
+df$CHOL[is.na(df$CHOL)]<-median(df$CHOL, na.rm = TRUE)
+df$PROT[is.na(df$PROT)]<-median(df$PROT, na.rm = TRUE)
+summary(df)
+```
+*DESCRIPTIVE STATISTICAL SUMMARY*
+```{r}
+library(psych) #Psychology package used to find descriptive statistical summary.
+psych::describe(df$ALB)
+```
+
+
+```{r}
+library(FSA) #FSA  =  Fishers Summary package used to find statistical summary based on categories.
+Summarize(df$ALB ~ df$Sex + df$Category)
+Summarize(df$CHOL ~ df$Sex + df$Category)
+Summarize(df$PROT ~ df$Sex + df$Category)
+```
+
+**Graphical Representation**
+```{r}
+boxplot(df$PROT ~ df$Sex, xlab = "SEX", ylab = "Protien", main = "Boxplot of Protein, factor: Sex", col = c("red", "yellow"))
+
+library(car)
+out_PROT = boxplot.stats(df$PROT)$out
+boxplot(df$PROT ~ df$Sex, xlab = "SEX", ylab = "Protien", col = c("red", "yellow"))
+mtext(paste("Outliers: ", paste(out_PROT, collapse = ",")))
+
+out_ALB = boxplot.stats(df$ALB)$out
+boxplot(df$ALB ~ df$Sex, xlab = "SEX", ylab = "ALB", col = c("red", "yellow"))
+mtext(paste("Outliers: ", paste(out_ALB, collapse = ",")))
+```
+
+```{r}
+f = Summarize(df$ALB ~ df$Sex + df$Category)
+write.csv(f, "D:\\result_Summ")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

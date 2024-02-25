@@ -1,0 +1,300 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{003 A Detailed Example}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.35]{Screenshot (1473)}\\
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.35]{Screenshot (1474)}\\
+\end{figure}
+
+Once we have the blackbox, we shall take multiple instances of the object, depending on the system we are working on.\\
+Here we shall take multiple such springs. If the blackbox were patient, we would have taken multiple patients. \\
+We have to make sure that the units(springs, patients) are as identical as possible. Some amount of variation will be there, that will be considered as part of random error, but we shall try to keep that as small as possible.\\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.15]{download}\\
+\end{figure}
+
+We are giving different weights(inputs) to the springs and for each of the cases we are measuring the length of the spring. \\
+Here we have a covariate(as input weight $w$ is continuous) and a continuous output length $l$.\\
+
+Now we shall write our model, the mathematical formulation of the system. \\
+
+$$l = \beta_1 + \beta_2 w + \epsilon$$
+
+$\beta_1$ and $\beta_2$ are unknown constants, they are common properties of the identical strings.\\
+
+Here we are expressing the output $l$ as a linear function of input $w$ and random error $\epsilon$.\\
+
+For $n$ instances of the object, we shall have $$l_i = \beta_1 + \beta_2 w_i + \epsilon_i, \hspace{10pt} \forall \hspace{3pt} i = 1, 2, 3, \ldots n.$$
+
+Converting our model in matrix form, we shall have,
+\begin{gather}
+	\begin{bmatrix} l_1 \\	l_2 \\	\vdots \\	l_n	\end{bmatrix}
+	=
+	\begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} 
+	\cdot
+	\begin{bmatrix}	\beta_1 \\	\beta_2 \\	\end{bmatrix}  
+	+	
+	\begin{bmatrix}  \epsilon_1 \\	\epsilon_2 \\	\vdots \\	\epsilon_n	\end{bmatrix}.
+\end{gather}
+
+$ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the \textbf{design matrix} $i.e.$ it is designed by us, we exactly know the weights $w_i$s that we gave as inputs.
+
+<<>>=
+our_data = read.csv("springs.csv")
+
+our_data
+
+dim(our_data)
+@
+
+<<>>=
+plot(length ~ weight, data = our_data)
+@
+
+<<>>=
+fit = lm(length ~ weight, data = our_data)
+@
+
+<<>>=
+model.matrix(fit)
+@
+
+<<>>=
+fit
+@
+
+<<>>=
+names(fit)
+@
+
+<<>>=
+fit$coefficients
+@
+
+<<>>=
+fit$residuals
+@
+
+<<>>=
+fit$fitted.values
+@
+
+<<>>=
+fit$rank
+@
+
+<<>>=
+plot(length ~ weight, data = our_data)
+abline(fit$coefficients)
+@
+
+\section*{The Important Steps}
+
+\begin{enumerate}[(1)]
+
+\item Draw the blackbox
+
+\item Make n sets of measurements
+
+\item Create a CSV file. No. of columns = no. of inputs + 1. In the columns, we shall have the inputs and the output. No. of rows will be n.
+
+\item Load the file in R.
+
+\item Do some sanity check on the data set.
+
+\item Plot and explore.
+
+\item fit = lm(output $\sim$ \ldots, name of data set)
+
+\item Explore fit.
+
+\item Assess goodness. Simplest way to do so is to plot the fitted line.
+\end{enumerate}
+
+
+\section*{Quadratic Regression}
+
+In the same example with springs, let our model be \\
+
+$$l_i = \beta_1 + \beta_2 w_i + \beta_3 {w_i}^2 + \epsilon_i, \hspace{10pt} \forall \hspace{3pt} i = 1, 2, 3, \ldots n.$$
+
+In matrix form, 
+\begin{gather}
+	\begin{bmatrix} l_1 \\	l_2 \\	\vdots \\	l_n	\end{bmatrix}
+	=
+	\begin{bmatrix}	1 & w_1 & {w_1}^2 \\	1 & w_2 & {w_2}^2 \\	\vdots & \vdots & \vdots \\	1 & w_n	& {w_n}^2 \end{bmatrix} 
+	\cdot
+	\begin{bmatrix}	\beta_1 \\	\beta_2 \\	\beta_3 \\ \end{bmatrix}  
+	+	
+	\begin{bmatrix}  \epsilon_1 \\	\epsilon_2 \\	\vdots \\	\epsilon_n	\end{bmatrix}.
+\end{gather}
+
+<<>>=
+our_data = read.csv("springs.csv")
+@
+
+<<>>=
+fit_quad = lm(length ~ weight + I(weight^2), our_data)
+@
+
+<<>>=
+fit_quad
+@
+
+See that, the coefficient of $weight^2$ is close to 0; and the scatterplot of the data set also justifies this.
+
+<<>>=
+model.matrix(fit_quad)
+@
+
+$\bullet$ In the lm() function, \textbf{"I(weight $\wedge$ 2)"} is important to form the model matrix properly.
+
+
+\newpage
+
+\section*{Another Example}
+
+Suppose we have 2 springs from 2 labs. We want to study the elastic property of the springs. The material of the two springs are same and their shapes are also same.\\
+
+The lab from which a spring come may not be a very important factor, but its importance is too little to neglect. So we shall consider the lab as an input to our system. \\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.30]{download(1)}
+	\hspace{100pt}
+	\includegraphics[scale = 0.35]{Screenshot (1480)}\\
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.5]{Screenshot (1479)}\\
+\end{figure}
+
+Observe that, here "lab" is a control factor. \\
+
+For the springs from Lab 1 and Lab 2, we have the following weights as inputs and lengths as outputs respectively. \\
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.5]{spring_lab_1}
+	\hspace{100pt}
+	\includegraphics[scale = 0.5]{spring_lab_2}
+\end{figure}
+
+Now we shall load the two data sets in R.
+
+<<>>=
+data_lab_1 = read.csv("springs_lab_1.csv")
+
+data_lab_1
+
+dim(data_lab_1)
+@
+
+<<>>=
+data_lab_2 = read.csv("springs_lab_2.csv")
+
+data_lab_2
+
+dim(data_lab_2)
+@
+
+We have to merge them to do operations.
+
+<<>>=
+temp_1 = data.frame(data_lab_1, lab = 1)
+
+temp_1
+
+temp_2 = data.frame(data_lab_2, lab = 2)
+
+temp_2
+
+all_data = rbind(temp_1, temp_2)
+
+all_data
+@
+
+Here, our model will be $$ l_{ij} = \alpha_i + \beta w_{ij} + \epsilon_{ij} $$
+where $w_{ij}$ is the $j-th$ weight in $i-th$ lab. \\
+
+For lab 1, we have a constant $\alpha_1$ and for lab 2, we have $\alpha_2$. \\
+
+As the springs are almost identical, we have a constant $\beta$, same for both the springs. \\
+
+Here, for $i=1$, $j=1(1)6$ and for $i=2$, $j=1(1)5$. \\
+
+In matrix form, 
+\begin{gather}
+	\begin{bmatrix} l_{11} \\	l_{12} \\	\vdots \\	l_{16} \\ l_{21} \\ \vdots \\ l_{25}	\end{bmatrix}
+	=
+	\begin{bmatrix}	1 & 0 & w_{11} \\	1 & 0 & w_{12} \\	\vdots & \vdots & \vdots \\	1 & 0 & w_{16} \\ 0 & 1 & w_{21} \\ \vdots & \vdots & \vdots \\ 0 & 1 & w_{25} \end{bmatrix} 
+	\cdot
+	\begin{bmatrix}	\alpha_1 \\	\alpha_2 \\	\beta \\ \end{bmatrix}  
+	+	
+	\begin{bmatrix}  \epsilon_{11} \\	\epsilon_{12} \\	\vdots \\ \epsilon_{16} \\	\epsilon_{21} \\ \vdots \\ \epsilon_{25}	\end{bmatrix}.
+\end{gather}
+
+
+We have to change the "lab" to a factor. \\
+
+<<>>=
+all_data$lab = factor(all_data$lab)
+@
+
+<<>>=
+class(all_data)
+
+class(all_data$weight)
+
+class(all_data$length)
+
+class(all_data$lab)
+@
+
+<<>>=
+plot(length ~ weight, all_data, col = lab)
+@
+
+Now we shall fit our linear model.
+
+<<>>=
+fit_2 = lm(length ~ lab + weight - 1, all_data)
+@
+
+<<>>=
+fit_2
+@
+
+<<>>=
+model.matrix(fit_2)
+@
+
+\subsection*{2 Problems}
+
+\begin{enumerate}
+
+\item How to estimate $\beta$ when $\alpha_1$ and $\alpha_2$ are known ?
+\item How to estimate $\beta$ and $\alpha_1$ when $\alpha_2$ is known ?
+
+\end{enumerate}
+
+\end{document}

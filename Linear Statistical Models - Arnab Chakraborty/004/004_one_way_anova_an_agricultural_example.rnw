@@ -1,0 +1,201 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{float}
+
+\title{One Way ANOVA - An Agricultural Example}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+Suppose we have 8 plots and 3 varieties of a crop. We want to study the yield of the different varieties of the crop.
+
+
+\begin{table}[H]
+
+\begin{center}
+
+\begin{tabular}{cccc}
+
+\includegraphics[scale = 0.5]{plot 1} & \includegraphics[scale = 0.52]{plot 2} & \includegraphics[scale = 0.5]{plot 3} & \includegraphics[scale = 0.5]{plot 4}\\
+
+\includegraphics[scale = 0.51]{plot 5} & \includegraphics[scale = 0.5]{plot 6} & \includegraphics[scale = 0.5]{plot 7} & \includegraphics[scale = 0.5]{plot 8}\\
+\end{tabular}
+
+\end{center}
+
+\end{table}
+
+
+First we randomly select 3 plots for variety \textbf{1}, then another 3 plots for variety \textbf{2} and the rest 2 plots are used for variety \textbf{3}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.45]{allocation} \\
+\end{figure}
+
+
+Here our blackbox diagram is
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.5]{blackbox} \\
+\end{figure}
+
+
+\newpage
+
+
+Our data set is
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.5]{dataset} \\
+\end{figure}
+
+
+We can have a linear model as follows :
+
+$$y_{ij} = \alpha_i + \epsilon_{ij}$$
+
+where $y_{ij}$ is the observed yield in the $jth$ plot of the $ith$ variety of crop ; \\
+
+$\alpha_i$ is the true yield of the $ith$ variety of crop; \\
+
+$\epsilon_{ij}$ is the random error in the $jth$ plot of the $ith$ variety of crop. \\
+
+Here, $i = 1, 2, 3$. For $i = 1, 2$, $j = 1, 2, 3$ and for $i = 3$, $j = 1, 2$. \\
+
+$\bullet$ We may be interested in seeing which variety of the crop gives more yield. Then we can come up with another linear model :
+
+$$y_{ij} = \mu + \alpha_i + \epsilon_{ij}$$
+
+where $\mu$ is on an average, the true yield of the crop for all varieties; \\
+
+$\alpha_i$ is the additional yield of the $ith$ variety of the crop. \\
+
+See that $\mu$ is unidentifiable from the above model. \\
+
+We shall put a restriction on $\alpha_i$s that $\sum\limits_{i = 1}^3 \alpha_i = 0$. This also boosts the interpretation of the model - $\mu$ is the average yield of the crop; $\alpha_i$ is additional yield of $i$th variety. So when we average the true yields of all the varieties, we get $\mu$. \Big[$\dfrac{1}{3}\sum\limits_{i=1}^3 (\mu + \alpha_i) = \mu \Big]$ \\
+
+$\bullet$ Suppose variety \textbf{1} of the crop is widely used, 2 new varieties of the crop has been discovered and we want to study their effectiveness. \\
+
+In such a scenario, yet another linear model can be :
+
+$$y_{ij} = \mu + \alpha_i + \epsilon_{ij}$$
+
+where $\mu$ is the benchmark yield of the crop when variety \textbf{1} is used; \\
+
+$\alpha_1 = 0$, and $\alpha_2$, $\alpha_3$ are additional yields of the variety \textbf{2} and variety \textbf{3} respectively.
+
+
+<<>>=
+getwd()
+@
+
+<<>>=
+agri = read.csv('variety_and_yield_dataset.csv')
+
+agri
+
+dim(agri)
+
+names(agri)
+@
+
+The variable \textit{variety} is a factor.
+
+<<>>=
+agri$variety = factor(agri$variety)
+@
+
+<<>>=
+library(tidyverse)
+
+agri %>%
+  ggplot(aes(x = variety, y = yield)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#31F30A", color = "black") +
+  labs(x = "Variety", y = "Yield", title = "Boxplot of Yields of Different Varieties")
+@
+
+We shall fit the model :
+
+$$y_{ij} = \mu + \alpha_i + \epsilon_{ij}$$
+
+where $\mu$ is on an average, the true yield of the crop for all varieties; \\
+
+$\alpha_i$ is the additional yield of the $ith$ variety of the crop.
+
+<<>>=
+fit1 = lm(yield ~ variety, agri)
+@
+
+<<>>=
+fit1
+@
+
+Surprisingly, we do not get any estimate for \textbf{variety1}. Let's see the model matrix.
+<<>>=
+model.matrix(fit1)
+@
+
+R never constructs a model matrix that is not full column rank. If the design matrix does not become full column rank, R will throw away columns to make it full column rank. \\
+
+Here $\alpha_1$ is forced to be $0$. \\
+
+Let us fit the linaer model :
+
+$$y_{ij} = \alpha_i + \epsilon_{ij}$$
+
+where $y_{ij}$ is the observed yield in the $jth$ plot of the $ith$ variety of crop ; \\
+
+$\alpha_i$ is the true yield of the $ith$ variety of crop.
+
+<<>>=
+fit2 = lm(yield ~ variety - 1, agri)
+@
+
+<<>>=
+fit2
+@
+
+<<>>=
+model.matrix(fit2)
+@
+
+See that previously $\alpha_1$ was forced to $0$. We can interpret that variety \textbf{1} is the benchmark variety and the intercept is benchmark yield. 
+
+<<>>=
+fit1$coefficients
+@
+
+<<>>=
+fit2$coefficients
+@
+
+In \textbf{fit1}, R has reported the benchmark yield and the \textit{additional yields from variety \textbf{1}} of variety \textbf{2} and \textbf{3}. \\
+
+In \textbf{fit2}, R has reported the estimated yields of all the varieties. \\
+
+We can easily observe that, the two reports are equivalent. If we add the intercept(the benchmark yield) and add additional yield of variety2, variety3 in \textbf{fit1}, we can get the estimated yield of variety \textbf{2} and \textbf{3} as given by fit2 respectively. \\
+
+We can also estimate $\sigma^2$.
+
+<<>>=
+summary(fit1)
+@
+
+The \textbf{Residual standard error} is the estimated $\sigma^2$.
+
+
+
+
+
+
+\end{document}

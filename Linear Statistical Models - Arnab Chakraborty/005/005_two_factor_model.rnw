@@ -1,0 +1,306 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage[dvipsnames]{xcolor}  
+
+\title{Two Factor Model : An Agricultural Example}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+Suppose in a hilly area, we have 24 plots. The plots are as identical as possible. 12 of them are in a plain region and rest 12 of them are in a tilted region. We have 3 varieties of a crop and we want to study their yields and how it is affected by slope. \\
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.5]{plots}
+\end{figure}
+
+
+Among the 12 plots in the plain region, we randomly select 4 plots and sow seeds of variety \textbf{1}, then we again randomly select another 4 plots and sow seeds of variety \textbf{2} and in the rest 4 plots we sow seeds of variety \textbf{3}. \\
+
+We do the same thing for the 12 plots in tilted region. \\
+
+The allocation of various varieties in the plots is as follows : \\
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.5]{allocation}
+\end{figure}
+
+Here our blackbox diagram is : 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.5]{blackbox}
+\end{figure}
+
+
+Here our linear model will be : 
+
+$$y_{ijk} = \alpha_i + \beta_j + \epsilon_{ijk}$$
+
+where $\vec{\epsilon} \sim (\vec{0}, \sigma^2 I)$; \\
+
+$i$ is the index for variety; \\
+
+$j$ is the index for region (plane or tilted); \\
+
+$k$ is the index for plot of certain variety in certain region. \\
+
+Here $i = 1, 2, 3$, $j = 1, 2$ and $k = 1, 2, 3, 4$.
+
+\section*{Two Factor Model without Interaction (Additive Model)}
+
+Let us have a data set of yield of 3 varieties of paddy IR8, Jaya, Taichung in plain and slopy regions.
+
+<<>>=
+getwd()
+@
+
+<<>>=
+agri_dat = read.csv("agriculture_dataset.csv", as.is = FALSE)
+
+agri_dat
+
+dim(agri_dat)
+
+names(agri_dat)
+
+head(agri_dat)
+
+tail(agri_dat)
+@
+
+Setting \textit{as.is = FALSE} tells R to read the strings in the csv file a factors, not characters.
+
+\newpage
+
+<<>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+agri_dat %>%
+  ggplot(aes(x = tilt, y = yield)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#1BF248") +
+  labs(x = "Tilt", y = "Yield", title = "Boxplot of Yield in Different Tilts")
+@
+
+\newpage
+
+<<>>=
+agri_dat %>%
+  ggplot(aes(x = variety, y = yield)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#56DFEA") +
+  labs(x = "Variety", y = "Yield", title = "Boxplot of Yield of Different Varieties")
+@
+
+\newpage
+
+<<>>=
+with(agri_dat, interaction.plot(tilt, variety, yield))
+@
+
+For interaction plot, the first argument is the variable that I want in x-axis, the second argument is the variable that I want as profile and the third argument is the variable that I want in y-axis.\\
+
+\newpage
+
+<<>>=
+df1 <- agri_dat %>%
+  group_by(variety, tilt) %>%
+  summarise(mean_yield = mean(yield))
+
+df1 %>%
+  ggplot(aes(x = tilt, y = mean_yield)) +
+  geom_line(aes(group = variety, color = variety), linewidth = 1.5) +
+  geom_point(aes(color = variety), size = 4) +
+  labs(x = "Tilt", y = "Mean Yield", title = "Interaction Plot of Different Varieties")
+@
+
+Such an interaction plot translates to an additive model.
+
+The different varieties IR8, Jaya, Taichung are often referred as \textit{profiles}. \\
+
+The boxplots verify that the homoscedasticity assumption is true.
+
+<<>>=
+fit1 = lm(yield ~ tilt + variety, data = agri_dat)
+@
+
+<<>>=
+fit1
+@
+
+Here the linear model is :
+
+$$y_{ijk} = \mu + \alpha_i + \beta_j + \epsilon_{ijk}$$
+
+where $\mu$ is the benchmark yield. \\
+
+The estimates of \textit{tiltplane} and \textit{varietyIR8} have been forced to 0; \textit{i.e.} 
+$\alpha_1 = 0$ and $\beta_1 = 0$.
+
+<<>>=
+summary(fit1)
+@
+
+<<>>=
+model.matrix(fit1)
+@
+
+<<>>=
+fit1$rank
+@
+
+\newpage
+
+<<>>=
+temp_df <- data.frame(fit1$residuals)
+
+temp_df %>%
+  ggplot(aes(y = fit1.residuals, x = 1:length(fit1.residuals))) +
+  geom_point(color = "red", size = 3) +
+  geom_hline(yintercept = 0, color = "blue", linewidth = 1) +
+  labs(x = "Index", y = "Residuals", title = "Residuals of fit1")
+@
+
+\newpage
+
+\section*{Two Factor Model with Interaction}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.4]{interaction_plot}
+\end{figure}
+
+If we have an interaction plot like the above \textit{i.e.} at least two of the profiles are intersecting or not so parallel, we shall introduce a new linear model where we shall take count of the interaction of the two factors. \\
+
+The linear model is :
+
+$$y_{ijk} = \mu + \alpha_i + \beta_j + \textcolor{red}{\gamma_{ij}} +  \epsilon_{ijk}$$
+
+where $\textcolor{red}{\gamma_{ij}}$s take count of the interaction. \\
+
+In practice, we shall first consider this model. We shall test whether $\gamma_{ij}$s are 0 or not. If all the $\gamma_{ij}$s are 0, then we shall resort to the \textbf{additive model}. If any one of the $\gamma_{ij}$s is non-zero, then we shall report that. But we shall never estimate $\gamma_{ij}$s. \\
+
+For a statistician, interaction is bad news. Because, when there is no interaction, we can talk about the inputs separately. But interaction spoils the fun by saying, you cannot really say how the inputs are connected to the output, they are inextricable; and it is their combined influence which is effecting the output. So all that a statistician can say is \textit{things are twisted} and nothing more. \\
+
+$\bullet$ \textbf{Cell Means Model} \\
+
+When we find any one of the $\gamma_{ij}$s is non-zero (\textit{i.e.} there is some interaction), then we shall resort to this model :
+
+$$y_{ijk} = \mu_{ij} + \epsilon_{ijk}$$
+
+where $\mu_{ij}$ is the expected yield of variety $i$ in tilt $j$ and the fluctuations in $y_{ijk}$ are due to the random error $\epsilon_{ijk}$.
+
+<<>>=
+getwd()
+@
+
+<<>>=
+paddy_data = read.csv("agriculture_dataset_2.csv")
+
+paddy_data
+
+dim(paddy_data)
+
+names(paddy_data)
+
+head(paddy_data)
+
+tail(paddy_data)
+@
+
+\newpage
+
+<<>>=
+with(data = paddy_data, boxplot(yield ~ variety:tilt))
+@
+
+\newpage
+
+<<>>=
+paddy_data %>%
+  ggplot(aes(x = interaction(variety, tilt), y = yield)) +
+  geom_boxplot(col = "#0354F6") +
+  labs(x = "Variety.Tilt", y = "Yield", title = "Boxplot of Different Yields")
+@
+
+The boxplots verify that the homoscedasticity assumption is true and it also gives an idea about the interaction plot.
+
+\newpage
+
+<<>>=
+with(data = paddy_data, interaction.plot(tilt, variety, yield))
+@
+
+\newpage
+
+<<>>=
+df2 <- paddy_data %>%
+  group_by(variety, tilt) %>%
+  summarise(mean_yield = mean(yield))
+
+df2 %>%
+  ggplot(aes(x = tilt, y = mean_yield)) +
+  geom_line(aes(group = variety, color = variety), linewidth = 1.5) +
+  geom_point(aes(color = variety), size = 4) +
+  labs(x = "Tilt", y = "Mean Yield", title = "Interaction Plot of Different Varieties")
+@
+
+<<>>=
+# fit2 = lm(yield ~ variety + tilt + variety:tilt, data = paddy_data)
+# An abbrebriation of the above command is
+fit2 = lm(yield ~ variety*tilt, data = paddy_data)
+@
+
+<<>>=
+fit2
+@
+
+Here $\alpha_1$, $\beta_1$ have been forced to 0. \\
+
+Also 2 of the 6 interaction terms $\gamma_{22}$ and $\gamma_{32}$ have been reported and others have been dropped.
+
+<<>>=
+model.matrix(fit2)
+@
+
+<<>>=
+fit2$rank
+@
+
+Observe that, when the rank of the model matrix is 6, R will report only 6 values in fit2.
+
+<<>>=
+summary(fit2)
+@
+
+\newpage
+
+<<>>=
+df3 <- data.frame(fit2$residuals)
+
+df3 %>%
+  ggplot(aes(x = 1:length(fit2.residuals), y = fit2.residuals)) +
+  geom_point(color = "red", size = 3) +
+  geom_hline(yintercept = 0, color = "blue", linewidth = 1.5) +
+  labs(x = "Index", y = "Residuals", title = "Residuals of fit2")
+@
+
+
+
+
+
+
+\end{document}

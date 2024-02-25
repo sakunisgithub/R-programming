@@ -1,0 +1,155 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{utfsym}
+
+\title{Linear Models with R - Julian J. Faraway}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+  \section*{Chapter 1 - Exercise 1}
+\end{center}
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=40),tidy=TRUE)
+@
+
+$\bullet$ loading the library
+<<>>=
+library(faraway)
+@
+
+$\bullet$ loading the data set
+<<>>=
+data("teengamb")
+
+my_data <- teengamb
+@
+
+$\bullet$ description of the data
+<<>>=
+?teengamb
+@
+
+$\bullet$ doing sanity checks
+<<>>=
+dim(my_data)
+@
+
+<<>>=
+names(my_data)
+@
+
+<<>>=
+head(my_data)
+@
+
+<<>>=
+tail(my_data)
+@
+
+$\bullet$ From the description we see that, sex is a categorical variable.
+<<>>=
+my_data$sex <- factor(my_data$sex)
+
+levels(my_data$sex) <- c("male", "female")
+@
+
+
+<<>>=
+class(my_data$sex)
+
+class(my_data$status)
+
+class(my_data$income)
+
+class(my_data$verbal)
+
+class(my_data$gamble)
+@
+
+
+<<>>=
+summary(my_data)
+@
+
+\newpage
+
+$\bullet$ Now we shall do a box-plot for gambling expenditure and sex.
+<<>>=
+boxplot(gamble ~ sex, my_data, main = "Expenditure on gambling in Pounds per year")
+@
+
+$\usym{261E}$ \textcolor{blue}{We see that expenditure on gambling by men is much higher than that by women.} \\
+
+\newpage
+
+$\bullet$ Now we shall see the correlation matrix.
+<<>>=
+cor(my_data[-1])
+@
+
+A helpful visualization of the correlation matrix is as follows :
+<<tidy=TRUE>>=
+library(corrplot)
+@
+
+<<tidy=TRUE>>=
+corrplot(cor(my_data[-1]),method = "number", type = "upper", tl.srt = 45, bg = "red", outline = TRUE, tl.col = "blue")
+@
+
+\newpage
+
+We see that \textbf{status} and \textbf{gamble} have a slightly negative correlation. Let's see their scatterplot.
+<<>>=
+plot(gamble ~ status, data = my_data)
+@
+
+\newpage
+
+$\usym{261E}$ \textcolor{blue}{We see that \textbf{income} and \textbf{gamble} have a correlation of $0.62$, a pretty decent correlation, implying that, people with higher income spend more on gambling. Let's see their scatterplot.}
+<<>>=
+plot(gamble ~ income, data = my_data)
+@
+
+\newpage
+
+$\usym{261E}$ \textcolor{blue}{\textbf{verbal} and \textbf{gamble} have a negative correlation. The variable \textit{verbal} is the score in words out of 12 correctly defined. This may be interpreted as a measure of literacy. That means literacy and expenditure in gambling are negatively correlated. Literate people tend to spend less on gambling, while less literate people end up spending more on gambling. Let's see their scatterplot.}
+<<>>=
+plot(gamble ~ verbal, data = my_data)
+@
+
+\newpage
+
+The variable \textit{verbal} is a discrete valued variable. A box-plot may be helpful to see the relation between \textit{verbal} and \textit{gamble}.
+<<>>=
+boxplot(gamble ~ factor(verbal), data = my_data, xlab = "Number of words correctly defined", ylab = "Expenditure on Gamble")
+@
+
+\newpage
+
+We also see a positive correlation between \textit{status} and \textit{verbal}.
+<<tidy=TRUE>>=
+boxplot(status ~ factor(verbal), data = my_data, xlab = "Number of words correctly defined", ylab = "Expenditure on Gamble")
+@
+
+$\bullet$ Average spending on gambling by men is :
+<<>>=
+mean(my_data$gamble[which(my_data$sex == "male")])
+@
+
+$\bullet$ Average spending on gambling by women is :
+<<>>=
+mean(my_data$gamble[which(my_data$sex == "female")])
+@
+
+\end{document}

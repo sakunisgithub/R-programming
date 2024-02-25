@@ -1,0 +1,199 @@
+---
+title: "2021 SEC"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# Q 1. (b)
+tan(exp(c(1, 3, 5)^2 + 5*c(1, 3, 5)))
+```
+
+```{r}
+# Q 1. (c)
+days <- c("Sun", "Mon", "Tue", "Wed", "Fri", "Sat")
+append(days, "Thu", after = 4)
+```
+
+```{r}
+# Q 1. (d)
+10^seq(0, -3, by = -1)
+```
+
+```{r}
+# Q 1. (e)
+x <- c(1, 2, 3, 4, 5, 3, 7, 10, 9, 5, 4, 12, 20)
+which(x>4)
+```
+
+```{r}
+# Q 1. (f)
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+x <- x[-c(2, 5, 10, 11)]
+x
+```
+
+```{r}
+# Q 1. (g)
+# I don't know how the concept of vector addition is being used here !!! 
+mat = matrix(rep(c(2, 5, 6, 7), each = 4), nrow = 4, ncol = 4, byrow = TRUE)
+mat
+```
+
+```{r}
+# Q 1. (h)
+(abs(sqrt(median(rnorm(15, 50, 5)))) > 10)
+```
+
+```{r}
+# Q 1. (i)
+0^0
+Inf^0
+```
+
+```{r}
+# Q. 1. (m)
+observations <- c(5, 10, 2, 3, 4, 15, 17, 1, 6, 8)
+
+sum(rank(observations) * ifelse(observations > 0, 1, 0))
+```
+
+```{r}
+# Q 1. (o)
+elements <- c(1, 2, 3, 4)
+mat = matrix(elements, nrow = 2, ncol = 2, byrow = TRUE)
+c(eigen(mat)$values) > 0
+```
+
+```{r}
+# Q 1. (p)
+hist(rexp(10000, rate = 0.1), nclass = 100)
+```
+
+
+
+```{r}
+# Q. 2. (a)
+
+machines <- c("M1", "M2", "M3", "M4", "M5")
+
+pens <- c(1150, 1600, 850, 1950, 1050)
+
+relative_number_of_pens <- pens/sum(pens)
+
+colors <- gray(1 - relative_number_of_pens)
+
+
+# barplot
+
+barplot(pens,
+        xlab = "Machines",
+        ylab = "Number of Pens",
+        names.arg = machines,
+        main = "Pens Produced by Machines Daily",
+        col = colors)
+
+legend("topright",
+       legend = machines,
+       fill = colors,
+       cex = 0.7,
+       bty = "n")
+
+
+
+# pie chart
+
+percentages <- round((pens/sum(pens))*100)
+
+tags <- paste(machines, percentages, "%", sep = " ")
+
+pie(pens,
+    main = "Pens Produced by Machines Daily",
+    col = colors,
+    labels = tags)
+
+legend("bottomleft",
+       legend = machines,
+       fill = colors,
+       cex = 1,
+       bty = "n")
+```
+
+
+```{r}
+# Q. 2. (b)
+
+f <- function(x) (5*(x^2) + 2*x - 6)
+
+curve(f, -2, 2, col = "blue", lwd = 2)
+
+# x-axis
+abline(h = 0, col = "black", lwd = 2)
+
+# y-axis 
+abline(v = 0, col = "black", lwd = 2)
+
+# marking the real roots by vertical lines
+abline(v = polyroot(c(-6, 2, 5)), col = "red", lwd = 2)
+
+# polyroot(c(-6, 2, 5))
+# polyroot() function takes a vector as an argument, the vector is supposed to have the coefficients of the polynomial, as per the increasing power of the variable
+```
+
+```{r}
+# Q 2. (d)
+
+numbers <- 1:16
+
+M <- matrix(data = numbers, nrow = 4, ncol = 4 , byrow = TRUE)
+M
+
+M_1 <- matrix(data = 0, nrow = 4, ncol = 4 , byrow = TRUE)
+for (i in 1:4) 
+{
+  for (j in 1:4) 
+  {
+    if(i < j)
+    {
+      M_1[i,j] = 0
+    }
+    else if(i == j)
+    {
+      M_1[i,j] = M[i,j] / 2
+    }
+    else if(i > j)
+    {
+      M_1[i,j] = M[i,j]
+    }
+  }
+}
+
+M_1
+
+M_2 <- matrix(data = 0, nrow = 4, ncol = 4, byrow = TRUE)
+
+for (i in 1:4) 
+{
+  for (j in 1:4) 
+  {
+    if(i < j)
+    {
+      M_2[i,j] = M[i,j]
+    }
+    else if(i == j)
+    {
+      M_2[i,j] = M[i,j] / 2
+    }
+    else if(i > j)
+    {
+      M_2[i,j] = 0
+    }
+  }
+}
+
+M_2
+
+M == M_1 + M_2
+```
+

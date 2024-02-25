@@ -1,0 +1,26 @@
+---
+title: "Performance of BJP in General Elections"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(readxl)
+data <- read_excel(file.choose())
+data
+```
+
+```{r}
+plot(x = data$YEAR,
+     y = data$`SECURED VOTES`,
+     xlab = "Year",
+     ylab = "Secured Votes",
+     main = "Performance of BJP in General Elections",
+     type = "o",
+     lwd = 2,
+     col = "red",
+     xaxt = "n")
+axis(side = 1, at = data$YEAR, las = 2) # las = 2 makes the numbers in the x axis vertical
+```
+

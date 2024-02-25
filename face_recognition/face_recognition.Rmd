@@ -1,0 +1,49 @@
+---
+title: "Face Recognition"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(jpeg)
+
+x <- readJPEG("rose.jpg")
+
+dim(x)
+```
+
+```{r}
+library(png)
+
+y <- readPNG("rose.png")
+
+dim(y)
+```
+
+```{r}
+x[1:150,] = 0.5 # make the first 150 rows of x grey
+
+writeJPEG(x, "rose_1.jpg")
+```
+
+
+```{r}
+t <- as.raster(x) # the color coding of x, in hexadecimal encoding
+
+t
+
+plot(t)
+```
+
+
+```{r}
+b <- readJPEG("color.jpg")
+
+dim(b)
+
+b[1,1,] # red-green-blue components
+
+plot(as.raster(b))
+```
+

@@ -1,0 +1,105 @@
+---
+title: "Coin Toss"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+n <- as.numeric(readline(prompt = "Enter the number of times you want to toss = "))
+```
+
+
+```{r}
+# we denote "head" as 1 and "tail" as 0
+result <- floor(runif(n, min = 0, max = 10)) %% 2
+```
+
+
+```{r}
+i = 1
+
+outcome <- c()
+
+while (i <= n) 
+{
+  if(result[i] == 1)
+  {
+    outcome[i] = "head"
+  }
+  else if(result[i] == 0)
+  {
+    outcome[i] = "tail"
+  }
+  
+  i = i + 1
+}
+```
+
+
+```{r}
+frequency_of_head <- cumsum(result == 1)
+
+relative_frequency_of_head <- c()
+
+i = 1
+
+while (i <= n) 
+{
+  relative_frequency_of_head[i] <- frequency_of_head[i] / i
+  
+  i = i + 1
+}
+```
+
+
+
+```{r}
+frequency_of_tail <- cumsum(result == 0)
+
+relative_frequency_of_tail <- c()
+
+i = 1
+
+while (i <= n) 
+{
+  relative_frequency_of_tail[i] <- frequency_of_tail[i] / i
+  
+  i = i + 1
+}
+```
+
+
+
+```{r}
+coin_toss_dataframe <- data.frame("Toss_no" = 1:n,
+                                  "Outcome" = outcome,
+                                  "Frequency (Head)" = frequency_of_head,
+                                  "Relative Frequency (Head)" = relative_frequency_of_head,
+                                  "Frequency (Tail)" = frequency_of_tail,
+                                  "Relative Frequency (Tail)" = relative_frequency_of_tail)
+
+coin_toss_dataframe
+```
+
+
+```{r}
+x_axis <- 1:n
+
+plot(x_axis, relative_frequency_of_head,
+     xlab = "No. of Toss",
+     ylab = "Relative Frequency",
+     main = "Relative Frequency of Head",
+     pch = 19,
+     cex = 0.5)
+```
+
+
+```{r}
+plot(x_axis, relative_frequency_of_tail,
+     xlab = "No. of Toss",
+     ylab = "Relative Frequency",
+     main = "Relative Frequency of Tail",
+     pch = 19,
+     cex = 0.5)
+```

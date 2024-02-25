@@ -1,0 +1,144 @@
+---
+title: "R Cookbook"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+*CHAPTER 1*
+```{r}
+# 1.7 Getting help on a function
+help(sd) 
+# or ?sd
+
+args(sd)
+
+example(mean)
+```
+
+```{r}
+# searching for a keyword
+help.search("pattern")
+# or ??pattern
+```
+
+```{r}
+# getting help on a package
+help(package = "readxl")
+```
+
+```{r}
+# see all vignettes (decorations)
+vignette()
+```
+
+*CHAPTER 2*
+```{r}
+pi # invokes print(pi)
+
+cat("MSD scored", (2*90)+3, "in a cricket match.", "\n")
+
+vec <- c(0, 6, 4, 0, 6, 6)
+cat("In the 20th over", "MSD scored", vec, "and finished the match for RPSG in style.", "\n")
+
+cat("In the 20th over", "MSD scored", vec, "and finished the match for RPSG in style.", "\n", sep = "--")
+```
+
+```{r}
+# ls() # lists all variables in the workspace
+# ls.str()
+# .hidden <- 5
+# ls()
+# ls(all.names = TRUE)
+```
+
+```{r}
+# deleting variables from the workspace
+# rm(z)
+# z
+# rm(x, y)
+# x
+# y
+```
+
+```{r}
+# mode of objects
+mode(5)
+mode("dhoni")
+mode(TRUE)
+```
+
+```{r}
+# mean and sd with NA values
+x <- c(1, 2, 3, 4, 5, NA)
+mean(x)
+sd(x)
+
+# let's ignore the NA values
+mean(x, na.rm = TRUE)
+sd(x, na.rm = TRUE)
+```
+
+```{r}
+# creating sequence
+seq(from = 1, to = 10, length = 5)
+seq(from = 1, to = 10, length.out = 5)
+# both are same, R allows us to use "partial matching". This means we can abbreviate names of arguments.
+
+seq(from = 1, to = 15, by = 2)
+```
+
+```{r}
+# comparison of vectors
+my_vec <- c(1, 2, pi, 0, 4)
+
+any(my_vec == pi)
+
+all(my_vec == 1)
+
+my_second_vec <- c(1, 2, 3, 4, pi, NA)
+# don't get confused if there is an NA, any() and all() works the same way
+any(my_second_vec == pi)
+
+all(my_second_vec == 4)
+```
+
+```{r}
+my_vec <- c(1, 2, pi, 0, 4)
+
+my_vec[0] # this prints numeric(0), as the indexing in R starts from 1, not 0 like other programming languages. Remember that this does not produce an error
+
+my_vec[1] # prints the first element
+
+my_vec[my_vec < 3]
+```
+
+*Reading Tabular Data Files*
+```{r}
+my_table <- read.table("D:\\Programming Languages\\R\\Data Set\\sample_tabular_data.txt", stringsAsFactors = FALSE, header = TRUE)
+print(my_table)
+
+class(my_table$Firstname)
+```
+
+*Reading from a CSV file*
+```{r}
+my_data <- read.csv("D:\\Programming Languages\\R\\Data Set\\sample_csv_datafile.txt", header = TRUE)
+
+print(my_data)
+
+str(my_data)
+```
+
+```{r}
+mat1 <- matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
+mat1
+
+mat2 <- matrix(1:6, 
+               nrow = 2, 
+               ncol = 3, 
+               byrow = TRUE, 
+               dimnames = list(c("r1", "r2"), 
+                               c("c1", "c2", "c3")))
+mat2
+```
+

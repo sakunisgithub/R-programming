@@ -1,0 +1,77 @@
+---
+title: "Histogram"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r}
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange")
+```
+
+```{r}
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = 10)
+# when breaks is a number, it denotes the number of classes, i.e. the number of vertical cells in the diagram
+```
+
+```{r}
+# range(mtcars$mpg)
+breaks_vector <- seq(from = 10, to = 34, by = 3)
+
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = breaks_vector)
+
+# when breaks is a vector, it gives the breakpoints between the histogram cells
+```
+
+```{r}
+breaks_vector <- seq(from = 10, to = 34, by = 3)
+
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = breaks_vector,
+     xaxp = c(10, 34, 8))
+# xaxp = c(10, 34, 8) displays 8 equidistant breakpoints in the histogram, starting from 10 up to 34
+
+# xaxt argument and axis function can also be used here
+```
+
+```{r}
+# histogram with frequency density
+
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequency Densities",
+     col = "orange",
+     probability = TRUE)
+```
+
+
+```{r}
+hist(quakes$mag, probability = TRUE)
+lines(density(quakes$mag))
+```
+
+
+```{r}
+# discrete histogram
+
+plot(table(airquality$Temp), 
+     type = "h", 
+     lwd = 5,
+     xlab = "Temperatures",
+     ylab = "Frequencies",
+     main = "Histogram of the Temperatures",
+     col = "blue")
+```

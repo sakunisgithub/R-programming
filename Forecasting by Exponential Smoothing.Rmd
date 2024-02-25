@@ -1,0 +1,118 @@
+---
+title: "Forecasting by Exponential Smoothing"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+```{r, echo = F}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=80),tidy=TRUE)
+```
+
+```{r}
+our_data <- c(100, 110, 120, 115, 125, 135, 130, 140, 145, 150, 155, 160)
+
+print(length(our_data))
+
+print(our_data)
+```
+
+```{r}
+test_values_of_alpha <- seq(from = 0, to = 1, by = 0.15)
+
+test_values_of_alpha <- test_values_of_alpha[-1]
+
+print(length(test_values_of_alpha))
+
+print(test_values_of_alpha)
+```
+
+```{r}
+estimates <- c()
+
+for (i in 1:length(test_values_of_alpha)){
+  
+  alpha <- test_values_of_alpha[i]
+  
+  estimates <- append(estimates, our_data[1], after = length(estimates))
+  
+  for (j in 2:length(our_data)) {
+  
+    next_estimate <- alpha * our_data[j-1] + (1 - alpha) * estimates[length(estimates)]
+    
+    estimates <- append(estimates, next_estimate, after = length(estimates))
+    
+  }
+}
+```
+
+
+```{r}
+estimated_values <- matrix(data = estimates, ncol = length(test_values_of_alpha), nrow = 12, byrow = FALSE)
+
+print(estimated_values)
+```
+
+```{r}
+error_matrix <- matrix(data = 0, nrow = 12, ncol = length(test_values_of_alpha), byrow = TRUE)
+
+for (i in 1:length(test_values_of_alpha)) {
+
+  for (j in 1:12) {
+    error_matrix[j, i] <- (estimated_values[j, i] - our_data[j])^2
+  }
+}
+
+error_matrix <- round(error_matrix, digits = 4)
+
+print(error_matrix)
+```
+
+```{r}
+sum_of_errors <- c()
+
+for (i in 1:length(test_values_of_alpha)) {
+  temp <- sum(error_matrix[,i])
+  
+  sum_of_errors <- append(sum_of_errors, temp, after = length(sum_of_errors))
+}
+
+print(sum_of_errors)
+
+print(min(sum_of_errors))
+
+sprintf("best value for alpha is %.2f", test_values_of_alpha[which.min(sum_of_errors)])
+```
+
+```{r}
+alpha = 0.9
+
+final_estimates <- c()
+
+final_estimates <- append(final_estimates, our_data[1], after = length(final_estimates))
+
+for (i in 2:12) {
+  
+  new_value <- alpha * our_data[i-1] + (1 - alpha) * final_estimates[length(final_estimates)]
+  
+  final_estimates <- append(final_estimates, new_value, after = length(final_estimates))
+}
+
+final_estimates <- data.frame("Months" = month.name, "Estimates" =  final_estimates)
+
+print(final_estimates)
+```
+
+```{r}
+
+alpha = 0.9
+
+prediction <- alpha * 160 + (1 - alpha) * 154.4440
+
+prediction
+```
+

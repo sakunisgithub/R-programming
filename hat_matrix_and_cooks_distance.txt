@@ -1,0 +1,7 @@
+#we don't need the complete hat matrix, we only need the diagonal values
+y <- 1:10
+x <- 11:20
+a <- lm(y ~ x)
+hatvalues(a) #diagonal values of the hat matrix
+lm.influence(a)$hat #diagonal values of the hat matrix
+cooks.distance(a)

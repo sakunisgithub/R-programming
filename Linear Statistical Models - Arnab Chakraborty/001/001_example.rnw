@@ -1,0 +1,106 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{001 example}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Getting estimates by lm()}
+
+<<>>=
+X <- matrix(data = c(3, 4, 2, 4, 1, 3), nrow = 3, ncol = 2, byrow = FALSE)
+
+X
+@
+
+<<>>=
+y <- c(9.8, 9.1, 7.0)
+
+y
+@
+
+<<>>=
+lm(y ~ X-1)
+@
+
+$\bullet$ see video 5 to know why X-1
+
+<<>>=
+model.matrix(lm(y ~ X-1))
+@
+
+
+\newpage
+
+
+\section*{Getting estimates by solving normal equations}
+
+<<>>=
+M <- t(X) %*% X
+
+M
+@
+
+<<>>=
+N <- t(X) %*% y
+
+N
+@
+
+<<>>=
+solve(M, N)
+@
+
+Compare the estimates by these two methods. See that they are almost same. \\
+
+$lm()$ function is more stable than the other method. \\
+
+Let us have a case where the matrix X is singular. \\
+
+<<>>=
+X = matrix(data = rep(c(3, 4, 2), 2), nrow = 3, ncol = 2, byrow = FALSE)
+
+X
+@
+
+<<>>=
+M <- t(X) %*% X
+
+M
+@
+
+<<>>=
+N <- t(X) %*% y
+
+N
+@
+
+<<>>=
+solve(M, N)
+@
+
+$\bullet$ This will throw an error as X is singular.
+
+<<>>=
+lm(y ~ X-1)
+@
+
+But lm() function does not throw error and gives estimates. \\
+
+NA implies the system has infinitely many solutions. \\
+
+lm() reports one particular solution. \\
+
+lm() has solved coefficient of X1 i.e. the first column of X by arbitrarily setting coefficient of X2 to 0. \\
+
+So lm() is preferable.
+
+\end{document}

@@ -1,0 +1,154 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{One-way ANOVA - Fixed Effects Model}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy=TRUE, tidy.opts=list(width.cutoff=50))
+@
+
+<<>>=
+life_hours <- read.csv("D:\\data_sets\\life_hours_of_bulbs_data.csv", stringsAsFactors = TRUE)
+@
+
+<<>>=
+life_hours
+@
+
+<<>>=
+dim(life_hours)
+@
+
+<<>>=
+names(life_hours)
+@
+
+<<>>=
+head(life_hours)
+@
+
+<<>>=
+tail(life_hours)
+@
+
+
+<<>>=
+summary(life_hours)
+@
+
+\newpage
+
+<<>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+life_hours %>%
+  ggplot(aes(x = batch, y = life_of_bulb)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#21F731") +
+  labs(x = "Batch", y = "Life-hours of Bulb", title = "Life-hours of Bulbs vs Batches")
+@
+
+
+\newpage
+
+$\bullet$ \textbf{Testing Normality of Our Sample}
+
+<<>>=
+life_hours %>%
+  ggplot(aes(sample = life_of_bulb)) +
+  geom_qq(size = 2, col = "blue") +
+  geom_qq_line(col = "red", linewidth = 1) +
+  labs(x = "Theoretical Quantiles", y = "Sample Quantiles", title = "Normal Q-Q Plot")
+@
+
+We see that the line is a good fit. Hence, we conclude the sample is from a normal population.
+
+
+\newpage
+
+$\bullet$ \textbf{Testing Equality of Several Population Variances (Homogenity)}
+
+<<>>=
+homo_test <- bartlett.test(life_of_bulb ~ batch, data = life_hours)
+homo_test
+@
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.5]{bartlett's_test}\\
+\end{figure}
+	
+<<>>=
+homo_test$p.value
+@
+
+See that the p-value is much higher than $\alpha = 0.05$, so we fail to reject the null hypothesis and conclude that our homoscedastic assumption is true.
+
+\newpage
+
+<<>>=
+fit1 <- lm(life_of_bulb ~ batch, data = life_hours)
+summary(fit1)
+@
+
+<<>>=
+model.matrix(fit1)
+@
+
+<<>>=
+fit1$rank
+@
+
+As the rank of the model matrix is 4, only 4 parameters have been estimated. \textit{batchA} or $\alpha_1$ has been forced 0.
+
+\newpage
+
+<<>>=
+life_hours_anova <- aov(life_of_bulb ~ batch, data = life_hours)
+summary(life_hours_anova)
+@
+
+See that, p-value corresponding to the test of equality of batch means is 0.123 which is much higher than $\alpha = 0.05$. So, we conclude that there is no significant difference between the batch means.
+
+
+\newpage
+
+$\bullet$ \textbf{Pairwise Comparison}(although not necessary here)
+<<>>=
+TukeyHSD(life_hours_anova)
+@
+
+See that, all the p-values are greater than 0.05, implying that no two of the batch means differ significantly.
+
+\newpage
+
+<<>>=
+df1 <- data.frame(batch = life_hours$batch, residuals = fit1$residuals)
+@
+
+<<>>=
+df1 %>%
+  ggplot(aes(x = batch, y = residuals)) +
+  geom_hline(yintercept = 0, col = "#FB2209", linewidth = 1) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#F10BCB") +
+  labs(x = "Sample", y = "Residuals", title = "Residual Plot")
+@
+
+
+\end{document}

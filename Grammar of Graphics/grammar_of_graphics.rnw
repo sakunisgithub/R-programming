@@ -1,0 +1,281 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{Grammar of Graphics}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=50),tidy=TRUE)
+@
+
+When we talk about \textbf{Grammar of Graphics}, we talk about defining some parameters of a given data visualization.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.15]{figure_1}
+\end{figure}
+
+<<>>=
+# install.packages("tidyverse")
+
+library(tidyverse)
+@
+
+The function \textbf{data()} gives list of all data sets that are in-built in R.
+<<>>=
+data()
+@
+
+We shall use \textbf{BOD} data set.
+<<>>=
+#?BOD
+@
+
+<<>>=
+BOD
+@
+
+\newpage
+
+<<>>=
+ggplot(data = BOD, mapping = aes(x = Time, y = demand)) +
+  geom_point(size = 5, colour = "red") +
+  geom_line(color = "blue")
+@
+
+Now we shall use \textbf{CO2} data set.
+
+<<>>=
+view(CO2)
+@
+
+<<>>=
+#?CO2
+@
+
+<<>>=
+names(CO2)
+@
+
+\textbf{\%$>$\%} is an operator in this context; often called pipe operator. The operand to its left is piped into as the first argument of the function ggplot(), which is to its right.
+
+\newpage
+
+<<>>=
+CO2 %>%
+  ggplot(aes(x = conc, y = uptake, colour = Treatment)) +
+  geom_point()
+@
+
+\newpage
+
+<<>>=
+CO2 %>%
+  ggplot(aes(x = conc, y = uptake, color = Treatment)) +
+  geom_point() +
+  labs(title = "Concentartion of CO2") +
+  theme_bw()
+@
+
+\newpage
+
+<<>>=
+CO2 %>%
+  ggplot(aes(x = Treatment, y = uptake)) +
+  geom_boxplot() +
+  geom_point(aes(size = conc, color = Plant), alpha = 0.5) +
+  labs(title = "Chilled vs Non-chilled") +
+  xlab("Treatment") +
+  ylab("Uptake")
+@
+
+The argument \textit{alpha} stands for opacity. \\
+
+The aesthetics of \textit{geom\_point()} will not influence others. But the aesthetics of \textit{ggplot()} will influence all others.
+
+\newpage
+
+<<>>=
+CO2 %>%
+  ggplot(aes(x = Treatment, y = uptake)) + 
+  geom_boxplot() +
+  geom_point(aes(size = conc, color = Plant), alpha = 0.5) +
+  coord_flip()
+@
+
+Now we shall use \textbf{msleep} data set.
+<<>>=
+#?msleep
+@
+
+<<>>=
+names(msleep)
+@
+
+<<>>=
+view(msleep)
+@
+
+\section*{Barplot}
+
+<<>>=
+msleep %>%
+  drop_na(vore) %>%
+  ggplot(aes(x = vore)) +
+  geom_bar(fill = "#0A96F7", color = "black", linewidth = 1) +
+  labs(x = "Vore", y = "Frequency", title = "Barplot of different vores")
+@
+
+\textbf{drop\_na(vore)} drops the \textit{NA} values from the variable \textit{vore} and pipes the filtered data set to ggplot.
+
+\newpage
+
+<<>>=
+msleep %>%
+  drop_na(vore) %>%
+  ggplot(aes(x = vore)) +
+  geom_bar(fill = "#BE0AF7", color = "black", linewidth = 1) +
+  coord_flip() +
+  labs(x = "Vore", y = "Frequency", title = "Barplot of different vores")
+@
+
+\newpage
+
+<<>>=
+msleep %>%
+  drop_na(vore) %>%
+  ggplot(aes(x = fct_infreq(vore))) +
+  geom_bar(fill = "#FB069E", color = "black", linewidth = 1) +
+  labs(x = "Vore", y = "Frequency", title = "Barplot of different vores")
+@
+
+\newpage
+
+<<>>=
+random_binomial_numbers <- rbinom(n = 20000, size = 10, prob = 0.5)
+
+random_binomial_numbers <- data.frame(random_binomial_numbers)
+
+ggplot(random_binomial_numbers, aes(x = random_binomial_numbers)) +
+  geom_bar(fill = "#FB8C06", color = "black", linewidth = 1) +
+  labs(x = "Numbers", y = "Frequency", title = "Barplot of Binomial(10, 0.5)")
+@
+
+\newpage
+
+<<>>=
+random_poisson_numbers <- rpois(n = 20000, lambda = 2)
+
+random_poisson_numbers <- data.frame(random_poisson_numbers)
+
+ggplot(random_poisson_numbers, aes(x = random_poisson_numbers)) +
+  geom_bar(fill = "#FB8C06", color = "black", linewidth = 1) +
+  labs(x = "Numbers", y = "Frequency", title = "Barplot of Poisson(2)")
+@
+
+\newpage
+
+\section*{Histogram}
+
+<<>>=
+random_normal_numbers <- rnorm(n = 20000, mean = 0, sd = 1)
+
+random_normal_numbers <- data.frame(random_normal_numbers)
+
+random_normal_numbers %>%
+  ggplot(aes(x = random_normal_numbers)) +
+  geom_histogram(binwidth = 0.35, fill = "#0FD8F0", color = "black", linewidth = 1) +
+  labs(x = "Numbers", y = "Frequency", title = "Histogram of N(0, 1)")
+@
+
+$\bullet$ Observe that, the parameter \textbf{binwidth} controls the number of bins in the histogram. The bigger the binwidth, the less the number of bins and vice versa.
+
+Now we shall use \textbf{iris} data set.
+
+<<>>=
+View(iris)
+@
+
+<<>>=
+names(iris)
+@
+
+\newpage
+
+<<>>=
+iris %>%
+  ggplot(aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_point() +
+  labs(x = "Sepal Length", y = "Petal Length", title = "Sepal Length vs Petal Length")
+@
+
+\newpage
+
+<<>>=
+iris %>%
+  filter(Species == "versicolor") %>%
+  ggplot(aes(x = Sepal.Length, y = Petal.Length)) +
+  geom_point(col = "#0FF020") +
+  labs(x = "Sepal Length", y = "Petal Length", title = "Sepal Length vs Petal Length of Versicolor")
+@
+
+\newpage
+
+<<>>=
+iris %>%
+  ggplot(aes(x = Sepal.Width, y = Petal.Width, color = Species)) +
+  geom_point() +
+  labs(x = "Sepal Width", y = "Petal Width", title = "Sepal Width vs Petal Width")
+@
+
+\newpage
+
+<<>>=
+deepak_ntr_data <- read.csv("DEEPAKNTR-21-09-2023-to-02-10-2023.csv")
+@
+
+<<>>=
+names(deepak_ntr_data)
+@
+
+<<>>=
+str(deepak_ntr_data)
+@
+
+
+<<>>=
+sapply(deepak_ntr_data, class)
+@
+
+We see that the class of \textit{Date} is \textit{chr}. We shall change it.
+
+<<>>=
+deepak_ntr_data$Date <- as.POSIXct(deepak_ntr_data$Date)
+@
+
+We want to do a line graph of the closing price. The most recent observation is at first in the data set.
+
+\newpage
+
+<<>>=
+deepak_ntr_data %>%
+  ggplot(aes(x = rev(Date), y = rev(close))) + 
+  geom_point() +
+  geom_line() +
+  geom_ribbon(aes(ymin = min(close) - 10, ymax = rev(close)), fill = "#EE6573") +
+  labs(x = "Date", y = "Closing Price", title = "Closing Price of D-NTR - 21-29 Sep")
+@
+
+
+
+\end{document}

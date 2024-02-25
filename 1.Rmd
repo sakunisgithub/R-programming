@@ -1,0 +1,292 @@
+---
+title: "R-Programming For Statistics"
+author: "Anirban Maity, M.Sc (Statistics), University of Kalyani"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    highlight: tango
+    theme: journal
+    number_sections: yes
+---
+
+**Basics of R**
+
+*Recipe - 1: Creating vectors*
+```{r}
+# Creating vectors
+a = c(12, 10, "ANIRBAN", 12.56)
+paste("The vectors are")
+# print(a)
+a
+```
+
+*Recipe-2: Creating List*
+```{r}
+# Print list of Strings i.e., list of names
+list_1 = list("Anirban", "Tapomoyee", "Ankan", "Debarati", "Subhadeep", "Neha")
+list_1
+
+# Print list of Ages
+list_2 = list(22,22,23,24,23,25)
+list_2
+```
+
+*Recipe-3: Creating Matrix*
+```{r}
+num = c(1,2,3,4,5,6,7,8,9)
+mat = matrix(num, nrow = 3, ncol = 3, byrow = TRUE)
+mat
+```
+
+*Recipe-4: Creating Array*
+```{r}
+# Creating two matrix each of order 2x3
+Array = array(1:12, dim = c(2,3,2))
+Array
+```
+
+*Recipe-5: Choosing Specific element from creating vector*
+```{r}
+a = c(12, 10, "ANIRBAN", 12.56)
+# Choosing 3rd element from the vector
+a[3]
+```
+
+*Recipe-6: Choosing Specific element from list*
+```{r}
+list_1 = list("Anirban", "Tapomoyee", "Ankan", "Debarati", "Subhadeep", "Neha")
+# Choosing 2nd element from the creating list
+list_1[[2]]
+```
+
+*Recipe-7: Choosing Specific element from matrix*
+```{r}
+num = c(1,2,3,4,5,6,7,8,9)
+mat = matrix(num, nrow = 3, ncol = 3, byrow = TRUE)
+mat
+
+# Selecting 2nd and 3rd Column
+mat[,c(2,3), drop = FALSE]
+
+# Selecting 2nd and 3rd row 
+mat[c(2,3),,drop = FALSE]
+
+# Selecting element 5,6,8,9 from the matrix
+mat[c(2,3),c(2,3)]
+```
+
+*Recipe-8: Choosing Elements from Array*
+```{r}
+Array = array(1:12, dim = c(2,3,2))
+Array
+# Selecting 1st row from the 2nd matrix
+Array[1,,2]
+
+# Selecting 2nd column from 2nd matrix
+Array[,2,2]
+
+# Selecting 1st, 3rd column from 1st matrix
+Array[, c(1,3), 1]
+```
+
+*Recipe-8: Creating Dataframe*
+```{r}
+Name = c("Anirban", "Tapomoyee", "Ankan", "Debarati", "Subhadeep", "Neha")
+Age = c(22,22,23,24,23,25)
+Sex = c("M", "F", "M", "F", "M", "F")
+frame = data.frame(Name, Age, Sex)
+frame
+knitr::kable(frame)
+```
+*Recip-9: Selecting Age column from the created dataframe*
+```{r}
+Age_data = frame$Age
+Age_data
+```
+
+*Recipe-10: Selecting 2nd row from the dataframe*
+```{r}
+frame[2,]
+```
+
+*Recipe-11: Subsetting from data frame using subset() function*
+```{r}
+# Selecting only female Category data from the above created data frame
+female_data = subset(frame, Sex == "F")
+female_data
+
+#Selecting only female category data whose age greater than 22
+female_data_age = subset(frame, c(Sex == "F" & Age>22))
+female_data_age
+```
+
+*Recipe-12: Inserting an element in the creating vector, list*
+```{r}
+# Inserting another name in the created vector after 3rd position
+a = c(12, 10, "ANIRBAN", 12.56)
+append(a, "Tapomoyee", after = 3)
+
+# Inserting new name Nilanjana in the list_1, after 5th position
+list_1 = list("Anirban", "Tapomoyee", "Ankan", "Debarati", "Subhadeep", "Neha")
+append(list_1, "Nilanjana", after = 5)
+
+# Inserting new number in the list_2, after 5th position
+list_2 = list(22,22,23,24,23,25)
+append(list_2, 22, after = 5)
+```
+
+**Decision control Structure**
+
+*Q1. Program to find wheather you are eligible for vote or not*
+```{r}
+name = readline(prompt = "Enter Your Name: ")
+Age = readline(prompt = "Enter Your Age: ")
+if(Age>=18)
+{
+  print("You are eligible for vote")
+} else
+{
+  print("You are not eligible for vote")
+}
+```
+
+**Loop Structure**
+
+*Q1. Program to print 1st 10 natural numbers using While loop*
+```{r}
+i = 1 # initialization
+while(i<=10) # Condition
+{
+  print(i) # Instruction to do
+  i = i + 1 # Update information
+}
+```
+
+*Q2. Program to print sum of 1st 10 natural numbers using While loop*
+```{r}
+i = 0 # initialization-1
+s = 0 # Initialization-2
+while(i<=10) # Condition 
+{
+  s = s + i # Instruction
+  i = i + 1 # Update information
+}
+paste("The sum of 1st 10 natural numbers is ", s)
+```
+
+*Q3. Program to print sum of numbers between m and n using While loop*
+
+```{r}
+m = as.numeric(readline(prompt = "Enter the value of m = "))
+n = as.numeric(readline(prompt = "Enter the value of n = "))
+s = 0
+while(m<=n)
+{
+  s = s + m
+  m = m + 1
+}
+paste("The sum of the numbers is = ", s)
+```
+
+*Q4. Program to print 1st 10 natural numbers using for loop*
+```{r}
+for(i in 1:10)
+{
+  print(i)
+  i = i + 1
+}
+```
+
+*Q5. Program to print sum of 1st 10 natural numbers using for loop*
+```{r}
+s = 0
+for(i in 1:10)
+{
+  s = s + i
+  i = i + 1
+}
+paste("The sum of 1st 10 natural numbers = ", s)
+```
+
+*Q6. Program to print sum of numbers between m and n using for loop*
+```{r}
+m = as.numeric(readline(prompt = "Enter the value of m = "))
+n = as.numeric(readline(prompt = "Enter the value of n = "))
+s = 0
+for(i in m:n)
+{
+  s = s + m
+  m = m + 1
+}
+paste("The sum of numbers = ", s)
+```
+*Q7. Program to print sum of arbitrary input numbers*
+```{r}
+num = scan()
+s = 0
+for(i in 1: length(num))
+{
+  s = s + num[i]
+  i = i + 1
+}
+paste("The sum of the numbers = ", s)
+```
+
+*Q8. Program to create a data frame*
+```{r}
+library(magicfor) # magicfor library used to find out the result from the loop structure. this library has various functions which are used to magicalize the for loop
+magic_for(silent = TRUE)
+num1 = scan()
+x = num1
+num2 = scan()
+f = num2
+
+for(j in 1:length(x))
+{
+  prod_val = x[j]*f[j]
+  i = i + 1
+  put(prod_val)
+}
+xf = magic_result_as_vector()
+w = 0
+for(i in 1:length(f))
+{
+  w = w + f[i]
+  i = i + 1
+  put(w)
+}
+F = magic_result_as_vector()
+frame1 = data.frame(x, f, F, xf)
+colnames(frame1)<- c("Values(x)", "Frequency(f)", "Cumulative Frequecy(< type)", "xf")
+knitr::kable(frame1)
+```
+
+```{r}
+frame1
+```
+
+*Q9. Program to print odd position number*
+```{r}
+num = c(10,12,14,13,15,25,28,23,26,24,27)
+for(i in 1:length(num))
+{
+  if(i%%2!=0)
+  {
+    print(num[i])
+  }
+}
+```
+
+
+
+```{r}
+mat = matrix(c(1,2,3,4), 2, 2, byrow = TRUE)
+mat
+```
+
+```{r}
+mat[,1]
+mat[,1, drop = FALSE]
+```
+

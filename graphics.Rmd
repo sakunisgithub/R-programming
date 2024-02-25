@@ -1,0 +1,84 @@
+---
+title: "graphics"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# plotting vectors
+x <- -3:3
+y <- x^2
+
+plot(x, y)
+```
+
+```{r}
+plot(x,y, type = "n") # plots without displaying the points
+grid() # makes grid
+points(x, y) # displays the points
+```
+
+```{r}
+# plotting dataframe
+plot(cars)
+```
+
+```{r}
+# adding labels
+
+# method 1
+plot(cars, 
+     main = "Cars - Speed vs Stopping Distance",
+     xlab = "Speed (MpH)",
+     ylab = "Stopping Distance (ft)")
+```
+
+```{r}
+plot(cars,
+     main = "Cars - Speed vs Stopping Distance",
+     xlab = "Speed (MpH)",
+     ylab = "Stopping Distance (ft)",
+     type = "n")
+
+grid()
+
+points(cars$speed, cars$dist) # or simply points(cars)
+```
+
+```{r}
+with(cars, plot(cars$speed, cars$dist))
+```
+
+```{r}
+with(iris, plot(Petal.Length, Petal.Width))
+```
+
+```{r}
+with(iris, plot(Petal.Length, Petal.Width, pch = as.integer(Species)))
+```
+
+```{r}
+with(iris, plot(Petal.Length, Petal.Width, pch = as.integer(Species)))
+
+legend(1.5, 2.4, c("setosa","versicolor","virginica"), pch=1:3)
+```
+
+```{r}
+x <- c(64, 60, 67, 59, 69)
+y <- c(57, 60, 73, 62, 68)
+
+m <- lm(y ~ x)
+
+plot(y ~ x)
+
+abline(m)
+
+m$coefficients
+```
+
+
+```{r}
+plot(iris[,1:4])
+```
+

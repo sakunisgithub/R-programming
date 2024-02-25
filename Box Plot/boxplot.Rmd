@@ -1,0 +1,33 @@
+---
+title: "boxplot"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+quakes
+summary(quakes)
+sapply(quakes, class)
+```
+
+```{r}
+boxplot(quakes$mag,
+        main = "Boxplot of Magnitudes of 1000 Earthquakes",
+        ylab = "Magnitudes",
+        col = "orange")
+```
+
+
+
+```{r}
+# boxplots of the numeric variable broken out by factor levels
+# here numeric variable is temperature and factor levels are month
+
+boxplot(airquality$Temp ~ airquality$Month,
+        main = "Temperature in the Months",
+        xlab = "Months",
+        ylab = "Temperature (degrees F)",
+        col = c("red", "yellow", "blue", "orange", "green"))
+```
+

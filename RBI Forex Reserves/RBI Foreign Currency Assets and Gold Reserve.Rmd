@@ -1,0 +1,63 @@
+---
+title: "RBI Foreign Currency Assets & Gold Reserve"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(readxl)
+#choose Foreign Currency Assets and Gold Reserve of RBI (FY 2001-02 to FY 2022-23 Sept 30)
+foreign_exchange_reserve <- read_excel(file.choose())
+knitr::kable(foreign_exchange_reserve)
+```
+
+```{r}
+plot(x = foreign_exchange_reserve$Date,
+     y = foreign_exchange_reserve$`FCA in US Million $`,
+     xlab = "Year",
+     ylab = "Foreign Currency Assets in US $ (in Million)",
+     main = "Foreign Currency Assets of RBI from FY 2001-02 to 2022-23 Sept 30",
+     type = "l",
+     col = "red",
+     lwd = 2)
+```
+
+```{r}
+plot(x = foreign_exchange_reserve$Date,
+     y = foreign_exchange_reserve$`Gold in US Million $`,
+     xlab = "Year",
+     ylab = "Value of Gold Reserve in US $ (in Million)",
+     main = "Gold Reserve of RBI from FY 2001-02 to 2022-23 Sept 30",
+     type = "l",
+     col = "blue",
+     lwd = 2)
+```
+
+```{r}
+# choose Foreign Currency Assets and Gold Reserve of RBI (FY 2019-20 to FY 2022-23 Sept 30)
+foreign_exchange_reserve_from_fy_2019_20 <- read_excel(file.choose())
+knitr::kable(foreign_exchange_reserve_from_fy_2019_20)
+```
+
+```{r}
+plot(x = foreign_exchange_reserve_from_fy_2019_20$Date,
+     y = foreign_exchange_reserve_from_fy_2019_20$`FCA in US Million $`,
+     xlab = "Year",
+     ylab = "Foreign Currency Asstes in US $ (in Million)",
+     main = "Foreign Currency Assets of RBI from FY 2019-20 to 2022-23 Sept 30",
+     type = "l",
+     col = "red",
+     lwd = 2)
+```
+
+```{r}
+plot(x = foreign_exchange_reserve_from_fy_2019_20$Date,
+     y = foreign_exchange_reserve_from_fy_2019_20$`Gold in US Million $`,
+     xlab = "Year",
+     ylab = "Value of Gold Reserve in US $ (in Million)",
+     main = "Gold Reserve of RBI from FY 2019-20 to 2022-23 Sept 30",
+     type = "l",
+     col = "blue",
+     lwd = 2)
+```

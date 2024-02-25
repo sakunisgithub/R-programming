@@ -1,0 +1,88 @@
+---
+title: "barplot"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+barplot(1:5)
+```
+
+```{r}
+heights <- c(4, 3, 5, 1, 2)
+barplot(heights)
+```
+
+```{r}
+heights <- c(4, 3, 5, 1, 2)
+barplot(heights,
+        main = "BARPLOT",
+        xlab = "Variables",
+        ylab = "Frequencies",
+        col = c("Blue", "Green", "Orange", "Red", "Yellow"))
+```
+
+```{r}
+# we want to plot the average temperature of the months from the airquality dataset
+
+# we need to use the tapply function, to calculate the average of the temperatures associated to same factor - month
+
+# we are using the tapply function to calculate the average temperature of the months
+
+heights <- tapply(airquality$Temp, airquality$Month, mean)
+
+barplot(heights,
+        main = "Average Temperature of the Months",
+        xlab = "Months",
+        ylab = "Temp (degrees F)",
+        names.arg = c("May", "Jun", "Jul", "Aug", "Sep"))
+```
+
+```{r}
+heights <- tapply(airquality$Temp, airquality$Month, mean)
+
+rank(heights)
+# the rank() function gives rank to the (numeric)elements of the argument vector....the more the numerical value...the higher the rank gets
+```
+
+```{r}
+heights <- tapply(airquality$Temp, airquality$Month, mean)
+
+# shading the bars according to their heights(monochrome shades)
+# we need to calculate the relative heights 
+
+# method 1 to calculate relative heights
+relative_heights <- rank(heights) / length(heights)
+
+# method 2 to calculate relative heights
+# relative_heights <- (heights - min(heights)) / (max(heights) - min(heights))
+
+# using the gray function for monochrome colors
+shades <- gray(1 - relative_heights) # to get the more tall the height, the more dark the color
+
+barplot(height = heights,
+        main = "Average Temperature of the Months",
+        xlab = "Months",
+        ylab = "Temperature (degrees F)",
+        names.arg = c("May", "Jun", "Jul", "Aug", "Sep"),
+        col = shades)
+```
+
+
+```{r}
+heights <- tapply(airquality$Temp, airquality$Month, mean)
+
+# coloring the bars 
+
+shades <- rainbow(length(heights))
+
+barplot(height = heights,
+        main = "Average Temperature of the Months",
+        xlab = "Months",
+        ylab = "Temperature (degrees F)",
+        names.arg = c("May", "Jun", "Jul", "Aug", "Sep"),
+        col = shades,
+        xpd = FALSE)
+```
+

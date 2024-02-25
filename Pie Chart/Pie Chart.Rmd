@@ -1,0 +1,63 @@
+---
+title: "Pie Chart"
+author: "Ananda Biswas"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+library(readxl)
+raw_data = read_excel(file.choose())
+print(raw_data)
+```
+
+```{r}
+str(raw_data)
+```
+
+```{r}
+data <- raw_data[,c("name of the party", "number of votes secured")]
+print(data)
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+slices <- c(data$`number of votes secured`)
+
+party_name <- c(data$`name of the party`)
+
+party_color <- c("green", "grey", "orange", "red", "pink", "blue", "yellow")
+
+pie(slices, main = "Vote Share of National Parties in GE 2019", col = party_color)
+
+legend("bottomright", 
+       legend = data$`name of the party`, 
+       fill = party_color, 
+       cex = 0.60,
+       bty = "n")
+# bty implies border-type
+```
+
+
+```{r}
+slice <- c(data$`number of votes secured`)
+
+party_names <- c("AITC", "BSP", "BJP", "CPI", "CPI(M)", "INC", "NCP")
+
+party_colors <- c("green", "grey", "orange", "red", "pink", "blue", "yellow")
+
+percentage <- round(slice/sum(slice)*100)
+
+lbs <- paste(party_names, percentage, "%", sep = " ")
+
+pie(slice, 
+    labels = lbs, 
+    main = "Vote Share of Different Political Parties in General Election 2019", 
+    clockwise = TRUE, # by default it is set to FALSE
+    col = party_colors)
+```

@@ -1,0 +1,76 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{Goodness of Fit by Pearsonian $\chi^2$}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
+@
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.5]{"question.png"}\\
+\end{figure}
+
+
+
+<<>>=
+df1 <- data.frame(face = 1:6, frequency = c(31, 52, 46, 40, 54, 77))
+@
+
+<<>>=
+df1
+@
+
+<<>>=
+test <- chisq.test(df1$frequency)
+@
+
+<<>>=
+test
+@
+
+<<>>=
+test$statistic
+@
+
+<<>>=
+test$parameter
+@
+
+
+<<>>=
+test$p.value
+@
+
+
+<<>>=
+test$method
+@
+
+
+<<>>=
+test$observed
+@
+
+<<>>=
+test$expected
+@
+
+
+<<>>=
+test$residuals
+@
+
+\end{document}
