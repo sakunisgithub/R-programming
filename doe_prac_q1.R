@@ -22,6 +22,8 @@ df1 <- chicks_data %>%
   group_by(feed) %>%
   summarise(row_totals = sum(gain_in_weight), row_means = mean(gain_in_weight), row_total_sq = row_totals^2, row_total_sq_by_ni = row_total_sq / 5)
 View(df1)
+sum(df1$row_total_sq)
+sum(df1$row_total_sq_by_ni)
 G <- sum(chicks_data$gain_in_weight)
 G
 CF <- G^2 / length(chicks_data$gain_in_weight)
