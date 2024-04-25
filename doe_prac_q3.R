@@ -1,4 +1,4 @@
-barley_grain_yield_data <- read.csv("D:\\data_sets\\doe_prac_q3_data.csv", stringsAsFactors = TRUE)
+barley_grain_yield_data <- read.csv("https://raw.githubusercontent.com/sakunisgithub/data_sets/master/doe_prac_q3_data.csv", stringsAsFactors = TRUE)
 View(barley_grain_yield_data)
 dim(barley_grain_yield_data)
 names(barley_grain_yield_data)
@@ -80,7 +80,7 @@ E3
 
 
 
-barley_grain_yield_data_part3 <- read.csv("D:\\data_sets\\doe_prac_q3_part3_data.csv", stringsAsFactors = TRUE)
+barley_grain_yield_data_part3 <- read.csv("https://raw.githubusercontent.com/sakunisgithub/data_sets/master/doe_prac_q3_part3_data.csv", stringsAsFactors = TRUE)
 View(barley_grain_yield_data_part3)
 summary(barley_grain_yield_data_part3)
 which(is.na(barley_grain_yield_data_part3$yield))
