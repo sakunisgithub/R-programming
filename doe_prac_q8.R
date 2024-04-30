@@ -1,4 +1,4 @@
-our_data <- read.csv("D:\\data_sets\\doe_prac_q8_data.csv", stringsAsFactors = TRUE)
+our_data <- read.csv("https://raw.githubusercontent.com/sakunisgithub/data_sets/master/doe_prac_q8_data.csv", stringsAsFactors = TRUE)
 View(our_data)
 dim(our_data)
 names(our_data)
