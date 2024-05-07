@@ -8,6 +8,16 @@ our_data$S_code <- as.factor(our_data$S_code)
 str(our_data)
 summary(our_data)
 
+our_data %>%
+  ggplot(aes(x = response, y = treatment_combination, color = treatment_combination)) +
+  geom_point(pch = 15, size = 3) +
+  theme(legend.position = "top")
+
+our_data %>%
+  ggplot(aes(x = response, y = block, color = block)) +
+  geom_point(pch = 15, size = 3) +
+  theme(legend.position = "top")
+
 two_sq_factorial_anova <- aov(response ~ block + factor_N * factor_S, data = our_data)
 summary(two_sq_factorial_anova)
 
