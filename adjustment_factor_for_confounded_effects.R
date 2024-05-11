@@ -16,8 +16,6 @@ adjustment_factor_for_confounded_effect <- function(data, confounded_effect, con
   
   l <- nchar(confounded_effect)
   
-  adjustment_factor <- c()
-  
   if(l %% 2 == 0) {
     return(T1 - T2)
   }
