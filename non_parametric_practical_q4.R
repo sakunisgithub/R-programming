@@ -24,7 +24,7 @@ sorted_absolute_deviations <- sort(absolute_deviations)
 ranks_of_uniques <- c()
 
 for (i in 1:length(unique(sorted_absolute_deviations))) {
-  ranks_of_uniques[i] <- mean(which(sorted_absolute_deviations == unique(sorted_absolute_deviations[i])))
+  ranks_of_uniques[i] <- mean(which(sorted_absolute_deviations == unique(sorted_absolute_deviations)[i]))
 }
 
 ranks <- c()
