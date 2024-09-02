@@ -1,0 +1,92 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{hyperref}
+
+\title{\textbf{MSMS 105 - Computing with R}}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+<<r, echo = F>>=
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
+@
+
+\section{Implicit Looping}
+
+\subsection{Vectorized Operations}
+
+<<>>=
+x <- 1:10
+x + 14
+x^2
+@
+
+\subsection{\textbf{\textit{apply} family of functions}}
+
+<<>>=
+head(iris)
+@
+
+\subsubsection{\textit{apply}} In \textit{apply}, the first argument is data; second argument is 1 or 2, 1 indicating rows and 2 indicating columns; the third argument is the function to be applied.
+<<>>=
+apply(iris[,1:4], 1, sum)
+@
+
+<<>>=
+apply(iris[,1:4], 2, sum)
+@
+
+<<>>=
+apply(iris[,1:4], 2, FUN = function(a){sum(a^2)}) # produces sum of square of all elements in a column
+@
+
+\subsubsection{\textit{lapply}} In \textit{lapply}, the first argument is a list (say $X$) and the second argument is a function. It returns a list of the same length of $X$, each element of which is the result of applying the function to the corresponding element of $X$. \\
+
+\textit{lapply} stands for ``list apply".
+
+<<>>=
+mat1 <- matrix(data = rbinom(14, 25, prob = 0.5))
+mat2 <- matrix(data = rbinom(24, 25, prob = 0.5))
+mat3 <- matrix(data = rbinom(34, 25, prob = 0.5))
+my_list <- list(mat1, mat2, mat3)
+
+lapply(my_list, FUN = sum)
+@
+
+<<>>=
+lapply(my_list, FUN = mean)
+
+unlist(lapply(my_list, FUN = mean))
+@
+
+\section{\textit{break} statement}
+
+<<>>=
+for (i in 1:10) {
+  ifelse(i == 6, break, print(i^2))
+  # exits the loop when i is equal to 6
+}
+@
+
+\section{\textit{next} statement}
+
+<<>>=
+for (i in 1:10) {
+  ifelse(i == 6, next, print(i^2))
+  # skips the printing job when i is equal to 6
+}
+@
+
+\end{document}
