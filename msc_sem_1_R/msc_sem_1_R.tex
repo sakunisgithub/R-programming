@@ -70,6 +70,38 @@
 
 
 
+\section{Basic Operations}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+\hldef{y} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{9}
+\hldef{x} \hlopt{+} \hldef{y}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in x + y: longer object length is not a multiple of shorter object length}}\begin{verbatim}
+##  [1]  2  4  6  8 10 12 14 16 18 11
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Here observe that, $x$ and $y$ are of different lengths; still R does the sum and produces a Warning but not an Error. The rule is the shorter one will adjust its length by cyclically repeating its elements. \\
+
+\hspace{1cm}The warning message says \textit{longer object length is not a multiple of shorter object length}. Be aware of the fact that, if two vectors are of different lengths, but length of the longer one is a perfect multiple of that of the shorter one, then R completes the operation by cyclical repetition and does not even generate a Warning. So one has to be CAUTIOUS in that case.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+\hldef{y} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{5}
+\hldef{x} \hlopt{+} \hldef{y}
+\end{alltt}
+\begin{verbatim}
+##  [1]  2  4  6  8 10  7  9 11 13 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 \section{Implicit Looping}
 
 \subsection{Vectorized Operations}
@@ -174,13 +206,13 @@
 \end{alltt}
 \begin{verbatim}
 ## [[1]]
-## [1] 178
+## [1] 183
 ## 
 ## [[2]]
-## [1] 305
+## [1] 319
 ## 
 ## [[3]]
-## [1] 398
+## [1] 420
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -192,19 +224,19 @@
 \end{alltt}
 \begin{verbatim}
 ## [[1]]
-## [1] 12.71429
+## [1] 13.07143
 ## 
 ## [[2]]
-## [1] 12.70833
+## [1] 13.29167
 ## 
 ## [[3]]
-## [1] 11.70588
+## [1] 12.35294
 \end{verbatim}
 \begin{alltt}
 \hlkwd{unlist}\hldef{(}\hlkwd{lapply}\hldef{(my_list,} \hlkwc{FUN} \hldef{= mean))}
 \end{alltt}
 \begin{verbatim}
-## [1] 12.71429 12.70833 11.70588
+## [1] 13.07143 13.29167 12.35294
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -249,6 +281,38 @@
 ## [1] 64
 ## [1] 81
 ## [1] 100
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\section{Explicit Looping by \textit{repeat}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+
+\hldef{i} \hlkwb{<-} \hlnum{1}
+
+\hlkwa{repeat} \hldef{\{}
+    \hlkwd{print}\hldef{(x[i]} \hlopt{+} \hlnum{5}\hldef{)}
+    \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+    \hlkwa{if} \hldef{(i} \hlopt{==} \hlkwd{length}\hldef{(x)} \hlopt{+} \hlnum{1}\hldef{) \{}
+        \hlkwa{break}
+    \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\begin{verbatim}
+## [1] 6
+## [1] 7
+## [1] 8
+## [1] 9
+## [1] 10
+## [1] 11
+## [1] 12
+## [1] 13
+## [1] 14
+## [1] 15
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
