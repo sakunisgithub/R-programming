@@ -23,6 +23,22 @@ library(knitr)
 opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 @
 
+\section{Basic Operations}
+<<>>=
+x <- 1:10
+y <- 1:9
+x + y
+@
+
+Here observe that, $x$ and $y$ are of different lengths; still R does the sum and produces a Warning but not an Error. The rule is the shorter one will adjust its length by cyclically repeating its elements. \\
+
+\hspace{1cm}The warning message says \textit{longer object length is not a multiple of shorter object length}. Be aware of the fact that, if two vectors are of different lengths, but length of the longer one is a perfect multiple of that of the shorter one, then R completes the operation by cyclical repetition and does not even generate a Warning. So one has to be CAUTIOUS in that case.
+<<>>=
+x <- 1:10
+y <- 1:5
+x + y
+@
+
 \section{Implicit Looping}
 
 \subsection{Vectorized Operations}
@@ -86,6 +102,22 @@ for (i in 1:10) {
 for (i in 1:10) {
   ifelse(i == 6, next, print(i^2))
   # skips the printing job when i is equal to 6
+}
+@
+
+\section{Explicit Looping by \textit{repeat}}
+
+<<>>=
+x <- 1:10
+
+i <- 1
+
+repeat{
+  print(x[i] + 5)
+  i <- i + 1
+  if(i == length(x) + 1){
+    break
+  }
 }
 @
 
