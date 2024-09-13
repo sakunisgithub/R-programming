@@ -1,0 +1,199 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\smallpencil \hspace{0.25cm} \textbf{Consider 1, 2, 3, \ldots, 100 as population observations. Take a sample of size 40 (without replacement) by \textit{sample()} function and compute mean, median, variance, mean absolute deviation about mean, median absolute deviation about median, skewness and kurtosis. Implement the functions on your own and use functions provided by R to verify results.}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Getting a sample}}
+
+<<size="footnotesize">>=
+my_sample <- sample(1:100, size = 40, replace = FALSE)
+my_sample
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Mean}} \\
+
+To compute mean, we add all the observations and divide the sum by number of observations i.e. $\bar{x} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_{i}$.
+
+<<size="footnotesize">>=
+my_mean_function <- function(x){
+  
+  sample_sum <- 0
+
+  for (i in 1:length(x)) {
+    sample_sum <- sample_sum + x[i]
+  }
+  
+  return(sample_sum / length(x))
+}
+@
+
+<<size="footnotesize">>=
+my_mean_function(my_sample); mean(my_sample)
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Median}} \\
+
+To compute median, we first sort the sample values and return the middle most value.
+<<size="footnotesize">>=
+my_median_function <- function(x){
+  
+  for (i in 1:(length(x)-1)) {
+    for (j in (i+1):length(x)) {
+
+      if(x[i] > x[j]){
+        x[c(i, j)] <- x[c(j, i)]
+      }
+    }
+  }
+  
+  if(length(x) %% 2 == 0){
+    return((x[length(x)/2] + x[length(x)/2 + 1]) / 2)
+  }
+  else{
+    return(x[(length(x) + 1) / 2])
+  }
+}
+@
+
+<<size="footnotesize">>=
+my_median_function(my_sample); median(my_sample)
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+\vspace{1cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Variance}} \\
+
+To compute variance, we get the squared deviations, their sum and then we divide the sum by $(n-1)$ i.e. $\dfrac{1}{n-1} \sum \limits_{i = 1}^{n} (x_{i} - \bar{x})^2$.
+<<size="footnotesize">>=
+my_sample_central_moments_function <- function(x, r){
+  temp <- 0
+
+  for (i in 1:length(x)) {
+    temp <- temp + (x[i] - my_mean_function(x))^r
+  }
+
+  return(temp / (length(x) - 1))
+}
+@
+
+<<size="footnotesize">>=
+my_sample_central_moments_function(my_sample, 2); var(my_sample)
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Mean Absolute Deviation about Mean}} \\
+
+We first obtain the deviations $(x_i - \bar{x}) \,\, \forall i$ and then we calculate their absolute values. Lastly we calculate their mean.
+
+<<size="footnotesize">>=
+deviations_about_mean <- my_sample - my_mean_function(my_sample)
+
+absolute_deviations_about_mean <- c()
+
+for (i in 1:length(deviations_about_mean)) {
+  if(deviations_about_mean[i] < 0){
+    absolute_deviations_about_mean[i] <- deviations_about_mean[i] * (-1)
+  }
+  else{
+    absolute_deviations_about_mean[i] <- deviations_about_mean[i]
+  }
+}
+@
+
+<<size="footnotesize">>=
+absolute_deviations_about_mean
+@
+
+<<size="footnotesize">>=
+my_mean_function(absolute_deviations_about_mean)
+@
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Median Absolute Deviation about Median}} \\
+
+We first obtain the deviations $(x_i - \widetilde{x}) \,\, \forall i$ and then we calculate their absolute values. Lastly we calculate their median.
+
+<<size="footnotesize">>=
+deviations_about_median <- my_sample - my_median_function(my_sample)
+
+absolute_deviations_about_median <- c()
+
+for (i in 1:length(deviations_about_median)) {
+  if(deviations_about_median[i] < 0){
+    absolute_deviations_about_median[i] <- deviations_about_median[i] * (-1)
+  }
+  else{
+    absolute_deviations_about_median[i] <- deviations_about_median[i]
+  }
+}
+@
+
+<<size="footnotesize">>=
+absolute_deviations_about_median
+@
+
+
+<<size="footnotesize">>=
+my_median_function(absolute_deviations_about_median)
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Skewness}} \\
+
+We compute $\dfrac{m_3}{m_2^\frac{3}{2}}$ where $m_2$ and $m_3$ are 2nd and 3rd order central moments respectively.
+<<size="footnotesize">>=
+my_skewness_function <- function(x){
+  return(my_sample_central_moments_function(x, 3) / my_sample_central_moments_function(x, 2)^(3/2))
+}
+@
+
+<<size="footnotesize">>=
+my_skewness_function(my_sample)
+@
+
+
+\vspace{2cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Kurtosis}} \\
+
+We compute $\dfrac{m_4}{m_2^2} - 3$ where $m_4$ is the 4th order central moment.
+<<size="footnotesize">>=
+my_kurtosis_function <- function(x){
+  return(my_sample_central_moments_function(x, 4) / my_sample_central_moments_function(x, 2)^2 - 3)
+}
+@
+
+<<size="footnotesize">>=
+my_kurtosis_function(my_sample)
+@
+
+
+
+\end{document}

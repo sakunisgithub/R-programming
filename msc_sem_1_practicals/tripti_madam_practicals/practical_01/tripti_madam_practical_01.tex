@@ -1,0 +1,356 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\smallpencil \hspace{0.25cm} \textbf{Consider 1, 2, 3, \ldots, 100 as population observations. Take a sample of size 40 (without replacement) by \textit{sample()} function and compute mean, median, variance, mean absolute deviation about mean, median absolute deviation about median, skewness and kurtosis. Implement the functions on your own and use functions provided by R to verify results.}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Getting a sample}}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_sample} \hlkwb{<-} \hlkwd{sample}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{100}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{40}\hldef{,} \hlkwc{replace} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hldef{my_sample}
+\end{alltt}
+\begin{verbatim}
+##  [1]  87  74  23  10 100  35  51  75  60  36  22   1  83   6  90  14  67  13  32
+## [20]  98  31  44  55  28  26   5  17  40  57  52  54  93  15  42  86  33  12  95
+## [39]  29  68
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Mean}} \\
+
+To compute mean, we add all the observations and divide the sum by number of observations i.e. $\bar{x} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_{i}$.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_mean_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+
+  \hldef{sample_sum} \hlkwb{<-} \hlnum{0}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(x)) \{}
+    \hldef{sample_sum} \hlkwb{<-} \hldef{sample_sum} \hlopt{+} \hldef{x[i]}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(sample_sum} \hlopt{/} \hlkwd{length}\hldef{(x))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_mean_function}\hldef{(my_sample);} \hlkwd{mean}\hldef{(my_sample)}
+\end{alltt}
+\begin{verbatim}
+## [1] 46.475
+## [1] 46.475
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faCheckCircle[regular] Results matched !! \\
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Median}} \\
+
+To compute median, we first sort the sample values and return the middle most value.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_median_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{(}\hlkwd{length}\hldef{(x)}\hlopt{-}\hlnum{1}\hldef{)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hldef{(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hlkwd{length}\hldef{(x)) \{}
+
+      \hlkwa{if}\hldef{(x[i]} \hlopt{>} \hldef{x[j])\{}
+        \hldef{x[}\hlkwd{c}\hldef{(i, j)]} \hlkwb{<-} \hldef{x[}\hlkwd{c}\hldef{(j, i)]}
+      \hldef{\}}
+    \hldef{\}}
+  \hldef{\}}
+
+  \hlkwa{if}\hldef{(}\hlkwd{length}\hldef{(x)} \hlopt{%%} \hlnum{2} \hlopt{==} \hlnum{0}\hldef{)\{}
+    \hlkwd{return}\hldef{((x[}\hlkwd{length}\hldef{(x)}\hlopt{/}\hlnum{2}\hldef{]} \hlopt{+} \hldef{x[}\hlkwd{length}\hldef{(x)}\hlopt{/}\hlnum{2} \hlopt{+} \hlnum{1}\hldef{])} \hlopt{/} \hlnum{2}\hldef{)}
+  \hldef{\}}
+  \hlkwa{else}\hldef{\{}
+    \hlkwd{return}\hldef{(x[(}\hlkwd{length}\hldef{(x)} \hlopt{+} \hlnum{1}\hldef{)} \hlopt{/} \hlnum{2}\hldef{])}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_median_function}\hldef{(my_sample);} \hlkwd{median}\hldef{(my_sample)}
+\end{alltt}
+\begin{verbatim}
+## [1] 41
+## [1] 41
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faCheckCircle[regular] Results matched !! \\
+
+\vspace{1cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Variance}} \\
+
+To compute variance, we get the squared deviations, their sum and then we divide the sum by $(n-1)$ i.e. $\dfrac{1}{n-1} \sum \limits_{i = 1}^{n} (x_{i} - \bar{x})^2$.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_sample_central_moments_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{r}\hldef{)\{}
+  \hldef{temp} \hlkwb{<-} \hlnum{0}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(x)) \{}
+    \hldef{temp} \hlkwb{<-} \hldef{temp} \hlopt{+} \hldef{(x[i]} \hlopt{-} \hlkwd{my_mean_function}\hldef{(x))}\hlopt{^}\hldef{r}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(temp} \hlopt{/} \hldef{(}\hlkwd{length}\hldef{(x)} \hlopt{-} \hlnum{1}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_sample_central_moments_function}\hldef{(my_sample,} \hlnum{2}\hldef{);} \hlkwd{var}\hldef{(my_sample)}
+\end{alltt}
+\begin{verbatim}
+## [1] 885.5891
+## [1] 885.5891
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faCheckCircle[regular] Results matched !! \\
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Mean Absolute Deviation about Mean}} \\
+
+We first obtain the deviations $(x_i - \bar{x}) \,\, \forall i$ and then we calculate their absolute values. Lastly we calculate their mean.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{deviations_about_mean} \hlkwb{<-} \hldef{my_sample} \hlopt{-} \hlkwd{my_mean_function}\hldef{(my_sample)}
+
+\hldef{absolute_deviations_about_mean} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(deviations_about_mean)) \{}
+  \hlkwa{if}\hldef{(deviations_about_mean[i]} \hlopt{<} \hlnum{0}\hldef{)\{}
+    \hldef{absolute_deviations_about_mean[i]} \hlkwb{<-} \hldef{deviations_about_mean[i]} \hlopt{*} \hldef{(}\hlopt{-}\hlnum{1}\hldef{)}
+  \hldef{\}}
+  \hlkwa{else}\hldef{\{}
+    \hldef{absolute_deviations_about_mean[i]} \hlkwb{<-} \hldef{deviations_about_mean[i]}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{absolute_deviations_about_mean}
+\end{alltt}
+\begin{verbatim}
+##  [1] 40.525 27.525 23.475 36.475 53.525 11.475  4.525 28.525 13.525 10.475
+## [11] 24.475 45.475 36.525 40.475 43.525 32.475 20.525 33.475 14.475 51.525
+## [21] 15.475  2.475  8.525 18.475 20.475 41.475 29.475  6.475 10.525  5.525
+## [31]  7.525 46.525 31.475  4.475 39.525 13.475 34.475 48.525 17.475 21.525
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_mean_function}\hldef{(absolute_deviations_about_mean)}
+\end{alltt}
+\begin{verbatim}
+## [1] 25.4225
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Median Absolute Deviation about Median}} \\
+
+We first obtain the deviations $(x_i - \widetilde{x}) \,\, \forall i$ and then we calculate their absolute values. Lastly we calculate their median.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{deviations_about_median} \hlkwb{<-} \hldef{my_sample} \hlopt{-} \hlkwd{my_median_function}\hldef{(my_sample)}
+
+\hldef{absolute_deviations_about_median} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(deviations_about_median)) \{}
+  \hlkwa{if}\hldef{(deviations_about_median[i]} \hlopt{<} \hlnum{0}\hldef{)\{}
+    \hldef{absolute_deviations_about_median[i]} \hlkwb{<-} \hldef{deviations_about_median[i]} \hlopt{*} \hldef{(}\hlopt{-}\hlnum{1}\hldef{)}
+  \hldef{\}}
+  \hlkwa{else}\hldef{\{}
+    \hldef{absolute_deviations_about_median[i]} \hlkwb{<-} \hldef{deviations_about_median[i]}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{absolute_deviations_about_median}
+\end{alltt}
+\begin{verbatim}
+##  [1] 46 33 18 31 59  6 10 34 19  5 19 40 42 35 49 27 26 28  9 57 10  3 14 13 15
+## [26] 36 24  1 16 11 13 52 26  1 45  8 29 54 12 27
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_median_function}\hldef{(absolute_deviations_about_median)}
+\end{alltt}
+\begin{verbatim}
+## [1] 25
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Skewness}} \\
+
+We compute $\dfrac{m_3}{m_2^\frac{3}{2}}$ where $m_2$ and $m_3$ are 2nd and 3rd order central moments respectively.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_skewness_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hlkwd{return}\hldef{(}\hlkwd{my_sample_central_moments_function}\hldef{(x,} \hlnum{3}\hldef{)} \hlopt{/} \hlkwd{my_sample_central_moments_function}\hldef{(x,} \hlnum{2}\hldef{)}\hlopt{^}\hldef{(}\hlnum{3}\hlopt{/}\hlnum{2}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_skewness_function}\hldef{(my_sample)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3137019
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\vspace{2cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Kurtosis}} \\
+
+We compute $\dfrac{m_4}{m_2^2} - 3$ where $m_4$ is the 4th order central moment.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my_kurtosis_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hlkwd{return}\hldef{(}\hlkwd{my_sample_central_moments_function}\hldef{(x,} \hlnum{4}\hldef{)} \hlopt{/} \hlkwd{my_sample_central_moments_function}\hldef{(x,} \hlnum{2}\hldef{)}\hlopt{^}\hlnum{2} \hlopt{-} \hlnum{3}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{my_kurtosis_function}\hldef{(my_sample)}
+\end{alltt}
+\begin{verbatim}
+## [1] -1.165996
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+\end{document}
