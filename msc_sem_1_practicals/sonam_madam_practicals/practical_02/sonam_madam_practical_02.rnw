@@ -1,0 +1,234 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 02}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Using the following bivariate data, obtain the following results.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+
+\begin{tabular}{|>{\centering}m{2cm}|>{\centering}m{2cm}||>{\centering}m{2cm}|>{\centering\arraybackslash}m{2cm}|}
+
+\hline
+
+$X$ & $Y$ & $X$ & $Y$ \\
+
+\hline
+
+12.4 & 11.2 & 17.3 & 15.1 \\
+
+14.3 & 12.5 & 18.4 & 16.1 \\
+
+14.5 & 12.7 & 19.2 & 16.8 \\
+
+14.9 & 13.1 & 17.4 & 15.2 \\
+
+16.1 & 14.1 & 17 & 14.9 \\
+
+16.9 & 14.8 & 17.9 & 15.6 \\
+
+16.5 & 14.4 & 18.8 & 16.4 \\
+
+15.4 & 13.4 & 20.3 & 17.7 \\
+
+22.4 & 19.6 & 19.5 & 17 \\
+
+19.4 & 16.9 & 19.7 & 17.2 \\
+
+15.5 & 14 & 21.2 & 18.6 \\
+
+16.7 & 14.6 & & \\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{enumerate}[(a)]
+  \item Karl Pearson Correlation Coefficient,
+  \item Spearman's Rank Correlation Coefficient,
+  \item Regression line of $Y$ on $X$,
+  \item Regression line of $X$ on $Y$,
+  \item Scatterplot of $X$ and $Y$ with a regression line.
+\end{enumerate}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Loading the data and previous implementations}}
+
+<<size="tiny">>=
+github_path <- 'https://raw.githubusercontent.com/sakunisgithub/data_sets/master/msc_semester_1/sonam_madam_practical_02_data.csv'
+our_data <- read.csv(github_path)
+
+source('https://raw.githubusercontent.com/sakunisgithub/R-programming/master/my_implementations.R')
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Karl Pearson's Correlation Coefficient}} \\
+
+Here we compute $r_{xy} = \dfrac{\text{cov } (x, y)}{\sqrt{\text{var } x} \cdot \sqrt{\text{var } y}}$, where $\text{cov } (x, y) = \dfrac{1}{n-1} \sum \limits_{i = 1}^{n} (x_i - \bar{x})(y_i - \bar{y})$.
+
+<<size="footnotesize">>=
+my_covariance_function <- function(x, y){
+  
+  x_bar <- my_mean_function(x)
+  y_bar <- my_mean_function(y)
+
+  temp <- 0
+  for (i in 1:length(x)) {
+    temp <- temp + (x[i] - x_bar) * (y[i] - y_bar)
+  }
+  return(temp/(length(x) - 1))
+}
+@
+
+<<size="footnotesize">>=
+my_correlation_function <- function(x, y){
+  
+  var_x <- my_sample_central_moments_function(x, 2)
+  var_y <- my_sample_central_moments_function(y, 2)
+  cor_xy <- my_covariance_function(x, y) / sqrt(var_x * var_y)
+
+  return(cor_xy)
+}
+@
+
+
+<<size="footnotesize">>=
+my_correlation_function(our_data$X, our_data$Y)
+cor(our_data$X, our_data$Y, method = "pearson")
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+$\bullet$ Correlation coefficient is almost 1, implying a nearly perfect linear relationship between $X$ and $Y$.
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Spearman's Rank Correlation Coefficient}} \\
+
+Here we compute $\rho = 1 - \dfrac{6 \sum \limits_{i = 1}^{n} d_i^2}{n(n^2 - 1)}$ where $d_i$ is the difference between the ranks of $x_i$ and $y_i$.
+
+<<size="footnotesize">>=
+my_rank_correlation_function <- function(x, y){
+  
+  x_sorted <- my_selection_sort(x)
+  y_sorted <- my_selection_sort(y)
+
+  rank_x <- rep(0, 23); rank_y <- rep(0, 23)
+  
+  for (i in 1:length(x_sorted)) {
+    rank_x[i] <- my_mean_function(which(x_sorted == x[i]))
+    rank_y[i] <- my_mean_function(which(y_sorted == y[i]))
+  }
+  
+  sum_di_sq <- 0
+  
+  for (i in 1:length(x)) {
+    sum_di_sq <- sum_di_sq + (rank_x[i] - rank_y[i])^2
+  }
+
+  rank_corr <- 1 - (6 * sum_di_sq) / (length(x) * (length(x)^2- 1))
+  
+  return(rank_corr)
+}
+@
+
+<<size="footnotesize">>=
+my_rank_correlation_function(our_data$X, our_data$Y)
+@
+
+<<size="footnotesize">>=
+cor(our_data$X, our_data$Y, method = "spearman")
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+$\bullet$ There is perfect agreement between $X$ and $Y$.
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Regression equation of $Y$ on $X$}} \\
+
+Let the regression equation of $Y$ on $X$ be $Y = aX + b$. Then $\hat{a} = r_{xy} \cdot \dfrac{s_y}{s_x}$ and $\hat{b} = \bar{y} - \hat{a} \bar{x}$.
+
+<<size="footnotesize">>=
+x_bar <- my_mean_function(our_data$X)
+y_bar <- my_mean_function(our_data$Y)
+
+r_xy <- my_correlation_function(our_data$X, our_data$Y)
+s_x <- sqrt(my_sample_central_moments_function(our_data$X, 2))
+s_y <- sqrt(my_sample_central_moments_function(our_data$Y, 2))
+
+a_yx <- r_xy * (s_y / s_x)
+b_yx <- y_bar - a_yx * x_bar
+
+b_yx; a_yx
+@
+
+<<size="footnotesize">>=
+fit_y_on_x <- summary(lm(Y ~ X, data = our_data))
+fit_y_on_x$coefficients
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+\vspace{1cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Regressin equation of $X$ on $Y$}} \\
+
+Let the regression equation of $X$ on $Y$ be $X = aY + b$. Then $\hat{a} = r_{xy} \cdot \dfrac{s_x}{s_y}$ and $\hat{b} = \bar{x} - \hat{a} \bar{y}$.
+
+<<size="footnotesize">>=
+a_xy <- r_xy * (s_x / s_y)
+b_xy <- x_bar - a_xy * y_bar
+
+b_xy; a_xy
+@
+
+<<size="footnotesize">>=
+fit_x_on_y <- summary(lm(X ~ Y, data = our_data))
+fit_x_on_y$coefficients
+@
+
+\faCheckCircle[regular] Results matched !! \\
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Scatterplot of $X$ and $Y$ with a regression line}} \\
+
+<<size="footnotesize", message=FALSE, warning=FALSE>>=
+library(tidyverse)
+@
+
+<<size="footnotesize">>=
+our_data %>%
+  ggplot(aes(x = X, y = Y)) +
+  geom_point(size = 3, col = "#f03608") +
+  labs(title = "Scatterplot of our data") +
+  geom_smooth(method = "lm", formula = y ~ x, level = 0.95)
+@
+
+$\bullet$ An almost perfect linear relation between $X$ and $Y$ is visible.
+\end{document}

@@ -157,4 +157,61 @@ repeat{
 }
 @
 
+
+\section{S3 Classes, Objects and Methods}
+
+We require \textit{sloop} library for \textit{otype()} function that returns type of a given object.
+<<>>=
+library(sloop)
+@
+
+<<>>=
+a <- 14
+otype(a)
+@
+
+<<>>=
+b <- list(name = "Ananda", serial_no = 8, CUET_score = 146)
+class(b) <- "student"
+otype(b)
+is.object(b)
+@
+
+$\bullet$ \textit{unclass()}
+<<>>=
+class(b)
+b <- unclass(b)
+class(b)
+@
+
+$\bullet$ Class Constructor
+<<>>=
+student <- function(n, sl, score){
+  if(score > 300 || score < 0) stop("Score must be 0 to 300")
+  
+  new_object <- list(name = n, serial_no = sl, CUET_score = score)
+  attr(new_object, "class") <- "student" # class(new_object) <- "student
+  
+  return(new_object)
+}
+@
+
+<<>>=
+student_1 <- student("Debarghya", 1, 146)
+student_1
+student_1$name; student_1$serial_no; student_1$CUET_score
+@
+
+<<>>=
+otype(student_1)
+@
+
+<<>>=
+isS3method("print.default")
+@
+
+<<>>=
+
+@
+
 \end{document}

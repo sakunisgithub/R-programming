@@ -68,8 +68,7 @@ my_median_function <- function(x){
   
   if(length(x) %% 2 == 0){
     return((x[length(x)/2] + x[length(x)/2 + 1]) / 2)
-  }
-  else{
+  } else{
     return(x[(length(x) + 1) / 2])
   }
 }
