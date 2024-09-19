@@ -1,0 +1,126 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 01}
+\end{center}
+
+\smallpencil \hspace{0.5cm} Solve the following non-linear system of equations by Newton-Raphson Method.
+
+\begin{align*}
+  3x^2 + y^2 - 4 &= 0; \\
+  x^2 + xy + y^2 - 3 &= 0.
+\end{align*}
+
+Take $(x_0, y_0) = (0.8, 0.8)$ as your initial approximation of the solution.
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} Let
+
+\begin{align*}
+  f(x, y) &= 3x^2 + y^2 - 4 ; \\
+  g(x, y) &= x^2 + xy + y^2 - 3 .
+\end{align*}
+
+
+<<size="footnotesize">>=
+f <- function(x, y) 3*(x^2) + y^2 - 4
+
+g <- function(x, y) x^2 + x*y + y^2 - 3
+@
+
+We create a data-frame that stores our improved approximations of the solution and values of $f$ and $g$ at those approximate solutions.
+
+<<size="footnotesize">>=
+df1 <- data.frame(x = c(0.8), y = c(0.8), f = f(0.8, 0.8), g = g(0.8, 0.8))
+df1
+@
+
+Approximate solution $(x_{k+1}, y_{k+1})$ after $(k+1)$ iteration(s) is given by
+\begin{gather*}
+  \begin{bmatrix} x_{k+1} \\ y_{k+1} \end{bmatrix} 
+  =
+  \begin{bmatrix} x_{k} \\ y_{k} \end{bmatrix}
+  -
+  \begin{bmatrix} f_x(x_k, y_k) & f_y(x_k, y_k) \\ g_x(x_k, y_k) & g_y(x_k, y_k)  \end{bmatrix} ^{-1}
+  \cdot
+  \begin{bmatrix} f(x_k, y_k) \\ g(x_k, y_k) \end{bmatrix}, \,\,\,\,\,\, k = 0, 1, 2, \ldots
+\end{gather*}
+
+\vspace{0.5cm}
+
+Notations have their usual meanings. \\
+
+<<size="footnotesize">>=
+library(Deriv)
+@
+
+<<size="footnotesize">>=
+f_x <- Deriv(f, "x")
+f_x
+@
+
+<<size="footnotesize">>=
+f_y <- Deriv(f, "y")
+f_y
+@
+
+<<size="footnotesize">>=
+g_x <- Deriv(g, "x")
+g_x
+@
+
+<<size="footnotesize">>=
+g_y <- Deriv(g, "y")
+g_y
+@
+
+
+
+Here we shall perform 4 iterations.
+
+<<size="footnotesize">>=
+for (i in 1:4) {
+  
+  x_i <- df1$x[i]; y_i <- df1$y[i]
+  
+  A_matrix <- matrix(c(x_i, y_i), nrow = 2, byrow = TRUE)
+  
+  J_matrix <- matrix(c(f_x(x_i, y_i), f_y(x_i, y_i), g_x(x_i, y_i), g_y(x_i, y_i)), 
+                     nrow = 2, ncol = 2, byrow = TRUE)
+  
+  J_inv <- solve(J_matrix)
+  
+  B_matrix <- matrix(c(f(x_i, y_i), g(x_i, y_i)), nrow = 2, byrow = TRUE)
+  
+  result <- A_matrix - J_inv %*% B_matrix
+  
+  newrow <- data.frame(x = result[1, 1], y = result[2, 1], 
+                       f = f(result[1, 1], result[2, 1]), g = g(result[1, 1], result[2, 1]))
+  
+  df1 <- rbind(df1, newrow)
+}
+@
+
+<<size="footnotesize">>=
+df1
+@
+
+After the last iteration, value of $f$ is $8.88 \times 10^{-15} \approx 0$ and that of $g$ is $6.66 \times 10^{-15} \approx 0$. So we consider $(x, y) = (0, 0)$ as our solution to the given system of non-linear equations.
+
+\end{document}

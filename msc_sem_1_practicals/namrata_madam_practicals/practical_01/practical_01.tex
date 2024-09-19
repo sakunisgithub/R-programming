@@ -1,0 +1,240 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 01}
+\end{center}
+
+\smallpencil \hspace{0.5cm} Solve the following non-linear system of equations by Newton-Raphson Method.
+
+\begin{align*}
+  3x^2 + y^2 - 4 &= 0; \\
+  x^2 + xy + y^2 - 3 &= 0.
+\end{align*}
+
+Take $(x_0, y_0) = (0.8, 0.8)$ as your initial approximation of the solution.
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} Let
+
+\begin{align*}
+  f(x, y) &= 3x^2 + y^2 - 4 ; \\
+  g(x, y) &= x^2 + xy + y^2 - 3 .
+\end{align*}
+
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{)} \hlnum{3}\hlopt{*}\hldef{(x}\hlopt{^}\hlnum{2}\hldef{)} \hlopt{+} \hldef{y}\hlopt{^}\hlnum{2} \hlopt{-} \hlnum{4}
+
+\hldef{g} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{) x}\hlopt{^}\hlnum{2} \hlopt{+} \hldef{x}\hlopt{*}\hldef{y} \hlopt{+} \hldef{y}\hlopt{^}\hlnum{2} \hlopt{-} \hlnum{3}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+We create a data-frame that stores our improved approximations of the solution and values of $f$ and $g$ at those approximate solutions.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0.8}\hldef{),} \hlkwc{y} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0.8}\hldef{),} \hlkwc{f} \hldef{=} \hlkwd{f}\hldef{(}\hlnum{0.8}\hldef{,} \hlnum{0.8}\hldef{),} \hlkwc{g} \hldef{=} \hlkwd{g}\hldef{(}\hlnum{0.8}\hldef{,} \hlnum{0.8}\hldef{))}
+\hldef{df1}
+\end{alltt}
+\begin{verbatim}
+##     x   y     f     g
+## 1 0.8 0.8 -1.44 -1.08
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Approximate solution $(x_{k+1}, y_{k+1})$ after $(k+1)$ iteration(s) is given by
+\begin{gather*}
+  \begin{bmatrix} x_{k+1} \\ y_{k+1} \end{bmatrix} 
+  =
+  \begin{bmatrix} x_{k} \\ y_{k} \end{bmatrix}
+  -
+  \begin{bmatrix} f_x(x_k, y_k) & f_y(x_k, y_k) \\ g_x(x_k, y_k) & g_y(x_k, y_k)  \end{bmatrix} ^{-1}
+  \cdot
+  \begin{bmatrix} f(x_k, y_k) \\ g(x_k, y_k) \end{bmatrix}, \,\,\,\,\,\, k = 0, 1, 2, \ldots
+\end{gather*}
+
+\vspace{0.5cm}
+
+Notations have their usual meanings. \\
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(Deriv)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f_x} \hlkwb{<-} \hlkwd{Deriv}\hldef{(f,} \hlsng{"x"}\hldef{)}
+\hldef{f_x}
+\end{alltt}
+\begin{verbatim}
+## function (x, y) 
+## 6 * x
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f_y} \hlkwb{<-} \hlkwd{Deriv}\hldef{(f,} \hlsng{"y"}\hldef{)}
+\hldef{f_y}
+\end{alltt}
+\begin{verbatim}
+## function (x, y) 
+## 2 * y
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{g_x} \hlkwb{<-} \hlkwd{Deriv}\hldef{(g,} \hlsng{"x"}\hldef{)}
+\hldef{g_x}
+\end{alltt}
+\begin{verbatim}
+## function (x, y) 
+## 2 * x + y
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{g_y} \hlkwb{<-} \hlkwd{Deriv}\hldef{(g,} \hlsng{"y"}\hldef{)}
+\hldef{g_y}
+\end{alltt}
+\begin{verbatim}
+## function (x, y) 
+## 2 * y + x
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+Here we shall perform 4 iterations.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{4}\hldef{) \{}
+
+  \hldef{x_i} \hlkwb{<-} \hldef{df1}\hlopt{$}\hldef{x[i]; y_i} \hlkwb{<-} \hldef{df1}\hlopt{$}\hldef{y[i]}
+
+  \hldef{A_matrix} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(x_i, y_i),} \hlkwc{nrow} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+  \hldef{J_matrix} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f_x}\hldef{(x_i, y_i),} \hlkwd{f_y}\hldef{(x_i, y_i),} \hlkwd{g_x}\hldef{(x_i, y_i),} \hlkwd{g_y}\hldef{(x_i, y_i)),}
+                     \hlkwc{nrow} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+  \hldef{J_inv} \hlkwb{<-} \hlkwd{solve}\hldef{(J_matrix)}
+
+  \hldef{B_matrix} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f}\hldef{(x_i, y_i),} \hlkwd{g}\hldef{(x_i, y_i)),} \hlkwc{nrow} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+  \hldef{result} \hlkwb{<-} \hldef{A_matrix} \hlopt{-} \hldef{J_inv} \hlopt{%*%} \hldef{B_matrix}
+
+  \hldef{newrow} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= result[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{],} \hlkwc{y} \hldef{= result[}\hlnum{2}\hldef{,} \hlnum{1}\hldef{],}
+                       \hlkwc{f} \hldef{=} \hlkwd{f}\hldef{(result[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{], result[}\hlnum{2}\hldef{,} \hlnum{1}\hldef{]),} \hlkwc{g} \hldef{=} \hlkwd{g}\hldef{(result[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{], result[}\hlnum{2}\hldef{,} \hlnum{1}\hldef{]))}
+
+  \hldef{df1} \hlkwb{<-} \hlkwd{rbind}\hldef{(df1, newrow)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1}
+\end{alltt}
+\begin{verbatim}
+##          x        y             f             g
+## 1 0.800000 0.800000 -1.440000e+00 -1.080000e+00
+## 2 1.025000 1.025000  2.025000e-01  1.518750e-01
+## 3 1.000305 1.000305  2.439396e-03  1.829547e-03
+## 4 1.000000 1.000000  3.716892e-07  2.787669e-07
+## 5 1.000000 1.000000  8.881784e-15  6.661338e-15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+After the last iteration, value of $f$ is $8.88 \times 10^{-15} \approx 0$ and that of $g$ is $6.66 \times 10^{-15} \approx 0$. So we consider $(x, y) = (0, 0)$ as our solution to the given system of non-linear equations.
+
+\end{document}
