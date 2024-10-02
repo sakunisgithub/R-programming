@@ -1,0 +1,100 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 02}
+\end{center}
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Implement bisection method for solution of numerical equations.}}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} In bisection method, first a sufficiently small interval $(a, b)$ containing at least one root of the equation $f(x) = 0$ is taken. We must have $f(a) \cdot f(b) < 0$. \\
+
+\hspace{0.5cm} Let $x_1$ be the mid-point of the interval, i.e. $x_1 = \dfrac{a + b}{2}$. Then a real root of the equation must lie either in the interval $(a, x_1]$ or in the interval $[x_1, b)$. \\
+
+\hspace{0.5cm} If $f(x_1) = 0$, then $x_1$ is a root of the equation. Otherwise if $f(a) \cdot f(x_1) < 0$, our interval of interest becomes $(a, x_1)$, or if $f(x_1) \cdot f(b) < 0$, our interval of interest becomes $(x_1, b)$. \\
+
+\hspace{0.5cm} After repeating this procedure $n$ times, the mid-point of the last interval is taken as an approximate solution of the given equation $f(x) = 0$. \\
+
+\hspace{0.5cm} The larger the value of $n$, the better will be the accuracy of the root.
+
+
+<<size="footnotesize">>=
+bisection_method <- function(func, a, b, iterations){
+  
+  if(func(a) * func(b) >= 0) stop("Incorrect a or b or both.")
+  
+  i <- 1
+  
+  while(i <= iterations){
+    
+    midpoint <- (a + b) / 2
+    
+    if(func(midpoint) == 0){
+      break
+    } else if(func(a) * func(midpoint) < 0){
+      a <- a; b <- midpoint
+    } else if(func(midpoint) * func(b) < 0){
+      a <- midpoint; b <- b
+    }
+    
+    i <- i + 1
+  }
+  return((a + b) / 2)
+}
+@
+
+\newpage
+
+$\bullet$ \textbf{Example 1} : $f(x) = x^3 - 4x - 9$; $a = 2$; $b = 3$
+
+<<size="footnotesize">>=
+f1 <- function(x) x^3 - 4*x - 9
+sol1 <- bisection_method(func = f1, a = 2, b = 3, iterations = 5)
+sol1
+@
+
+<<size="footnotesize">>=
+f1(sol1)
+@
+
+$\bullet$ \textbf{Example 2} : $f(x) = x^4 + 2x^2 - x - 1$; $a = 0$; $b = 1$
+
+<<size="footnotesize">>=
+f2 <- function(x) x^4 + 2*(x^2) - x - 1
+sol2 <- bisection_method(func = f2, a = 0, b = 1, iterations = 7)
+sol2
+@
+
+<<size="footnotesize">>=
+f2(sol2)
+@
+
+$\bullet$ \textbf{Example 3} : $f(x) = x^3 - x - 1$; $a = 1.25$; $b = 1.5$
+
+<<size="footnotesize">>=
+f3 <- function(x) x^3 - x - 1
+sol3 <- bisection_method(func = f3, a = 1.25, b = 1.5, iterations = 8)
+sol3
+@
+
+<<size="footnotesize">>=
+f3(sol3)
+@
+
+\end{document}
