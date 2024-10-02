@@ -1,0 +1,266 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 03}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Consider any non-singular matrix $A$ of order $p$ and find the following results.
+
+\settasks{
+	label=(\alph*),
+	label-width=4ex
+}
+
+\begin{tasks}(3)
+  \task $A + A'$
+  \task $A - A'$
+  \task $A \cdot A'$
+  \task $det(A)$
+  \task $adj(A)$
+  \task $A^{-1}$
+\end{tasks}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Creating a matrix}}
+
+<<>>=
+values <- c(1, 1, 0, -2, 3, 0, 1, 4, 3)
+A <- matrix(data = values, nrow = 3, ncol = 3, byrow = TRUE)
+A
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for transpose of a matrix}}
+
+<<>>=
+transpose <- function(x){
+  temp <- x
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(x)) {
+      x[i, j] <- temp[j, i]
+    }
+  }
+  return(x)
+}
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for sum of two matrices}}
+
+<<>>=
+matrix_addition <- function(x, y){
+  if(nrow(x) != nrow(y) || ncol(x) != ncol(y)) stop("Dimensions don't match.")
+  
+  temp <- matrix(NA, nrow = nrow(x), ncol = ncol(x))
+  
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(x)) {
+      temp[i, j] <- x[i, j] + y[i, j]
+    }
+  }
+  return(temp)
+}
+@
+
+\faArrowAltCircleRight[regular] $\mathbf{A + A'}$
+
+<<>>=
+matrix_addition(A, transpose(A))
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for subtraction of two matrices}}
+
+<<>>=
+matrix_subtraction <- function(x, y){
+  if(any(dim(x) == dim(y)) == FALSE) stop("Dimensions don't match.")
+  
+  temp <- matrix(NA, nrow = nrow(x), ncol = ncol(x))
+  
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(x)) {
+      temp[i, j] <- x[i, j] - y[i, j]
+    }
+  }
+  return(temp)
+}
+@
+
+\faArrowAltCircleRight[regular] $\mathbf{A - A'}$
+
+<<>>=
+matrix_subtraction(A, transpose(A))
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for multiplication of two matrices}}
+
+<<>>=
+matrix_multiplication <- function(x, y){
+  if(ncol(x) != nrow(y)) stop("Dimensions are not compatible for matrix multiplication.")
+  
+  temp <- matrix(0, nrow = nrow(x), ncol = ncol(y))
+  
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(y)) {
+      for (k in 1:ncol(x)) {
+        temp[i, j] <- temp[i, j] + x[i, k] * y[k, j]
+      }
+    }
+  }
+  return(temp)
+}
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] $\mathbf{A * A'}$
+
+<<>>=
+matrix_multiplication(A, transpose(A))
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Calculating determinant}} \\
+
+Here we convert the given matrix to an upper triangular matrix by Gaussian Elimination. Let $r$ be the number of row-swaps in the process. We calculate the determinant of the upper triangular matrix; which is nothing but the product of its diagonal elements. Let it be $d$. Then determinant of the given matrix is $(-1)^r \times d$.
+
+<<>>=
+det_function <- function(x){
+  if(nrow(x) != ncol(x)) stop("Input must be a real square matrix.")
+  
+  n <- nrow(x)
+  
+  swap_count <- 0; pivot_count <- 0
+  
+  j <- 1; i <- 1
+  
+  while (j <= ncol(x)) {
+    work_code <- 0; swap_code <- 0
+    
+    while (i <= nrow(x)) {
+      if(round(x[i, j], digits = 5) != 0){
+        if((pivot_count + 1) == i && i != n){
+          
+          pivot_count <- pivot_count + 1
+          
+          a1 <- as.matrix((x[(i+1):n, j] / x[i, j]))
+          
+          a2 <- t(as.matrix(x[i, ]))
+          
+          x[(i+1):n, ] <- x[(i+1):n, ] - a1 %*% a2
+          
+          work_code <- 1
+          
+          break
+          
+        } else if((pivot_count + 1) != i) {
+          
+          x[c(pivot_count+1, i),] <- x[c(i, pivot_count+1),]
+          
+          swap_count <- swap_count + 1
+          
+          j <- j - 1
+          
+          swap_code <- 1
+          
+          break
+        }
+      }
+      i <- i + 1
+    }
+    
+    j <- j + 1
+    
+    if(work_code == 1) {
+      i <- j
+    } else {
+      i <- 1
+    }
+    
+    if(swap_code == 1) i <- pivot_count + 1
+  }
+  
+  product <- 1
+  
+  for (i in 1:n) {
+    product <- product * x[i, i]
+  }
+  
+  return((-1)^swap_count * product)
+}
+@
+
+\faArrowAltCircleRight[regular] $\mathbf{det(A)}$
+
+<<>>=
+det_function(A)
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for cofactor of any element of a matrix}}
+
+<<>>=
+cofactor <- function(x, i, j){
+  x_sub <- x[-i, -j]
+  d <- det_function(x_sub)
+  return((-1)^(i+j) * d)
+}
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for adjoint of a matrix}}
+
+<<>>=
+adjoint <- function(x){
+  cofactor_matrix <- matrix(NA, nrow = nrow(x), ncol = ncol(x))
+  
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(x)) {
+      cofactor_matrix[i, j] <- cofactor(x, i, j)
+    }
+  }
+  
+  return(transpose(cofactor_matrix))
+}
+@
+
+\faArrowAltCircleRight[regular] $\mathbf{adj(A)}$
+
+<<>>=
+adjoint(A)
+@
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for inverse of a matrix}}
+
+<<>>=
+inverse <- function(x){
+  if(det_function(x) == 0) stop("Matrix must be invertible.")
+  
+  return(adjoint(x) / det_function(x))
+}
+@
+
+\faArrowAltCircleRight[regular] $\mathbf{A^{-1}}$
+
+<<>>=
+inverse(A)
+@
+
+
+\end{document}

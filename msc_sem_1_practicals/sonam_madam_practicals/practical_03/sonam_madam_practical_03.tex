@@ -1,0 +1,415 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 03}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Consider any non-singular matrix $A$ of order $p$ and find the following results.
+
+\settasks{
+	label=(\alph*),
+	label-width=4ex
+}
+
+\begin{tasks}(3)
+  \task $A + A'$
+  \task $A - A'$
+  \task $A \cdot A'$
+  \task $det(A)$
+  \task $adj(A)$
+  \task $A^{-1}$
+\end{tasks}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Creating a matrix}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{values} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{,} \hlopt{-}\hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{,} \hlnum{4}\hldef{,} \hlnum{3}\hldef{)}
+\hldef{A} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwc{data} \hldef{= values,} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\hldef{A}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    1    1    0
+## [2,]   -2    3    0
+## [3,]    1    4    3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for transpose of a matrix}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{transpose} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hldef{temp} \hlkwb{<-} \hldef{x}
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(x)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(x)) \{}
+      \hldef{x[i, j]} \hlkwb{<-} \hldef{temp[j, i]}
+    \hldef{\}}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(x)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for sum of two matrices}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{matrix_addition} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{)\{}
+  \hlkwa{if}\hldef{(}\hlkwd{nrow}\hldef{(x)} \hlopt{!=} \hlkwd{nrow}\hldef{(y)} \hlopt{||} \hlkwd{ncol}\hldef{(x)} \hlopt{!=} \hlkwd{ncol}\hldef{(y))} \hlkwd{stop}\hldef{(}\hlsng{"Dimensions don't match."}\hldef{)}
+
+  \hldef{temp} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{=} \hlkwd{nrow}\hldef{(x),} \hlkwc{ncol} \hldef{=} \hlkwd{ncol}\hldef{(x))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(x)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(x)) \{}
+      \hldef{temp[i, j]} \hlkwb{<-} \hldef{x[i, j]} \hlopt{+} \hldef{y[i, j]}
+    \hldef{\}}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] $\mathbf{A + A'}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{matrix_addition}\hldef{(A,} \hlkwd{transpose}\hldef{(A))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    2   -1    1
+## [2,]   -1    6    4
+## [3,]    1    4    6
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for subtraction of two matrices}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{matrix_subtraction} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{)\{}
+  \hlkwa{if}\hldef{(}\hlkwd{any}\hldef{(}\hlkwd{dim}\hldef{(x)} \hlopt{==} \hlkwd{dim}\hldef{(y))} \hlopt{==} \hlnum{FALSE}\hldef{)} \hlkwd{stop}\hldef{(}\hlsng{"Dimensions don't match."}\hldef{)}
+
+  \hldef{temp} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{=} \hlkwd{nrow}\hldef{(x),} \hlkwc{ncol} \hldef{=} \hlkwd{ncol}\hldef{(x))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(x)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(x)) \{}
+      \hldef{temp[i, j]} \hlkwb{<-} \hldef{x[i, j]} \hlopt{-} \hldef{y[i, j]}
+    \hldef{\}}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] $\mathbf{A - A'}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{matrix_subtraction}\hldef{(A,} \hlkwd{transpose}\hldef{(A))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    0    3   -1
+## [2,]   -3    0   -4
+## [3,]    1    4    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for multiplication of two matrices}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{matrix_multiplication} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{)\{}
+  \hlkwa{if}\hldef{(}\hlkwd{ncol}\hldef{(x)} \hlopt{!=} \hlkwd{nrow}\hldef{(y))} \hlkwd{stop}\hldef{(}\hlsng{"Dimensions are not compatible for matrix multiplication."}\hldef{)}
+
+  \hldef{temp} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{0}\hldef{,} \hlkwc{nrow} \hldef{=} \hlkwd{nrow}\hldef{(x),} \hlkwc{ncol} \hldef{=} \hlkwd{ncol}\hldef{(y))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(x)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(y)) \{}
+      \hlkwa{for} \hldef{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(x)) \{}
+        \hldef{temp[i, j]} \hlkwb{<-} \hldef{temp[i, j]} \hlopt{+} \hldef{x[i, k]} \hlopt{*} \hldef{y[k, j]}
+      \hldef{\}}
+    \hldef{\}}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\faArrowAltCircleRight[regular] $\mathbf{A * A'}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{matrix_multiplication}\hldef{(A,} \hlkwd{transpose}\hldef{(A))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    2    1    5
+## [2,]    1   13   10
+## [3,]    5   10   26
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Calculating determinant}} \\
+
+Here we convert the given matrix to an upper triangular matrix by Gaussian Elimination. Let $r$ be the number of row-swaps in the process. We calculate the determinant of the upper triangular matrix; which is nothing but the product of its diagonal elements. Let it be $d$. Then determinant of the given matrix is $(-1)^r \times d$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{det_function} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hlkwa{if}\hldef{(}\hlkwd{nrow}\hldef{(x)} \hlopt{!=} \hlkwd{ncol}\hldef{(x))} \hlkwd{stop}\hldef{(}\hlsng{"Input must be a real square matrix."}\hldef{)}
+
+  \hldef{n} \hlkwb{<-} \hlkwd{nrow}\hldef{(x)}
+
+  \hldef{swap_count} \hlkwb{<-} \hlnum{0}\hldef{; pivot_count} \hlkwb{<-} \hlnum{0}
+
+  \hldef{j} \hlkwb{<-} \hlnum{1}\hldef{; i} \hlkwb{<-} \hlnum{1}
+
+  \hlkwa{while} \hldef{(j} \hlopt{<=} \hlkwd{ncol}\hldef{(x)) \{}
+    \hldef{work_code} \hlkwb{<-} \hlnum{0}\hldef{; swap_code} \hlkwb{<-} \hlnum{0}
+
+    \hlkwa{while} \hldef{(i} \hlopt{<=} \hlkwd{nrow}\hldef{(x)) \{}
+      \hlkwa{if}\hldef{(}\hlkwd{round}\hldef{(x[i, j],} \hlkwc{digits} \hldef{=} \hlnum{5}\hldef{)} \hlopt{!=} \hlnum{0}\hldef{)\{}
+        \hlkwa{if}\hldef{((pivot_count} \hlopt{+} \hlnum{1}\hldef{)} \hlopt{==} \hldef{i} \hlopt{&&} \hldef{i} \hlopt{!=} \hldef{n)\{}
+
+          \hldef{pivot_count} \hlkwb{<-} \hldef{pivot_count} \hlopt{+} \hlnum{1}
+
+          \hldef{a1} \hlkwb{<-} \hlkwd{as.matrix}\hldef{((x[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{n, j]} \hlopt{/} \hldef{x[i, j]))}
+
+          \hldef{a2} \hlkwb{<-} \hlkwd{t}\hldef{(}\hlkwd{as.matrix}\hldef{(x[i, ]))}
+
+          \hldef{x[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{n, ]} \hlkwb{<-} \hldef{x[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{n, ]} \hlopt{-} \hldef{a1} \hlopt{%*%} \hldef{a2}
+
+          \hldef{work_code} \hlkwb{<-} \hlnum{1}
+
+          \hlkwa{break}
+
+        \hldef{\}} \hlkwa{else if}\hldef{((pivot_count} \hlopt{+} \hlnum{1}\hldef{)} \hlopt{!=} \hldef{i) \{}
+
+          \hldef{x[}\hlkwd{c}\hldef{(pivot_count}\hlopt{+}\hlnum{1}\hldef{, i),]} \hlkwb{<-} \hldef{x[}\hlkwd{c}\hldef{(i, pivot_count}\hlopt{+}\hlnum{1}\hldef{),]}
+
+          \hldef{swap_count} \hlkwb{<-} \hldef{swap_count} \hlopt{+} \hlnum{1}
+
+          \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{-} \hlnum{1}
+
+          \hldef{swap_code} \hlkwb{<-} \hlnum{1}
+
+          \hlkwa{break}
+        \hldef{\}}
+      \hldef{\}}
+      \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+    \hldef{\}}
+
+    \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{+} \hlnum{1}
+
+    \hlkwa{if}\hldef{(work_code} \hlopt{==} \hlnum{1}\hldef{) \{}
+      \hldef{i} \hlkwb{<-} \hldef{j}
+    \hldef{\}} \hlkwa{else} \hldef{\{}
+      \hldef{i} \hlkwb{<-} \hlnum{1}
+    \hldef{\}}
+
+    \hlkwa{if}\hldef{(swap_code} \hlopt{==} \hlnum{1}\hldef{) i} \hlkwb{<-} \hldef{pivot_count} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+
+  \hldef{product} \hlkwb{<-} \hlnum{1}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n) \{}
+    \hldef{product} \hlkwb{<-} \hldef{product} \hlopt{*} \hldef{x[i, i]}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{((}\hlopt{-}\hlnum{1}\hldef{)}\hlopt{^}\hldef{swap_count} \hlopt{*} \hldef{product)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] $\mathbf{det(A)}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{det_function}\hldef{(A)}
+\end{alltt}
+\begin{verbatim}
+## [1] 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for cofactor of any element of a matrix}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{cofactor} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{i}\hldef{,} \hlkwc{j}\hldef{)\{}
+  \hldef{x_sub} \hlkwb{<-} \hldef{x[}\hlopt{-}\hldef{i,} \hlopt{-}\hldef{j]}
+  \hldef{d} \hlkwb{<-} \hlkwd{det_function}\hldef{(x_sub)}
+  \hlkwd{return}\hldef{((}\hlopt{-}\hlnum{1}\hldef{)}\hlopt{^}\hldef{(i}\hlopt{+}\hldef{j)} \hlopt{*} \hldef{d)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for adjoint of a matrix}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{adjoint} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hldef{cofactor_matrix} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{=} \hlkwd{nrow}\hldef{(x),} \hlkwc{ncol} \hldef{=} \hlkwd{ncol}\hldef{(x))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(x)) \{}
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{ncol}\hldef{(x)) \{}
+      \hldef{cofactor_matrix[i, j]} \hlkwb{<-} \hlkwd{cofactor}\hldef{(x, i, j)}
+    \hldef{\}}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(}\hlkwd{transpose}\hldef{(cofactor_matrix))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] $\mathbf{adj(A)}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{adjoint}\hldef{(A)}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    9   -3    0
+## [2,]    6    3    0
+## [3,]  -11   -3    5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Function for inverse of a matrix}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{inverse} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hlkwa{if}\hldef{(}\hlkwd{det_function}\hldef{(x)} \hlopt{==} \hlnum{0}\hldef{)} \hlkwd{stop}\hldef{(}\hlsng{"Matrix must be invertible."}\hldef{)}
+
+  \hlkwd{return}\hldef{(}\hlkwd{adjoint}\hldef{(x)} \hlopt{/} \hlkwd{det_function}\hldef{(x))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] $\mathbf{A^{-1}}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{inverse}\hldef{(A)}
+\end{alltt}
+\begin{verbatim}
+##            [,1] [,2]      [,3]
+## [1,]  0.6000000 -0.2 0.0000000
+## [2,]  0.4000000  0.2 0.0000000
+## [3,] -0.7333333 -0.2 0.3333333
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}
