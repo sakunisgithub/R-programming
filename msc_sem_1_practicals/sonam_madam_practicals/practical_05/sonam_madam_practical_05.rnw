@@ -1,0 +1,204 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 05}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Fit a poisson distribution to the given data-set.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{1cm}||>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering\arraybackslash}m{2cm}|}
+
+\hline
+
+$x$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 or more \\
+
+\hline
+
+$f$ & 162 & 193 & 115 & 83 & 44 & 24 & 19 & 8 & 2 & 0 \\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+Also perform a $\chi^2$ goodness of fit test. \\
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Fitting a Poisson Distribution}} \\
+
+The P.M.F. of a Poisson distribution is $P(X = x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!} \,\, ; x = 0, 1, 2, 3, \ldots \,\, ,\lambda > 0$. \\
+
+We estimate parameter $\lambda$ as $\hat{\lambda} = \bar{x} = \dfrac{\sum \limits_{i = 0}^{\infty} x_i f_i}{\sum \limits_{i = 0}^{\infty} f_i}$.
+
+
+<<>>=
+x <- 0:9
+freq <- c(162, 193, 115, 83, 44, 24, 19, 8, 2, 0)
+@
+
+<<>>=
+weighted_mean <- function(x, weight){
+  xw <- 0
+  w <- 0
+  for (i in 1:length(x)) {
+    xw <- xw + x[i] * weight[i]
+    w <- w + weight[i]
+  }
+  return(xw / w)
+}
+@
+
+<<>>=
+x_bar <- weighted_mean(x, freq)
+x_bar
+@
+
+$\bar{x}$ = \Sexpr{x_bar}. So $\hat{\lambda}$ = \Sexpr{x_bar}. Now we fit $Poisson$(\Sexpr{x_bar}) distribution to the given data. \\
+
+Now $P(X = 0) = e^{\Sexpr{-x_bar}}$ = \Sexpr{exp(-x_bar)} and \\
+
+$P(X = i + 1) = \dfrac{\lambda}{i + 1} \cdot P(X = i); \,\, i = 0,1,2,\ldots .$ \\
+
+Also, expected frequency of $i = k \cdot P(X = i); \,\, i = 0,1,2,\ldots$, where $k = \sum \limits_{i = 0}^{\infty} f_i$ is the total frequency.
+
+<<size="footnotesize">>=
+lambda <- x_bar
+@
+
+<<size="footnotesize">>=
+probabilities <- c(exp(-lambda))
+
+i <- 1
+while (i <= 8) {
+  probabilities[i+1] <- (lambda / x[i+1]) * probabilities[i]
+  
+  i <- i + 1
+}
+@
+
+<<size="footnotesize">>=
+total_frequency <- 0
+
+for (i in 1:length(freq)) {
+  total_frequency <- total_frequency + freq[i]
+}
+@
+
+<<size="footnotesize">>=
+expected_frequencies <- c()
+
+for (i in 1:9) {
+  expected_frequencies[i] <- probabilities[i] * total_frequency
+}
+@
+
+And $P(X \geq 9) = 1 - P(X \leq 8)$ = \Sexpr{1 - sum(probabilities)}. \\
+
+Here is our fit.
+
+<<size="footnotesize">>=
+df <- data.frame(x = c(0:8, "9 or more"),
+                 observed = freq,
+                 expected = c(expected_frequencies, 
+                              total_frequency * (1 - sum(probabilities))))
+df
+@
+
+<<>>=
+sum(df$observed); sum(df$expected)
+@
+
+Total expected frequency and total observed frequency are also equal.
+
+\newpage
+
+A visualization of the fit will be great.
+
+<<warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+df_melted <- df %>%
+                pivot_longer(cols = c("observed", "expected"),
+                             names_to = "frequency_type",
+                             values_to = "frequency")
+@
+
+<<warning=FALSE>>=
+df_melted %>%
+  ggplot(aes(x = x, y = frequency, fill = frequency_type)) +
+  geom_col(position = "dodge") +
+  labs(x = "x", title = "Visualizing the fit") +
+  theme(legend.position = "top")
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{$\chi^2$ Goodness of fit test}} \\
+
+$\chi^2 = \sum \limits_{i = 1}^{m} \dfrac{(f_i - kp_i)^2}{kp_i}$ where $m$ is the number of classes, $f_i$ is the observed frequency of $i$-th class, \\
+
+$p_i$ is the theoretical probability of belonging to $i$-th class, $k$ is total frequency. \\
+
+In large sample, $\chi^2 \sim \chi^2_{m-1-u}$, where $u$ is the number of parameters estimated from the data. \\
+
+We also must have expected frequency greater than or equal to 5 for each class. \\
+
+Here, in order to achieve so, we shall combine last 4 classes.
+
+<<>>=
+new_df <- data.frame(x = c(0:5, "6 or more"),
+                     observed = c(df[1:6, 2], sum(df[7:10, 2])),
+                     expected = c(df[1:6, 3], sum(df[7:10, 3])))
+@
+
+Now we have
+
+<<>>=
+new_df
+@
+
+See that each of the expected frequencies is greater than or equal to 5. Number of classes $m$ is 7. Now we perform $\chi^2$ goodness of fit test.
+
+<<>>=
+observed_chi_sq <- 0
+
+for (i in 1:dim(new_df)[1]) {
+  d <- new_df$observed[i] - new_df$expected[i]
+  e <- new_df$expected[i]
+  observed_chi_sq <- observed_chi_sq + (d^2) / e
+}
+@
+
+<<>>=
+observed_chi_sq; qchisq(0.05, 5, lower.tail = FALSE)
+@
+
+Observed $\chi^2 = \Sexpr{observed_chi_sq} > \chi^2_{0.05, 5} = \Sexpr{qchisq(0.05, 5, lower.tail = FALSE)}$. So we reject the null hypothesis of goodness of fit test and conclude that the given data is not from a Poisson population.
+
+
+\end{document}
