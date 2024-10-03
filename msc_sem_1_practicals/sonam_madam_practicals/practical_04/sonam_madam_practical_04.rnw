@@ -1,0 +1,204 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 04}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Fit a binomial distribution to the given dataset.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{1cm}||>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering\arraybackslash}m{1cm}|}
+
+\hline
+
+$x$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+
+\hline
+
+$f$ & 5 & 9 & 22 & 29 & 36 & 25 & 10 & 3 & 1 \\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+Also perform a $\chi^2$ goodness of fit test. \\
+
+\faArrowAltCircleRight[regular] \textit{\textbf{Fitting a Binomial Distribution}}
+
+Here $n = 8$. $\bar{x} = \dfrac{\sum \limits_{i = 1}^{n} x_i f_i}{\sum \limits_{i = 1}^{n} f_i}$; $\hat{p} = \dfrac{\bar{x}}{n}$.
+
+
+<<>>=
+x <- 0:8; n <- length(x)-1
+freq <- c(5, 9, 22, 29, 36, 25, 10, 3, 1)
+@
+
+<<>>=
+weighted_mean <- function(x, weight){
+  xw <- 0
+  w <- 0
+  for (i in 1:length(x)) {
+    xw <- xw + x[i] * weight[i]
+    w <- w + weight[i]
+  }
+  return(xw / w)
+}
+@
+
+<<>>=
+x_bar <- weighted_mean(x, freq)
+x_bar
+@
+
+$\bar{x}$ = \Sexpr{x_bar}. So $\hat{p}$ = \Sexpr{x_bar / n}. Now we fit $Bin$(\Sexpr{n}, \Sexpr{x_bar / n}) distribution to the given data. \\
+
+Now $P(X = 0) = (1-\hat{p})^\Sexpr{n}$ = \Sexpr{(1-(x_bar / n))^n} and \\
+
+$P(X = i + 1) = \dfrac{n-i}{i + 1} \cdot \dfrac{p}{1-p} \cdot P(X = i) \,\,\, \forall i = 0(1)n-1.$ \\
+
+Also, expected frequency of $i = k \cdot P(X = i) \,\,\, \forall i = 0(1)n$, where $k = \sum \limits_{i = 0}^{n} f_i$ is the total frequency.
+
+<<>>=
+p <- x_bar / n
+@
+
+<<>>=
+probabilities <- c((1 - p)^n)
+
+i <- 1
+while (i <= 8) {
+  probabilities[i+1] <- ((n-(i-1)) / (i)) * (p / (1-p)) * probabilities[i]
+  
+  i <- i + 1
+}
+@
+
+<<>>=
+total_frequency <- 0
+
+for (i in 1:length(freq)) {
+  total_frequency <- total_frequency + freq[i]
+}
+@
+
+<<>>=
+expected_frequencies <- c()
+
+for (i in 1:9) {
+  expected_frequencies[i] <- probabilities[i] * total_frequency
+}
+@
+
+Here is our fit.
+
+<<>>=
+df <- data.frame(x = x,
+                 observed = freq,
+                 expected = expected_frequencies)
+df
+@
+
+<<>>=
+sum(df$observed); sum(df$expected)
+@
+
+Total expected frequency and total observed frequency are also equal.
+
+\newpage
+
+A visualization of the fit will be great.
+
+<<warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+df_melted <- df %>%
+                pivot_longer(cols = c("observed", "expected"),
+                             names_to = "frequency_type",
+                             values_to = "frequency")
+@
+
+<<warning=FALSE>>=
+df_melted %>%
+  ggplot(aes(x = x, y = frequency, fill = frequency_type)) +
+  geom_col(position = "dodge") +
+  scale_x_discrete(limits = x) +
+  labs(title = "Visualizing the fit") +
+  theme(legend.position = "top")
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \textit{\textbf{$\chi^2$ Goodness of fit test}} \\
+
+$\chi^2 = \sum \limits_{i = 1}^{m} \dfrac{(f_i - kp_i)^2}{kp_i}$ where $m$ is the number of classes, $f_i$ is the observed frequency of $i$-th class, \\
+
+$p_i$ is the theoretical probability of belonging to $i$-th class, $k$ is total frequency. \\
+
+In large sample, $\chi^2 \sim \chi^2_{m-1}$. \\
+
+We also must have expected frequency greater than or equal to 5 for each class. \\
+
+Here, in order to achieve so, we shall combine similar categories $x = 0 \,\, \& \,\, 1$; $x = 6 \,\, \& \,\, 7 \,\, \& \,\, 8$. \\
+
+<<>>=
+new_df <- data.frame(x = c("0, 1", "2", "3", "4", "5", "6, 7, 8"),
+                     observed = c(df[1, 2] + df[2, 2], 
+                                  df[3:6, 2], 
+                                  df[7, 2] + df[8, 2] + df[9, 2]),
+                     expected = c(df[1, 3] + df[2, 3], 
+                                  df[3:6, 3], 
+                                  df[7, 3] + df[8, 3] + df[9, 3]))
+@
+
+Now we have
+
+<<>>=
+new_df
+@
+
+See that each of the expected frequencies is greater than or equal to 5. Number of classes $m$ is 6. Now we perform $\chi^2$ goodness of fit test.
+
+<<>>=
+observed_chi_sq <- 0
+
+for (i in 1:dim(new_df)[1]) {
+  d <- new_df$observed[i] - new_df$expected[i]
+  e <- new_df$expected[i]
+  observed_chi_sq <- observed_chi_sq + (d^2) / e
+}
+@
+
+<<>>=
+observed_chi_sq; qchisq(0.05, 5, lower.tail = FALSE)
+@
+
+Observed $\chi^2 = \Sexpr{observed_chi_sq} < \chi^2_{0.05, 5} = \Sexpr{qchisq(0.05, 5, lower.tail = FALSE)}$. So we fail to reject the null hypothesis of goodness of fit test and conclude that there is not enough evidence to claim that the given data is not from a Binomial population.
+
+
+\end{document}
