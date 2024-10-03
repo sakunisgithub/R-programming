@@ -278,7 +278,7 @@ $\chi^2 = \sum \limits_{i = 1}^{m} \dfrac{(f_i - kp_i)^2}{kp_i}$ where $m$ is th
 
 $p_i$ is the theoretical probability of belonging to $i$-th class, $k$ is total frequency. \\
 
-In large sample, $\chi^2 \sim \chi^2_{m-1}$. \\
+In large sample, $\chi^2 \sim \chi^2_{m-1-u}$, where $u$ is the number of parameters estimated from the data. \\
 
 We also must have expected frequency greater than or equal to 5 for each class. \\
 
@@ -336,16 +336,16 @@ See that each of the expected frequencies is greater than or equal to 5. Number 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{observed_chi_sq;} \hlkwd{qchisq}\hldef{(}\hlnum{0.05}\hldef{,} \hlnum{5}\hldef{,} \hlkwc{lower.tail} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hldef{observed_chi_sq;} \hlkwd{qchisq}\hldef{(}\hlnum{0.05}\hldef{,} \hlnum{4}\hldef{,} \hlkwc{lower.tail} \hldef{=} \hlnum{FALSE}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 4.384173
-## [1] 11.0705
+## [1] 9.487729
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-Observed $\chi^2 = 4.3841734 < \chi^2_{0.05, 5} = 11.0704977$. So we fail to reject the null hypothesis of goodness of fit test and conclude that there is not enough evidence to claim that the given data is not from a Binomial population.
+Observed $\chi^2 = 4.3841734 < \chi^2_{0.05, 4} = 9.487729$. So we fail to reject the null hypothesis of goodness of fit test and conclude that there is not enough evidence to claim that the given data is not from a Binomial population.
 
 
 \end{document}
