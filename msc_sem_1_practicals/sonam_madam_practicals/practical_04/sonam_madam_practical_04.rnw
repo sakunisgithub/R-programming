@@ -49,7 +49,7 @@ Also perform a $\chi^2$ goodness of fit test. \\
 
 \faArrowAltCircleRight[regular] \textit{\textbf{Fitting a Binomial Distribution}}
 
-Here $n = 8$. $\bar{x} = \dfrac{\sum \limits_{i = 1}^{n} x_i f_i}{\sum \limits_{i = 1}^{n} f_i}$; $\hat{p} = \dfrac{\bar{x}}{n}$.
+Here $n = 8$. $\bar{x} = \dfrac{\sum \limits_{i = 0}^{n} x_i f_i}{\sum \limits_{i = 0}^{n} f_i}$; $\hat{p} = \dfrac{\bar{x}}{n}$.
 
 
 <<>>=
