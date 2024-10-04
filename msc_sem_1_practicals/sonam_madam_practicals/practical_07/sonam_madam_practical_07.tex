@@ -1,0 +1,297 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 07}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Question :}} Consider a random sample of size 20 from $Cauchy(\theta, 1)$ population. \\
+
+5.637941, 4.942002, 4.861254, 3.469588, 5.009333, 7.702125, 5.473228, 3.613141, 3.444167, 4.509174, 5.171716, 3.680117, 2.365371, -4.959420, 5.030187, 4.815630, 4.564628, 4.224900, 4.426912, 4.471680 \\
+
+Obtain maximum likelihood estimate of $\theta$ by 
+\begin{enumerate}[(a)]
+\item Newton-Raphson method,
+\item Fisher Scoring method.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{MLE by Newton-Raphson method} \\
+
+The P.D.F. of a $Cauchy(\theta, 1)$ variate is $f(x) = \dfrac{1}{\pi} \cdot \dfrac{1}{1 + (x - \theta)^2}; \,\, x \in \mathbb{R}; \,\, \theta \in \mathbb{R}$. \\
+
+$X_1, X_2, \ldots , X_{20} \overset{\text{iid}}{\sim} Cauchy(\theta, 1) $. \\
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{our_sample} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{5.637941}\hldef{,} \hlnum{4.942002}\hldef{,} \hlnum{4.861254}\hldef{,} \hlnum{3.469588}\hldef{,} \hlnum{5.009333}\hldef{,} \hlnum{7.702125}\hldef{,} \hlnum{5.473228}\hldef{,} \hlnum{3.613141}\hldef{,}
+                \hlnum{3.444167}\hldef{,} \hlnum{4.509174}\hldef{,} \hlnum{5.171716}\hldef{,} \hlnum{3.680117}\hldef{,} \hlnum{2.365371}\hldef{,} \hlopt{-}\hlnum{4.959420}\hldef{,} \hlnum{5.030187}\hldef{,} \hlnum{4.815630}\hldef{,}
+                \hlnum{4.564628}\hldef{,} \hlnum{4.224900}\hldef{,} \hlnum{4.426912}\hldef{,} \hlnum{4.471680}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+The likelihood function for $\theta$ is $L(\theta) = \prod \limits_{i = 1}^{20} \dfrac{1}{\pi} \cdot \dfrac{1}{1 + (x_i - \theta)^2}; \,\, x_i \in \mathbb{R} \,\, \forall i = 1(1)20$. \\
+
+The log-likelihood function for $\theta$ is $l(\theta) = ln (L(\theta)) = -20 \, ln (\pi) - \sum \limits_{i = 1}^{20} ln (1 + (x_i - \theta)^2)$. \\
+
+Now, $l'(\theta) = \dfrac{\partial}{\partial \theta} \, l(\theta) = \sum \limits_{i = 1}^{20} \dfrac{2(x_i - \theta)}{1 + (x_i - \theta)^2} = \sum \limits_{i = 1}^{20} u(x_i, \theta) \,\, \text{(say)}$. \\
+
+\vspace{0.2cm}
+
+We shall solve the equation $l'(\theta) = 0$ for $\theta$ by Newton-Raphson method. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{theta}\hldef{) (x} \hlopt{-} \hldef{theta)}\hlopt{/}\hldef{(}\hlnum{1} \hlopt{+} \hldef{(x} \hlopt{-} \hldef{theta)}\hlopt{^}\hlnum{2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{l_dash} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{)\{}
+  \hldef{temp} \hlkwb{<-} \hlnum{0}
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(our_sample)) \{}
+    \hldef{temp} \hlkwb{<-} \hldef{temp} \hlopt{+} \hlkwd{u}\hldef{(our_sample[i], theta)}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+We start with an initial approximation $\theta_0$ and successively calculate $$\theta_{n+1} = \theta_n - \dfrac{l'(\theta_n)}{l''(\theta_n)} \,\, \text{for} \,\, n = 0, 1, 2, \ldots.$$ Upon reaching desired accuracy or after doing a certain number of iterations, we report final $\theta_n$ as our approximate solution to $l'(\theta) = 0$. \\
+
+Now, $l''(\theta) = \sum \limits_{i = 1}^{20} u'(x_i, \theta)$ where $u'(x_i, \theta) = \dfrac{\partial}{\partial \theta} \, u(x_i, \theta)$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(Deriv)}
+\hldef{u_dash} \hlkwb{<-} \hlkwd{Deriv}\hldef{(u,} \hlsng{"theta"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{l_dash_dash} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{)\{}
+  \hldef{temp} \hlkwb{<-} \hlnum{0}
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(our_sample)) \{}
+    \hldef{temp} \hlkwb{<-} \hldef{temp} \hlopt{+} \hlkwd{u_dash}\hldef{(our_sample[i], theta)}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{newton_raphson} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{func}\hldef{,} \hlkwc{func_dash}\hldef{,} \hlkwc{theta_0}\hldef{,} \hlkwc{iterations}\hldef{)\{}
+
+  \hldef{i} \hlkwb{<-} \hlnum{1}
+  \hldef{theta} \hlkwb{<-} \hlkwd{c}\hldef{(theta_0)}
+
+  \hlkwa{while}\hldef{(i} \hlopt{<=} \hldef{iterations)\{}
+    \hldef{theta[i}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hldef{theta[i]} \hlopt{-} \hlkwd{func}\hldef{(theta[i])} \hlopt{/} \hlkwd{func_dash}\hldef{(theta[i])}
+
+    \hlkwa{if}\hldef{(}\hlkwd{abs}\hldef{(}\hlkwd{func}\hldef{(theta[}\hlkwd{length}\hldef{(theta)]))} \hlopt{<} \hlnum{0.001}\hldef{)} \hlkwa{break}
+
+    \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(theta[}\hlkwd{length}\hldef{(theta)])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta_hat_1} \hlkwb{<-} \hlkwd{newton_raphson}\hldef{(}\hlkwc{func} \hldef{= l_dash,} \hlkwc{func_dash} \hldef{= l_dash_dash,}
+                              \hlkwc{theta_0} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{iterations} \hldef{=} \hlnum{100}\hldef{)}
+\hldef{theta_hat_1}
+\end{alltt}
+\begin{verbatim}
+## [1] 4.596972
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u_dash_dash} \hlkwb{<-} \hlkwd{Deriv}\hldef{(u_dash,} \hlsng{"theta"}\hldef{)}
+
+\hldef{l_dash_dash_dash} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{)\{}
+  \hldef{temp} \hlkwb{<-} \hlnum{0}
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(our_sample)) \{}
+    \hldef{temp} \hlkwb{<-} \hldef{temp} \hlopt{+} \hlkwd{u_dash_dash}\hldef{(our_sample[i], theta)}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(temp)}
+\hldef{\}}
+
+\hlkwd{l_dash_dash_dash}\hldef{(theta_hat_1)} \hlopt{<} \hlnum{0}
+\end{alltt}
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+So, by Newton-Raphson method $\hat{\theta}_{\text{MLE}} = 4.596972$. \\
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{MLE by Fisher Scoring method} \\
+
+This is similar to Newton-Raphson method, except that we replace $l''(\theta)$ with $E_X[l''(\theta)]$. \\
+
+Recall that $l(\theta)$ can also be expressed as $l(\theta; \mathbf{x})$. \\
+
+Also, Fisher's Information about parameter $\theta$ in a sample of size $n$ is $I^{\ast} (\theta) = - E_X[l''(\theta)]$. \\
+
+So here, we start with an initial approximation $\theta_0$ and successively calculate $$\theta_{n+1} = \theta_n - \dfrac{l'(\theta_n)}{E_X[l''(\theta)]} = \theta_n + \dfrac{l'(\theta_n)}{I^{\ast} (\theta)} \,\, \text{for} \,\, n = 0, 1, 2, \ldots.$$ Upon reaching desired accuracy or after doing a certain number of iterations, we report final $\theta_n$ as our approximate solution to $l'(\theta) = 0$. \\
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{fisher_scoring} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{func}\hldef{,} \hlkwc{fisher_info} \hldef{,} \hlkwc{theta_0}\hldef{,} \hlkwc{iterations}\hldef{)\{}
+
+  \hldef{i} \hlkwb{<-} \hlnum{1}
+  \hldef{theta} \hlkwb{<-} \hlkwd{c}\hldef{(theta_0)}
+
+  \hlkwa{while}\hldef{(i} \hlopt{<=} \hldef{iterations)\{}
+    \hldef{theta[i}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hldef{theta[i]} \hlopt{+} \hlkwd{func}\hldef{(theta[i])} \hlopt{/} \hlkwd{fisher_info}\hldef{(theta[i])}
+
+    \hlkwa{if}\hldef{(}\hlkwd{abs}\hldef{(}\hlkwd{func}\hldef{(theta[}\hlkwd{length}\hldef{(theta)]))} \hlopt{<} \hlnum{0.001}\hldef{)} \hlkwa{break}
+
+    \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(theta[}\hlkwd{length}\hldef{(theta)])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+For a sample of size $n$ from $Cauchy(\theta, 1)$ population, $I^{\ast}(\theta) = \dfrac{n}{2}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{cauchy_fisher_info} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{)} \hlkwd{length}\hldef{(our_sample)} \hlopt{/} \hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta_hat_2} \hlkwb{<-} \hlkwd{fisher_scoring}\hldef{(}\hlkwc{func} \hldef{= l_dash,} \hlkwc{fisher_info} \hldef{= cauchy_fisher_info,}
+                              \hlkwc{theta_0} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{iterations} \hldef{=} \hlnum{100}\hldef{)}
+\hldef{theta_hat_2}
+\end{alltt}
+\begin{verbatim}
+## [1] 4.596825
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{l_dash_dash_dash}\hldef{(theta_hat_2)} \hlopt{<} \hlnum{0}
+\end{alltt}
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+So, by Fisher Scoring method $\hat{\theta}_{\text{MLE}} = 4.596825$. \\
+
+\end{document}

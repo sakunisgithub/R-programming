@@ -1,0 +1,187 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 07}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Question :}} Consider a random sample of size 20 from $Cauchy(\theta, 1)$ population. \\
+
+5.637941, 4.942002, 4.861254, 3.469588, 5.009333, 7.702125, 5.473228, 3.613141, 3.444167, 4.509174, 5.171716, 3.680117, 2.365371, -4.959420, 5.030187, 4.815630, 4.564628, 4.224900, 4.426912, 4.471680 \\
+
+Obtain maximum likelihood estimate of $\theta$ by 
+\begin{enumerate}[(a)]
+\item Newton-Raphson method,
+\item Fisher Scoring method.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{MLE by Newton-Raphson method} \\
+
+The P.D.F. of a $Cauchy(\theta, 1)$ variate is $f(x) = \dfrac{1}{\pi} \cdot \dfrac{1}{1 + (x - \theta)^2}; \,\, x \in \mathbb{R}; \,\, \theta \in \mathbb{R}$. \\
+
+$X_1, X_2, \ldots , X_{20} \overset{\text{iid}}{\sim} Cauchy(\theta, 1) $. \\
+
+<<size="footnotesize">>=
+our_sample <- c(5.637941, 4.942002, 4.861254, 3.469588, 5.009333, 7.702125, 5.473228, 3.613141, 
+                3.444167, 4.509174, 5.171716, 3.680117, 2.365371, -4.959420, 5.030187, 4.815630, 
+                4.564628, 4.224900, 4.426912, 4.471680)
+@
+
+The likelihood function for $\theta$ is $L(\theta) = \prod \limits_{i = 1}^{20} \dfrac{1}{\pi} \cdot \dfrac{1}{1 + (x_i - \theta)^2}; \,\, x_i \in \mathbb{R} \,\, \forall i = 1(1)20$. \\
+
+The log-likelihood function for $\theta$ is $l(\theta) = ln (L(\theta)) = -20 \, ln (\pi) - \sum \limits_{i = 1}^{20} ln (1 + (x_i - \theta)^2)$. \\
+
+Now, $l'(\theta) = \dfrac{\partial}{\partial \theta} \, l(\theta) = \sum \limits_{i = 1}^{20} \dfrac{2(x_i - \theta)}{1 + (x_i - \theta)^2} = \sum \limits_{i = 1}^{20} u(x_i, \theta) \,\, \text{(say)}$. \\
+
+\vspace{0.2cm}
+
+We shall solve the equation $l'(\theta) = 0$ for $\theta$ by Newton-Raphson method. 
+<<>>=
+u <- function(x, theta) (x - theta)/(1 + (x - theta)^2)
+@
+
+<<>>=
+l_dash <- function(theta){
+  temp <- 0
+  for (i in 1:length(our_sample)) {
+    temp <- temp + u(our_sample[i], theta)
+  }
+  return(temp)
+}
+@
+
+We start with an initial approximation $\theta_0$ and successively calculate $$\theta_{n+1} = \theta_n - \dfrac{l'(\theta_n)}{l''(\theta_n)} \,\, \text{for} \,\, n = 0, 1, 2, \ldots.$$ Upon reaching desired accuracy or after doing a certain number of iterations, we report final $\theta_n$ as our approximate solution to $l'(\theta) = 0$. \\
+
+Now, $l''(\theta) = \sum \limits_{i = 1}^{20} u'(x_i, \theta)$ where $u'(x_i, \theta) = \dfrac{\partial}{\partial \theta} \, u(x_i, \theta)$.
+
+<<>>=
+library(Deriv)
+u_dash <- Deriv(u, "theta")
+@
+
+<<>>=
+l_dash_dash <- function(theta){
+  temp <- 0
+  for (i in 1:length(our_sample)) {
+    temp <- temp + u_dash(our_sample[i], theta)
+  }
+  return(temp)
+}
+@
+
+<<>>=
+newton_raphson <- function(func, func_dash, theta_0, iterations){
+  
+  i <- 1
+  theta <- c(theta_0)
+  
+  while(i <= iterations){
+    theta[i+1] <- theta[i] - func(theta[i]) / func_dash(theta[i])
+    
+    if(abs(func(theta[length(theta)])) < 0.001) break
+    
+    i <- i + 1
+  }
+  
+  return(theta[length(theta)])
+}
+@
+
+<<>>=
+theta_hat_1 <- newton_raphson(func = l_dash, func_dash = l_dash_dash, 
+                              theta_0 = 2, iterations = 100)
+theta_hat_1
+@
+
+We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
+
+<<>>=
+u_dash_dash <- Deriv(u_dash, "theta")
+
+l_dash_dash_dash <- function(theta){
+  temp <- 0
+  for (i in 1:length(our_sample)) {
+    temp <- temp + u_dash_dash(our_sample[i], theta)
+  }
+  return(temp)
+}
+
+l_dash_dash_dash(theta_hat_1) < 0
+@
+
+So, by Newton-Raphson method $\hat{\theta}_{\text{MLE}} = \Sexpr{theta_hat_1}$. \\
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{MLE by Fisher Scoring method} \\
+
+This is similar to Newton-Raphson method, except that we replace $l''(\theta)$ with $E_X[l''(\theta)]$. \\
+
+Recall that $l(\theta)$ can also be expressed as $l(\theta; \mathbf{x})$. \\
+
+Also, Fisher's Information about parameter $\theta$ in a sample of size $n$ is $I^{\ast} (\theta) = - E_X[l''(\theta)]$. \\
+
+So here, we start with an initial approximation $\theta_0$ and successively calculate $$\theta_{n+1} = \theta_n - \dfrac{l'(\theta_n)}{E_X[l''(\theta)]} = \theta_n + \dfrac{l'(\theta_n)}{I^{\ast} (\theta)} \,\, \text{for} \,\, n = 0, 1, 2, \ldots.$$ Upon reaching desired accuracy or after doing a certain number of iterations, we report final $\theta_n$ as our approximate solution to $l'(\theta) = 0$. \\
+
+<<>>=
+fisher_scoring <- function(func, fisher_info , theta_0, iterations){
+  
+  i <- 1
+  theta <- c(theta_0)
+  
+  while(i <= iterations){
+    theta[i+1] <- theta[i] + func(theta[i]) / fisher_info(theta[i])
+    
+    if(abs(func(theta[length(theta)])) < 0.001) break
+    
+    i <- i + 1
+  }
+  
+  return(theta[length(theta)])
+}
+@
+
+\newpage
+
+For a sample of size $n$ from $Cauchy(\theta, 1)$ population, $I^{\ast}(\theta) = \dfrac{n}{2}$.
+
+<<>>=
+cauchy_fisher_info <- function(theta) length(our_sample) / 2
+@
+
+<<>>=
+theta_hat_2 <- fisher_scoring(func = l_dash, fisher_info = cauchy_fisher_info, 
+                              theta_0 = 2, iterations = 100)
+theta_hat_2
+@
+
+We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
+
+<<>>=
+l_dash_dash_dash(theta_hat_2) < 0
+@
+
+So, by Fisher Scoring method $\hat{\theta}_{\text{MLE}} = \Sexpr{theta_hat_2}$. \\
+
+\end{document}
