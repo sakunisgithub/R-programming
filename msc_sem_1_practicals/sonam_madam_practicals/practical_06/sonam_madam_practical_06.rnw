@@ -1,0 +1,217 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 06}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Calculate the correlation coefficient for the following bivariate data.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{2cm}|>{\centering}m{1.5cm}|>{\centering}m{1.5cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|}
+
+\hline
+
+\backslashbox{Y}{X} & 18 & 19 & 20 & 21 \\
+
+\hline
+
+10$-$20 & 4 & 2 & 2 & $-$ \\
+
+\hline
+
+20$-$30 & 5 & 4 & 6 & 4 \\
+
+\hline
+
+30$-$40 & 6 & 8 & 10 & 11 \\
+
+\hline
+
+40$-$50 & 4 & 4 & 6 & 8 \\
+
+\hline
+
+50$-$60 & $-$ & 2 & 4 & 4 \\
+
+\hline
+
+60$-$70 & $-$ & 2 & 3 & 1 \\
+
+\hline
+
+
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\faArrowAltCircleRight[regular] First we consider the midpoints of the intervals. \\
+
+$f(x, y)$ be the frequency corresponding to $(x, y)$. \\
+
+$N = \sum \limits_{x} \sum \limits_{y} f(x, y)$ \\
+
+$\bar{x} = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} x \cdot f(x, y)$;
+\hspace{0.5cm} $\bar{y} = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} y \cdot f(x, y)$ \\
+
+$\sigma_x^2 = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} x^2 \cdot f(x, y) - \bar{x}^2$; \hspace{0.5cm}
+$\sigma_y^2 = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} y^2 \cdot f(x, y) - \bar{y}^2$ \\
+
+$cov(x, y) = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} xy \cdot f(x, y) - \bar{x} \cdot \bar{y}$.
+
+<<>>=
+x <- 18:21
+@
+
+<<>>==
+lower_y <- seq(10, 60, by = 10)
+upper_y <- seq(20, 70, by = 10)
+y <- (lower_y + upper_y) / 2
+@
+
+<<size="footnotesize">>=
+values <- c(4, 2, 2, NA, 5, 4, 6, 4, 6, 8, 10, 11, 4, 4, 6, 8, NA, 2, 4, 4, NA, 2, 3, 1)
+@
+
+Here are the frequencies.
+<<>>=
+freq <- matrix(values, nrow = 6, ncol = 4, byrow = TRUE)
+freq
+@
+
+<<>>=
+N <- 0
+
+for (i in 1:dim(freq)[1]) {
+  for (j in 1:dim(freq)[2]) {
+    if(!is.na(freq[i, j])) N <- N + freq[i, j]  
+  }
+}
+
+N
+@
+
+Total frequency is \Sexpr{N}.
+
+<<>>=
+marginal_x <- rep(0, length(x))
+
+for (j in 1:dim(freq)[2]) {
+  for (i in 1:dim(freq)[1]) {
+    if(!is.na(freq[i, j])) marginal_x[j] <- marginal_x[j] + freq[i, j]
+  }
+}
+
+marginal_x
+@
+
+<<>>=
+marginal_y <- rep(0, length(y))
+
+for (i in 1:dim(freq)[1]) {
+  for (j in 1:dim(freq)[2]) {
+    if(!is.na(freq[i, j])) marginal_y[i] <- marginal_y[i] + freq[i, j]
+  }
+}
+
+marginal_y
+@
+
+<<>>=
+numerator1 <- 0
+
+for (i in 1:length(x)) {
+  numerator1 <- numerator1 + x[i] * marginal_x[i]
+}
+
+mean_x <- numerator1 / N
+mean_x
+@
+
+$\bar{x} = \Sexpr{mean_x}$.
+
+<<>>=
+numerator2 <- 0
+
+for (i in 1:length(y)) {
+  numerator2 <- numerator2 + y[i] * marginal_y[i]
+}
+
+mean_y <- numerator2 / N
+mean_y
+@
+
+$\bar{y} = \Sexpr{mean_y}$.
+
+<<>>=
+total1 <- 0
+
+for (i in 1:length(x)) {
+  total1 <- total1 + x[i]^2 * marginal_x[i]
+}
+
+var_x <- total1 / N - mean_x^2
+var_x
+@
+
+$\sigma_x^2 = \Sexpr{var_x}$.
+
+<<>>=
+total2 <- 0
+
+for (i in 1:length(y)) {
+  total2 <- total2 + y[i]^2 * marginal_y[i]
+}
+
+var_y <- total2 / N - mean_y^2
+var_y
+@
+
+$\sigma_y^2 = \Sexpr{var_y}$.
+
+<<>>=
+total3 <- 0
+
+for (i in 1:dim(freq)[1]) {
+  for (j in 1:dim(freq)[2]) {
+    if(!is.na(freq[i, j])) total3 <- total3 + y[i] * x[j] * freq[i, j]
+  }
+}
+
+cov_xy <- total3 / N - mean_x * mean_y
+cov_xy
+@
+
+$cov(x, y) = \Sexpr{cov_xy}$.
+
+<<>>=
+corr_xy <- cov_xy / sqrt(var_x * var_y)
+corr_xy
+@
+
+$corr(x, y) = \Sexpr{corr_xy}$.
+
+\end{document}

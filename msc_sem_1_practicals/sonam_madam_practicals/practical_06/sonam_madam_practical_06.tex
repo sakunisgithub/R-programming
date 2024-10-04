@@ -1,0 +1,355 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 06}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} Calculate the correlation coefficient for the following bivariate data.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{2cm}|>{\centering}m{1.5cm}|>{\centering}m{1.5cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|}
+
+\hline
+
+\backslashbox{Y}{X} & 18 & 19 & 20 & 21 \\
+
+\hline
+
+10$-$20 & 4 & 2 & 2 & $-$ \\
+
+\hline
+
+20$-$30 & 5 & 4 & 6 & 4 \\
+
+\hline
+
+30$-$40 & 6 & 8 & 10 & 11 \\
+
+\hline
+
+40$-$50 & 4 & 4 & 6 & 8 \\
+
+\hline
+
+50$-$60 & $-$ & 2 & 4 & 4 \\
+
+\hline
+
+60$-$70 & $-$ & 2 & 3 & 1 \\
+
+\hline
+
+
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\faArrowAltCircleRight[regular] First we consider the midpoints of the intervals. \\
+
+$f(x, y)$ be the frequency corresponding to $(x, y)$. \\
+
+$N = \sum \limits_{x} \sum \limits_{y} f(x, y)$ \\
+
+$\bar{x} = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} x \cdot f(x, y)$;
+\hspace{0.5cm} $\bar{y} = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} y \cdot f(x, y)$ \\
+
+$\sigma_x^2 = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} x^2 \cdot f(x, y) - \bar{x}^2$; \hspace{0.5cm}
+$\sigma_y^2 = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} y^2 \cdot f(x, y) - \bar{y}^2$ \\
+
+$cov(x, y) = \dfrac{1}{N} \sum \limits_{x} \sum \limits_{y} xy \cdot f(x, y) - \bar{x} \cdot \bar{y}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{18}\hlopt{:}\hlnum{21}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{lower_y} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{10}\hldef{,} \hlnum{60}\hldef{,} \hlkwc{by} \hldef{=} \hlnum{10}\hldef{)}
+\hldef{upper_y} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{20}\hldef{,} \hlnum{70}\hldef{,} \hlkwc{by} \hldef{=} \hlnum{10}\hldef{)}
+\hldef{y} \hlkwb{<-} \hldef{(lower_y} \hlopt{+} \hldef{upper_y)} \hlopt{/} \hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{values} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{4}\hldef{,} \hlnum{2}\hldef{,} \hlnum{2}\hldef{,} \hlnum{NA}\hldef{,} \hlnum{5}\hldef{,} \hlnum{4}\hldef{,} \hlnum{6}\hldef{,} \hlnum{4}\hldef{,} \hlnum{6}\hldef{,} \hlnum{8}\hldef{,} \hlnum{10}\hldef{,} \hlnum{11}\hldef{,} \hlnum{4}\hldef{,} \hlnum{4}\hldef{,} \hlnum{6}\hldef{,} \hlnum{8}\hldef{,} \hlnum{NA}\hldef{,} \hlnum{2}\hldef{,} \hlnum{4}\hldef{,} \hlnum{4}\hldef{,} \hlnum{NA}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Here are the frequencies.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{freq} \hlkwb{<-} \hlkwd{matrix}\hldef{(values,} \hlkwc{nrow} \hldef{=} \hlnum{6}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{4}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\hldef{freq}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    4    2    2   NA
+## [2,]    5    4    6    4
+## [3,]    6    8   10   11
+## [4,]    4    4    6    8
+## [5,]   NA    2    4    4
+## [6,]   NA    2    3    1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{N} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{1}\hldef{]) \{}
+  \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{2}\hldef{]) \{}
+    \hlkwa{if}\hldef{(}\hlopt{!}\hlkwd{is.na}\hldef{(freq[i, j])) N} \hlkwb{<-} \hldef{N} \hlopt{+} \hldef{freq[i, j]}
+  \hldef{\}}
+\hldef{\}}
+
+\hldef{N}
+\end{alltt}
+\begin{verbatim}
+## [1] 100
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Total frequency is 100.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{marginal_x} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{,} \hlkwd{length}\hldef{(x))}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{2}\hldef{]) \{}
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{1}\hldef{]) \{}
+    \hlkwa{if}\hldef{(}\hlopt{!}\hlkwd{is.na}\hldef{(freq[i, j])) marginal_x[j]} \hlkwb{<-} \hldef{marginal_x[j]} \hlopt{+} \hldef{freq[i, j]}
+  \hldef{\}}
+\hldef{\}}
+
+\hldef{marginal_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 19 22 31 28
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{marginal_y} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{,} \hlkwd{length}\hldef{(y))}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{1}\hldef{]) \{}
+  \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{2}\hldef{]) \{}
+    \hlkwa{if}\hldef{(}\hlopt{!}\hlkwd{is.na}\hldef{(freq[i, j])) marginal_y[i]} \hlkwb{<-} \hldef{marginal_y[i]} \hlopt{+} \hldef{freq[i, j]}
+  \hldef{\}}
+\hldef{\}}
+
+\hldef{marginal_y}
+\end{alltt}
+\begin{verbatim}
+## [1]  8 19 35 22 10  6
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{numerator1} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(x)) \{}
+  \hldef{numerator1} \hlkwb{<-} \hldef{numerator1} \hlopt{+} \hldef{x[i]} \hlopt{*} \hldef{marginal_x[i]}
+\hldef{\}}
+
+\hldef{mean_x} \hlkwb{<-} \hldef{numerator1} \hlopt{/} \hldef{N}
+\hldef{mean_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 19.68
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\bar{x} = 19.68$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{numerator2} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(y)) \{}
+  \hldef{numerator2} \hlkwb{<-} \hldef{numerator2} \hlopt{+} \hldef{y[i]} \hlopt{*} \hldef{marginal_y[i]}
+\hldef{\}}
+
+\hldef{mean_y} \hlkwb{<-} \hldef{numerator2} \hlopt{/} \hldef{N}
+\hldef{mean_y}
+\end{alltt}
+\begin{verbatim}
+## [1] 37.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\bar{y} = 37.5$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{total1} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(x)) \{}
+  \hldef{total1} \hlkwb{<-} \hldef{total1} \hlopt{+} \hldef{x[i]}\hlopt{^}\hlnum{2} \hlopt{*} \hldef{marginal_x[i]}
+\hldef{\}}
+
+\hldef{var_x} \hlkwb{<-} \hldef{total1} \hlopt{/} \hldef{N} \hlopt{-} \hldef{mean_x}\hlopt{^}\hlnum{2}
+\hldef{var_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.1576
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\sigma_x^2 = 1.1576$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{total2} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(y)) \{}
+  \hldef{total2} \hlkwb{<-} \hldef{total2} \hlopt{+} \hldef{y[i]}\hlopt{^}\hlnum{2} \hlopt{*} \hldef{marginal_y[i]}
+\hldef{\}}
+
+\hldef{var_y} \hlkwb{<-} \hldef{total2} \hlopt{/} \hldef{N} \hlopt{-} \hldef{mean_y}\hlopt{^}\hlnum{2}
+\hldef{var_y}
+\end{alltt}
+\begin{verbatim}
+## [1] 160.75
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\sigma_y^2 = 160.75$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{total3} \hlkwb{<-} \hlnum{0}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{1}\hldef{]) \{}
+  \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{dim}\hldef{(freq)[}\hlnum{2}\hldef{]) \{}
+    \hlkwa{if}\hldef{(}\hlopt{!}\hlkwd{is.na}\hldef{(freq[i, j])) total3} \hlkwb{<-} \hldef{total3} \hlopt{+} \hldef{y[i]} \hlopt{*} \hldef{x[j]} \hlopt{*} \hldef{freq[i, j]}
+  \hldef{\}}
+\hldef{\}}
+
+\hldef{cov_xy} \hlkwb{<-} \hldef{total3} \hlopt{/} \hldef{N} \hlopt{-} \hldef{mean_x} \hlopt{*} \hldef{mean_y}
+\hldef{cov_xy}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$cov(x, y) = 3.5$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{corr_xy} \hlkwb{<-} \hldef{cov_xy} \hlopt{/} \hlkwd{sqrt}\hldef{(var_x} \hlopt{*} \hldef{var_y)}
+\hldef{corr_xy}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.2565744
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$corr(x, y) = 0.2565744$.
+
+\end{document}
