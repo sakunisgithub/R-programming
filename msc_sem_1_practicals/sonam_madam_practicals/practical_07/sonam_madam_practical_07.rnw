@@ -58,7 +58,7 @@ Now, $l'(\theta) = \dfrac{\partial}{\partial \theta} \, l(\theta) = \sum \limits
 
 We shall solve the equation $l'(\theta) = 0$ for $\theta$ by Newton-Raphson method. 
 <<>>=
-u <- function(x, theta) (x - theta)/(1 + (x - theta)^2)
+u <- function(x, theta) 2*(x - theta)/(1 + (x - theta)^2)
 @
 
 <<>>=

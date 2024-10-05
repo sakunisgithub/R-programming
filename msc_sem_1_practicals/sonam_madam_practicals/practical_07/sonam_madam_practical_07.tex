@@ -114,7 +114,7 @@ We shall solve the equation $l'(\theta) = 0$ for $\theta$ by Newton-Raphson meth
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{u} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{theta}\hldef{) (x} \hlopt{-} \hldef{theta)}\hlopt{/}\hldef{(}\hlnum{1} \hlopt{+} \hldef{(x} \hlopt{-} \hldef{theta)}\hlopt{^}\hlnum{2}\hldef{)}
+\hldef{u} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{theta}\hldef{)} \hlnum{2}\hlopt{*}\hldef{(x} \hlopt{-} \hldef{theta)}\hlopt{/}\hldef{(}\hlnum{1} \hlopt{+} \hldef{(x} \hlopt{-} \hldef{theta)}\hlopt{^}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -190,7 +190,7 @@ Now, $l''(\theta) = \sum \limits_{i = 1}^{20} u'(x_i, \theta)$ where $u'(x_i, \t
 \hldef{theta_hat_1}
 \end{alltt}
 \begin{verbatim}
-## [1] 4.596972
+## [1] 4.596882
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -218,7 +218,7 @@ We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
 \end{kframe}
 \end{knitrout}
 
-So, by Newton-Raphson method $\hat{\theta}_{\text{MLE}} = 4.596972$. \\
+So, by Newton-Raphson method $\hat{\theta}_{\text{MLE}} = 4.5968816$. \\
 
 \vspace{0.5cm}
 
@@ -274,7 +274,7 @@ For a sample of size $n$ from $Cauchy(\theta, 1)$ population, $I^{\ast}(\theta) 
 \hldef{theta_hat_2}
 \end{alltt}
 \begin{verbatim}
-## [1] 4.596825
+## [1] 4.59683
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -292,6 +292,6 @@ We shall also check whether $l'''(\hat{\theta}) < 0$ or not.
 \end{kframe}
 \end{knitrout}
 
-So, by Fisher Scoring method $\hat{\theta}_{\text{MLE}} = 4.596825$. \\
+So, by Fisher Scoring method $\hat{\theta}_{\text{MLE}} = 4.5968296$. \\
 
 \end{document}
