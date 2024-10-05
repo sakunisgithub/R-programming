@@ -1,0 +1,128 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 08}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Question :}} A manufacturing company has purchased three new machines of different makes and wishes to determine whether one of them is faster than the others in producing a certain output. Five-hourly production figures are observed at random from each machine and the results are as follows.
+		
+		\begin{table}[h]
+		\def\arraystretch{1.5}
+		
+		\begin{center}
+		\begin{tabular}{|>{\centering}m{3 cm}|>{\centering}m{1.5 cm}|>{\centering}m{1.5 cm}|>{\centering\arraybackslash}m{1.5 cm}|}
+		
+		\hline
+		
+		& Machine $A_1$ & Machine $A_2$ & Machine $A_3$ \\
+		
+		\hline
+		
+		& 25 & 31 & 24 \\
+		
+		& 30 & 39 & 30 \\
+		
+		Observations & 36 & 38 & 28 \\
+		
+		& 38 & 42 & 25 \\
+		
+		& 31 & 35 & 28 \\
+		
+		\hline
+		
+		\end{tabular}
+		\end{center}
+		
+		\end{table}
+		
+		Use analysis of variance technique and determine whether the machines are significantly different in their mean speeds. Use $\alpha = 5 \%$. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{One-way ANOVA} \\
+
+Key assumptions of ANOVA are that the errors (and consequently the observations) must be normally distributed with homoscedastic variance. \\
+
+First we shall verify the assumptions. \\
+
+<<size="tiny">>=
+machine_data <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/msc_semester_1/sonam_madam_practical_08_data.csv', 
+                         stringsAsFactors = TRUE)
+@
+
+$\bullet$ Checking Normality
+<<>>=
+shapiro.test(machine_data$speed)
+@
+
+A $p-$value of \Sexpr{shapiro.test(machine_data$speed)$p.value} results in failure of rejecting $H_0$ at $5\%$ level of significance that the data is from a normal distribution. This can also be verified by a normal Q-Q plot.
+
+<<warning=FALSE, message=FALSE, size="footnotesize">>=
+library(tidyverse)
+@
+
+<<>>=
+machine_data %>%
+  ggplot(aes(sample = speed)) +
+  stat_qq(size = 2, col = "red") +
+  stat_qq_line(linewidth = 1, col = "blue") +
+  labs(x = "Theoretical Quantiles", y = "Sample Quantiles", title = "Normal Q-Q Plot")
+@
+The points fit the line good. \\
+
+$\bullet$ Checking Homoscedastic Variance
+
+<<size="small">>=
+bartlett.test(speed ~ machine, data = machine_data)
+@
+
+
+A $p-$value of \Sexpr{bartlett.test(speed ~ machine, data = machine_data)$p.value} results in failure of rejecting $H_0$ at $5\%$ level of significance that all the group variances are equal. This can also be verified by a box-plot.
+
+<<>>=
+machine_data %>%
+  ggplot(aes(x = machine, y = speed)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#eaf411", linewidth = 1) +
+  stat_summary(fun = median, geom = "point", size = 3, col = "red") +
+  stat_summary(fun = median, geom = "line", aes(group = 1), linewidth = 1, col = "blue") +
+  labs(x = "Machine", y = "Speed", title = "Boxplot of Speed ~ Machine")
+@
+
+The spread of the boxes are more or less similar across groups. The line joining the group averages (here median) clearly shows that the sample machine average speeds differ a lot.
+
+\newpage
+
+<<>>=
+machine_data_anova <- aov(speed ~ machine, data = machine_data)
+summary(machine_data_anova)
+@
+
+$p-$value corresponding to machine is \Sexpr{summary(machine_data_anova)[[1]][["Pr(>F)"]][1]} $< 0.05$. So we reject the null hypothesis of equality of mean machine speeds at $5\%$ level of significance and conclude that at least one of the machine has significantly different mean speed than others. \\
+
+Now we shall do pairwise comparisons.
+<<>>=
+TukeyHSD(machine_data_anova, ordered = TRUE)
+@
+
+$p-$value corresponding to comparison of Machine $B$ and Machine $C$ is \Sexpr{TukeyHSD(machine_data_anova, ordered = TRUE)$machine[2, 4]} $< 0.025$. So machine $B$ and $C$ are significantly different at $5\%$ level of significance. Other comparisons are not significant. So we conclude that machine $B$ is the best as it has the highest sample mean speed.
+
+\end{document}
