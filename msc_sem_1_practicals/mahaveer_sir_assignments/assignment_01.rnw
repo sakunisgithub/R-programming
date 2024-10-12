@@ -1,0 +1,354 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+
+\title{MSMS - 105}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Assignment 01}
+\end{center}
+
+
+\OrnamentDiamondSolid \hspace{0.5cm} \textcolor{blue}{\textbf{Task :}} Collect a real data set belongs to your nearby. The sample size must be more than 20 with at least 4 different variables. Give the inference for this data using basic descriptive statistics and EDA approach. \\
+
+
+\faArrowAltCircleRight[regular] \textcolor{orange}{\textbf{\textit{Data Description}}} : A data-set has been created with help of the information obtained from students of Semester 1 of Statistics and Computing of DST-CIMS, BHU. A brief description of the data-set is as follows : \\
+
+\textcolor{blue}{\textit{\textbf{gender}}} : gender of the student; \\
+
+\textcolor{blue}{\textit{\textbf{home\_state}}} : home state of the student; \\
+
+\textcolor{blue}{\textit{\textbf{CUET\_score}}} : score of the student in CUET PG Statistics 2024; \\
+
+\textcolor{blue}{\textit{\textbf{appeared\_in\_JAM}}} : 1 if the student had appeared in JAM MS 2024, 0 otherwise; \\
+
+\textcolor{blue}{\textit{\textbf{JAM\_score}}} : score of an appearing student in JAM MS 2024; \\
+
+\textcolor{blue}{\textit{\textbf{coaching}}} : 1 if the student had enrolled in any coaching institute for preparation of aforesaid examinations, 0 otherwise; \\
+
+\textcolor{blue}{\textit{\textbf{UG\_CGPA}}} : CGPA of the student in his/her undergraduate program; \\
+
+\textcolor{blue}{\textit{\textbf{UG\_University\_State}}} : state of the university from where the student has completed his/her undergraduate program.
+
+<<echo=FALSE>>=
+raw_data <- read.csv("D:\\Users\\Documents\\DST_marks_data.csv", stringsAsFactors = TRUE)
+raw_data <- raw_data[,-1]
+@
+
+<<>>=
+dim(raw_data)
+@
+There are records of \Sexpr{dim(raw_data)[1]} students of the \Sexpr{dim(raw_data)[2]} variables as mentioned above.
+
+<<>>=
+names(raw_data)
+@
+
+\newpage
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+Let us have a look how different states are represented by students grouped by gender.
+<<echo=FALSE>>=
+home_state <- as.character(raw_data$home_state)
+
+home_state <- ifelse(!(home_state %in% c("WB", "UP", "JHARKHAND", "MAHARASHTRA")), "others", home_state)
+@
+
+<<echo=FALSE>>==
+home_state_and_gender <- data.frame(home.state = home_state, gender = raw_data$gender)
+@
+
+<<warning=FALSE>>=
+home_state_and_gender %>%
+  ggplot(aes(x = fct_infreq(home.state), fill = gender)) +
+  geom_bar(position = "dodge", col = "black", linewidth = 0.6) +
+  labs(x = "Home State", y = "Count", 
+       title = "State Distribution of Students") +
+  theme(legend.position = "top")
+@
+
+\newpage
+<<>>=
+table(raw_data$gender)
+@
+\smallpencil \hspace{0.5cm} Our data have \Sexpr{unname(table(raw_data$gender))[1]} female students and \Sexpr{unname(table(raw_data$gender))[2]} male students. \\
+
+
+
+\leftpointright \textcolor{blue}{\textit{\textbf{CUET\_score}}} \\
+
+Let us plot the values of \textit{\textbf{CUET\_score}} along the real line.
+
+<<echo=FALSE, message=FALSE, warning=FALSE, fig.show='hide'>>=
+raw_data %>%
+  ggplot(aes(x = CUET_score, y = rep(0, length(CUET_score)))) +
+  geom_hline(yintercept = 0, linewidth = 1) +
+  geom_point(col = "red", size = 3.5) +
+  labs(x = NULL, y = NULL) +
+  scale_x_discrete(limits = seq(100, 170, by = 10)) +
+  theme(panel.background = element_blank(),
+        plot.background = element_rect(fill = "#f9ebc5"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 15))
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\mahaveer_sir_assignments",
+       width = 14,
+       height = 2,
+       device='png',
+       dpi=1000,
+       filename = "cuet_score_point_plot.png",
+       units = "in",
+       bg = "white")
+@
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale = 0.4]{cuet_score_point_plot.png}
+\end{figure}
+
+$\bullet$ \underline{Measure of Central Tendency} : Mean CUET score of the students is \Sexpr{mean(raw_data$CUET_score)}. \\
+
+$\bullet$ \underline{Measure of Dispersion} : CUET score has a standard deviation of \Sexpr{sd(raw_data$CUET_score)}. \\
+
+$\bullet$ \underline{Quartiles} : The following are the quartiles of CUET score :
+<<>>=
+quantile(raw_data$CUET_score, probs = c(0.25, 0.5, 0.75))
+@
+
+\leftpointright \textcolor{blue}{\textit{\textbf{JAM\_score}}} \\
+
+Let us plot the values of \textit{\textbf{JAM\_score}} along the real line.
+
+<<>>=
+df1 <- raw_data %>%
+  drop_na()
+@
+
+<<warning=FALSE, message=FALSE, echo=FALSE, fig.show='hide'>>=
+df1 %>%
+  ggplot(aes(x = JAM_score, y = rep(0, length(JAM_score)))) +
+  geom_hline(yintercept = 0, linewidth = 1) +
+  geom_point(col = "red", size = 3.5) +
+  labs(x = NULL, y = NULL) +
+  scale_x_discrete(limits = seq(10, 50, by = 10)) +
+  theme(panel.background = element_blank(),
+        plot.background = element_rect(fill = "#dbfbfb"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 15))
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\mahaveer_sir_assignments",
+       width = 14,
+       height = 2,
+       device='png',
+       dpi=1000,
+       filename = "jam_score_point_plot.png",
+       units = "in",
+       bg = "white")
+@
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale = 0.4]{jam_score_point_plot.png}
+\end{figure}
+
+$\bullet$ \underline{Measure of Central Tendency} : Mean JAM score of the students is \Sexpr{mean(df1$JAM_score)}. \\
+
+$\bullet$ \underline{Measure of Dispersion} : JAM score has a standard deviation of \Sexpr{sd(df1$JAM_score)}. \\
+
+$\bullet$ \underline{Quartiles} : The following are the quartiles of JAM score :
+<<>>=
+quantile(df1$JAM_score, probs = c(0.25, 0.5, 0.75))
+@
+
+\newpage
+
+\leftpointright \textcolor{blue}{\textit{\textbf{UG\_CGPA}}} \\
+
+Let us plot the values of \textit{\textbf{UG\_CGPA}} along the real line.
+
+<<echo=FALSE, message=FALSE, warning=FALSE, fig.show='hide'>>=
+raw_data %>%
+  ggplot(aes(x = UG_CGPA, y = rep(0, length(UG_CGPA)))) +
+  geom_hline(yintercept = 0, linewidth = 1) +
+  geom_point(col = "red", size = 3.5) +
+  labs(x = NULL, y = NULL) +
+  scale_x_discrete(limits = seq(6, 9.5, by = 0.5)) +
+  theme(panel.background = element_blank(),
+        plot.background = element_rect(fill = "#cbfddc"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 15))
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\mahaveer_sir_assignments",
+       width = 14,
+       height = 2,
+       device='png',
+       dpi=1000,
+       filename = "ug_cgpa_point_plot.png",
+       units = "in",
+       bg = "white")
+@
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale = 0.4]{ug_cgpa_point_plot.png}
+\end{figure}
+
+$\bullet$ \underline{Measure of Central Tendency} : Mean UG CGPA of the students is \Sexpr{mean(raw_data$UG_CGPA)}. \\
+
+$\bullet$ \underline{Measure of Dispersion} : UG CGPA has a standard deviation of \Sexpr{sd(raw_data$UG_CGPA)}. \\
+
+$\bullet$ \underline{Quartiles} : The following are the quartiles of UG CGPA :
+<<>>=
+quantile(raw_data$UG_CGPA, probs = c(0.25, 0.5, 0.75))
+@
+
+\smallpencil \hspace{0.5cm} 25\% of the students have UG CGPA more than \Sexpr{quantile(raw_data$UG_CGPA, probs = c(0.25, 0.5, 0.75))[3]}. \\
+
+\anchor \hspace{0.2cm} \textbf{Coefficient of Variation}
+
+<<>>=
+coefficient_of_variation <- function(x, na.rm = FALSE){
+  return(sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm))
+}
+@
+
+<<>>=
+coefficient_of_variation(raw_data$CUET_score)
+@
+
+<<>>=
+coefficient_of_variation(raw_data$JAM_score, na.rm = TRUE)
+@
+
+<<>>=
+coefficient_of_variation(raw_data$UG_CGPA)
+@
+
+\smallpencil \hspace{0.5cm} So \textcolor{blue}{\textit{\textbf{UG\_CGPA}}} has minimum variability. \\
+
+\anchor \hspace{0.2cm} \textbf{Correlations}
+
+<<>>=
+cor(df1$CUET_score, df1$JAM_score)
+@
+
+<<size="footnotesize">>=
+cor(raw_data$CUET_score, raw_data$UG_CGPA)
+@
+
+<<size="footnotesize">>=
+cor(df1$JAM_score, df1$UG_CGPA)
+@
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textit{\textbf{UG\_CGPA}}} and \textcolor{blue}{\textit{\textbf{JAM\_score}}} have moderate correlation. \\
+
+
+\leftpointright \hspace{0.2cm} \textbf{Method of Preparation of the Students}
+
+<<echo=FALSE>>=
+raw_data$coaching <- ifelse(raw_data$coaching == 0, "No", "Yes")
+
+raw_data$coaching <- as.factor(raw_data$coaching)
+@
+
+<<size="footnotesize">>=
+raw_data %>%
+  ggplot(aes(x = fct_infreq(coaching))) +
+  geom_bar(fill = "#fb9c48", width = 0.5, col = "black", linewidth = 1) +
+  labs(x = "Enrolled in a Coaching", y = "Count", title = "Coaching Enrollment")
+@
+
+\smallpencil \hspace{0.5cm} So greater number of students prepared for competitive exam by self-study only. \\
+
+\newpage
+
+\leftpointright \hspace{0.2cm} \textbf{CUET Score for Two Methods of Preparation}
+
+<<>>=
+raw_data %>%
+  ggplot(aes(x = as.factor(coaching), y = CUET_score)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#b548fb", linewidth = 0.7) +
+  labs(x = "Coaching", y = "CUET Score", title = "CUET Score vs Coaching Enrollment")
+@
+
+\smallpencil \hspace{0.5cm} Median score of students who enrolled in a coaching institute and the ones who didn't are almost the same.
+
+\newpage
+
+\leftpointright \hspace{0.2cm} \textbf{UG CGPA for Male and Female Students}
+
+<<>>=
+raw_data %>%
+  ggplot(aes(x = gender, y = UG_CGPA)) +
+  stat_boxplot(geom = "errorbar", linewidth = 1) +
+  geom_boxplot(fill = "#fb48a2", linewidth = 0.7) +
+  labs(x = "Gender", y = "UG CGPA")
+@
+
+\smallpencil \hspace{0.5cm} Average UG CGPA of female students is slightly higher than that of male students. Also the CGPAs of male students have greater dispersion.
+
+\newpage
+
+\leftpointright \hspace{0.2cm} \textbf{Frequency Distribution of CUET Score}
+
+<<>>=
+raw_data %>%
+  ggplot(aes(x = CUET_score)) +
+  geom_histogram(fill = "#0FD8F0", bins = 10, col = "black", linewidth = 1) +
+  labs(x = "CUET Score", y = "Frequency Density", title = "Distribution of CUET Score")
+@
+
+\newpage
+
+\leftpointright \hspace{0.2cm} \textbf{CUET Score for Students of Different States}
+
+<<echo=FALSE>>=
+univ_state <- as.character(raw_data$UG_university_state)
+
+univ_state <- ifelse(!(univ_state %in% c("UP", "WB", "MAHARASHTRA")), "others", univ_state)
+
+score_univ_state <- data.frame(univ.state = univ_state, score = raw_data$CUET_score)
+@
+
+<<>>=
+score_univ_state %>%
+  ggplot(aes(x = univ.state, y = score)) +
+  stat_boxplot(geom = "errorbar", linewidth = 0.7) +
+  geom_boxplot(fill = "#3bfa89", linewidth = 0.5) +
+  labs(x = "UG University State", y = "CUET Score",
+       title = "CUET Score ~ UG University State")
+@
+
+\smallpencil \hspace{0.5cm} Clearly, students from the Universities of West Bengal have better CUET Scores than rest of the students.
+
+\end{document}
