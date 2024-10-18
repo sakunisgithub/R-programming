@@ -1,0 +1,236 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 09}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{\underline{Question} : Consider a vector with values 3, 2, 5, 4, 4, 5, 7, 6. Implement
+  \begin{enumerate}[(i)]
+    \item Bubble sort,
+    \item Insertion sort,
+    \item Quick sort
+  \end{enumerate}
+in R.}}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{2}\hldef{,} \hlnum{5}\hldef{,} \hlnum{4}\hldef{,} \hlnum{4}\hldef{,} \hlnum{5}\hldef{,} \hlnum{7}\hldef{,} \hlnum{6}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{Bubble Sort}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{bubble_sort} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hldef{i} \hlkwb{<-} \hlnum{1}
+  \hlkwa{while}\hldef{(i} \hlopt{<=} \hlkwd{length}\hldef{(x))\{}
+    \hldef{j} \hlkwb{<-} \hldef{i}
+    \hlkwa{while}\hldef{(j} \hlopt{<=} \hlkwd{length}\hldef{(x)}\hlopt{-}\hlnum{1}\hldef{)\{}
+      \hlkwa{if}\hldef{(x[j]} \hlopt{>} \hldef{x[j}\hlopt{+}\hlnum{1}\hldef{])\{}
+        \hldef{x[}\hlkwd{c}\hldef{(j, j}\hlopt{+}\hlnum{1}\hldef{)]} \hlkwb{<-} \hldef{x[}\hlkwd{c}\hldef{(j}\hlopt{+}\hlnum{1}\hldef{, j)]}
+      \hldef{\}}
+      \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{+} \hlnum{1}
+    \hldef{\}}
+    \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(x)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sorted_x} \hlkwb{<-} \hlkwd{bubble_sort}\hldef{(x)}
+\hldef{sorted_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 2 3 4 4 5 5 6 7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{Insertion Sort}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{insertion_sort} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+  \hldef{i} \hlkwb{<-} \hlnum{1}
+  \hlkwa{while}\hldef{(i} \hlopt{<=} \hlkwd{length}\hldef{(x))\{}
+    \hldef{key} \hlkwb{<-} \hldef{x[i]}
+    \hldef{j} \hlkwb{<-} \hldef{i} \hlopt{-} \hlnum{1}
+    \hlkwa{while}\hldef{(j} \hlopt{>=} \hlnum{1}\hldef{)\{}
+      \hlkwa{if}\hldef{(key} \hlopt{<} \hldef{x[j])\{}
+        \hldef{x[}\hlkwd{c}\hldef{(i, j)]} \hlkwb{<-} \hldef{x[}\hlkwd{c}\hldef{(j, i)]}
+      \hldef{\}}
+      \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{-} \hlnum{1}
+    \hldef{\}}
+    \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+  \hlkwd{return}\hldef{(x)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sorted_x} \hlkwb{<-} \hlkwd{insertion_sort}\hldef{(x)}
+\hldef{sorted_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 2 3 4 4 5 5 6 7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{Quick Sort}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{partition} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{values}\hldef{,} \hlkwc{low}\hldef{,} \hlkwc{high}\hldef{)\{}
+
+  \hldef{pivot} \hlkwb{<-} \hldef{values[low]}
+
+  \hldef{i} \hlkwb{<-} \hldef{low; j} \hlkwb{<-} \hldef{high} \hlopt{+} \hlnum{1}
+
+  \hlkwa{while}\hldef{(i} \hlopt{<} \hldef{j)\{}
+    \hlkwa{repeat}\hldef{\{}
+      \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+      \hlkwa{if}\hldef{(values[i]} \hlopt{>} \hldef{pivot} \hlopt{||} \hldef{i} \hlopt{==} \hldef{high)} \hlkwa{break}
+    \hldef{\}}
+
+    \hlkwa{repeat}\hldef{\{}
+      \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{-} \hlnum{1}
+      \hlkwa{if}\hldef{(values[j]} \hlopt{<=} \hldef{pivot)} \hlkwa{break}
+    \hldef{\}}
+
+    \hlkwa{if}\hldef{(i} \hlopt{<} \hldef{j) values[}\hlkwd{c}\hldef{(i, j)]} \hlkwb{<-} \hldef{values[}\hlkwd{c}\hldef{(j, i)]}
+  \hldef{\}}
+
+  \hldef{values[}\hlkwd{c}\hldef{(low, j)]} \hlkwb{<-} \hldef{values[}\hlkwd{c}\hldef{(j, low)]}
+
+  \hlkwd{return}\hldef{(}\hlkwd{list}\hldef{(j, values))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{quick_sort} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{values}\hldef{,} \hlkwc{low}\hldef{,} \hlkwc{high}\hldef{)\{}
+
+  \hlkwa{if}\hldef{(low} \hlopt{>=} \hldef{high)} \hlkwd{return}\hldef{(values)}
+
+  \hldef{p} \hlkwb{<-} \hlkwd{partition}\hldef{(values, low, high)}
+  \hldef{partition_index} \hlkwb{<-} \hldef{p[[}\hlnum{1}\hldef{]]}
+  \hldef{values} \hlkwb{<-} \hldef{p[[}\hlnum{2}\hldef{]]}
+
+  \hldef{values} \hlkwb{<-} \hlkwd{quick_sort}\hldef{(values, low, partition_index} \hlopt{-} \hlnum{1}\hldef{)}
+  \hldef{values} \hlkwb{<-} \hlkwd{quick_sort}\hldef{(values, partition_index} \hlopt{+} \hlnum{1}\hldef{, high)}
+
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sorted_x} \hlkwb{<-} \hlkwd{quick_sort}\hldef{(x,} \hlnum{1}\hldef{,} \hlkwd{length}\hldef{(x))}
+\hldef{sorted_x}
+\end{alltt}
+\begin{verbatim}
+## [1] 2 3 4 4 5 5 6 7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}
