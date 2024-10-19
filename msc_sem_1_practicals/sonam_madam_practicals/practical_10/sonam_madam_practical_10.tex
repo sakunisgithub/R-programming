@@ -1,0 +1,193 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 10}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{\underline{Question} : }}
+The following table gives quality rating of ten service stations by five professional raters.
+	
+	\begin{table}[h]
+	\def\arraystretch{1.5}
+	
+	\begin{center}
+	\begin{tabular}{|c|>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering\arraybackslash}m{1 cm}|}
+	
+	\hline
+	
+	\multirow{2}{*}{RATER} & \multicolumn{10}{c|}{SERVICE STATION} \\
+	
+	\cline{2-11}
+	
+	& 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+	
+	\hline
+	
+	A & 99 & 70 & 90 & 99 & 65 & 85 & 75 & 70 & 85 & 92 \\
+	
+	B & 96 & 65 & 80 & 95 & 70 & 88 & 70 & 51 & 84 & 91 \\
+	
+	C & 95 & 60 & 48 & 87 & 48 & 75 & 71 & 93 & 80 & 93 \\
+	
+	D & 98 & 65 & 70 & 95 & 67 & 82 & 73 & 94 & 86 & 80 \\
+	
+	E & 97 & 65 & 62 & 99 & 60 & 80 & 76 & 92 & 90 & 89 \\
+	
+	\hline
+	
+	\end{tabular}
+	\end{center}
+	
+	\end{table}
+	
+	Analyse the data and discuss whether there is any significant difference between raters or between service stations. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{Two-way ANOVA with one observation per cell} \\
+
+Here two factors under study are ``\underline{rater}" and ``\underline{service station}". \\
+
+Denote \textcolor{red}{$\mu_{i}$} as the additional effect on rating due to $i$th rater; $i = {A, B, \ldots, E}$ and \\
+
+\textcolor{red}{$\tau_{j}$} as the additional effect on rating due to $j$th service station; $j = 1(1)10$. \\
+
+We shall do two hypotheses testings. They are
+
+\begin{enumerate}[(i)]
+  \item $H_{01} : \mu_{A} = \mu_{B} = \mu_{C} = \mu_{D} = \mu_{E}$ i.e. raters are not significantly different
+        \begin{center} against \end{center}
+        $H_{11} : \text{at least one inequality in } H_{01}.$
+  
+  \item $H_{02} : \tau_1 = \tau_2 = \ldots = \tau_{10}$ i.e. there is no significant difference between service stations
+        \begin{center} against \end{center}
+        $H_{12} : \text{at least one inequality in } H_{02}.$
+\end{enumerate}
+
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{rating} \hlkwb{<-} \hlkwd{read.csv}\hldef{(}\hlsng{'https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/cc12_prac_q3_data.csv'}\hldef{,} \hlkwc{stringsAsFactors} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{dim}\hldef{(rating)}
+\end{alltt}
+\begin{verbatim}
+## [1] 50  3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{names}\hldef{(rating)}
+\end{alltt}
+\begin{verbatim}
+## [1] "rater"           "service_station" "ratings"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{rating_anova} \hlkwb{<-} \hlkwd{aov}\hldef{(ratings} \hlopt{~} \hldef{rater} \hlopt{+} \hldef{service_station,} \hlkwc{data} \hldef{= rating)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hldef{(rating_anova)}
+\end{alltt}
+\begin{verbatim}
+##                 Df Sum Sq Mean Sq F value  Pr(>F)    
+## rater            4    368    92.0   1.154   0.347    
+## service_station  9   6608   734.2   9.210 4.5e-07 ***
+## Residuals       36   2870    79.7                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+So we conclude that, although the raters do not differ significantly from each other, the service stations have significant difference among themselves at $5\%$ level of significance.
+
+
+\end{document}

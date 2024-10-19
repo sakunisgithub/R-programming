@@ -1,0 +1,109 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{slashbox}
+
+\title{MSMS - 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 10}
+\end{center}
+
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{\underline{Question} : }}
+The following table gives quality rating of ten service stations by five professional raters.
+	
+	\begin{table}[h]
+	\def\arraystretch{1.5}
+	
+	\begin{center}
+	\begin{tabular}{|c|>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering}m{1 cm}>{\centering\arraybackslash}m{1 cm}|}
+	
+	\hline
+	
+	\multirow{2}{*}{RATER} & \multicolumn{10}{c|}{SERVICE STATION} \\
+	
+	\cline{2-11}
+	
+	& 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+	
+	\hline
+	
+	A & 99 & 70 & 90 & 99 & 65 & 85 & 75 & 70 & 85 & 92 \\
+	
+	B & 96 & 65 & 80 & 95 & 70 & 88 & 70 & 51 & 84 & 91 \\
+	
+	C & 95 & 60 & 48 & 87 & 48 & 75 & 71 & 93 & 80 & 93 \\
+	
+	D & 98 & 65 & 70 & 95 & 67 & 82 & 73 & 94 & 86 & 80 \\
+	
+	E & 97 & 65 & 62 & 99 & 60 & 80 & 76 & 92 & 90 & 89 \\
+	
+	\hline
+	
+	\end{tabular}
+	\end{center}
+	
+	\end{table}
+	
+	Analyse the data and discuss whether there is any significant difference between raters or between service stations. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} \textbf{Two-way ANOVA with one observation per cell} \\
+
+Here two factors under study are ``\underline{rater}" and ``\underline{service station}". \\
+
+Denote \textcolor{red}{$\mu_{i}$} as the additional effect on rating due to $i$th rater; $i = {A, B, \ldots, E}$ and \\
+
+\textcolor{red}{$\tau_{j}$} as the additional effect on rating due to $j$th service station; $j = 1(1)10$. \\
+
+We shall do two hypotheses testings. They are
+
+\begin{enumerate}[(i)]
+  \item $H_{01} : \mu_{A} = \mu_{B} = \mu_{C} = \mu_{D} = \mu_{E}$ i.e. raters are not significantly different
+        \begin{center} against \end{center}
+        $H_{11} : \text{at least one inequality in } H_{01}.$
+  
+  \item $H_{02} : \tau_1 = \tau_2 = \ldots = \tau_{10}$ i.e. there is no significant difference between service stations
+        \begin{center} against \end{center}
+        $H_{12} : \text{at least one inequality in } H_{02}.$
+\end{enumerate}
+
+<<size="tiny">>=
+rating <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/cc12_prac_q3_data.csv', stringsAsFactors = TRUE)
+@
+
+<<>>=
+dim(rating)
+@
+
+<<>>=
+names(rating)
+@
+
+
+<<>>=
+rating_anova <- aov(ratings ~ rater + service_station, data = rating)
+@
+
+<<>>==
+summary(rating_anova)
+@
+
+So we conclude that, although the raters do not differ significantly from each other, the service stations have significant difference among themselves at $5\%$ level of significance.
+
+
+\end{document}
