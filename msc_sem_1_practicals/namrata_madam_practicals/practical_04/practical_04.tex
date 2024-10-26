@@ -1,0 +1,177 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 03}
+\end{center}
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Implement Lagrange's Interpolation method to approximate value of a function at a given point.}}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} The Lagrange Interpolating polynomial $P(x)$ of degree $n$ that passes through the data points $(x_1, y_1 = f(x_1))$, $(x_2, y_2 = f(x_2))$, $\ldots$, $(x_n, y_n = f(y_n))$ is given by
+
+$$P(x) = y_1 \cdot \dfrac{(x - x_2)(x - x_3) \ldots (x - x_n)}{(x_1 - x_2) (x_1 - x_3) \ldots (x_1 - x_n)} + y_2 \cdot \dfrac{(x - x_1)(x - x_3) \ldots (x - x_n)}{(x_2 - x_1) (x_2 - x_3) \ldots (x_2 - x_n)} + $$
+
+$$ \ldots + y_n \cdot \dfrac{(x - x_1)(x - x_2) \ldots (x - x_{n-1})}{(x_n - x_1) (x_n - x_2) \ldots (x_n - x_{n-1})}.$$
+
+\vspace{1cm}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{lagrange_interpolation} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{xi}\hldef{,} \hlkwc{yi}\hldef{)\{}
+
+  \hldef{num} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,} \hlkwd{length}\hldef{(xi))}
+  \hldef{denom} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,} \hlkwd{length}\hldef{(xi))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(xi)) \{}
+
+    \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(xi)) \{}
+      \hlkwa{if}\hldef{(i} \hlopt{!=} \hldef{j)\{}
+        \hldef{num[i]} \hlkwb{<-} \hldef{num[i]} \hlopt{*} \hldef{(x} \hlopt{-} \hldef{xi[j])}
+        \hldef{denom[i]} \hlkwb{<-} \hldef{denom[i]} \hlopt{*} \hldef{(xi[i]} \hlopt{-} \hldef{xi[j])}
+      \hldef{\}}
+    \hldef{\}}
+  \hldef{\}}
+
+  \hldef{pred} \hlkwb{<-} \hlkwd{sum}\hldef{((num} \hlopt{/} \hldef{denom)} \hlopt{*} \hldef{yi)}
+  \hlkwd{return}\hldef{(pred)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+$\bullet$ \textbf{Example 1}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{temp} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{361}\hldef{,} \hlnum{367}\hldef{,} \hlnum{378}\hldef{,} \hlnum{387}\hldef{,} \hlnum{399}\hldef{)}
+\hldef{pres} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{154.9}\hldef{,} \hlnum{167}\hldef{,} \hlnum{191}\hldef{,} \hlnum{212.5}\hldef{,} \hlnum{244.2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{lagrange_interpolation}\hldef{(}\hlnum{371.2}\hldef{, temp, pres)}
+\end{alltt}
+\begin{verbatim}
+## [1] 175.8824
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\bullet$ \textbf{Example 2}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{2}\hldef{,} \hlnum{2.5}\hldef{,} \hlnum{3}\hldef{)}
+\hldef{y} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.69315}\hldef{,} \hlnum{0.91629}\hldef{,} \hlnum{1.09861}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{lagrange_interpolation}\hldef{(}\hlnum{2.7}\hldef{, x, y)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.9941164
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\bullet$ \textbf{Example 3}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{5}\hldef{,} \hlnum{6}\hldef{,} \hlnum{9}\hldef{,} \hlnum{11}\hldef{)}
+\hldef{y} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{12}\hldef{,} \hlnum{13}\hldef{,} \hlnum{14}\hldef{,} \hlnum{16}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{lagrange_interpolation}\hldef{(}\hlnum{10}\hldef{, x, y)}
+\end{alltt}
+\begin{verbatim}
+## [1] 14.66667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{document}

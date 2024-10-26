@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 03}
+\end{center}
+
+\smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Implement Lagrange's Interpolation method to approximate value of a function at a given point.}}
+
+\vspace{0.5cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.5cm} The Lagrange Interpolating polynomial $P(x)$ of degree $n$ that passes through the data points $(x_1, y_1 = f(x_1))$, $(x_2, y_2 = f(x_2))$, $\ldots$, $(x_n, y_n = f(y_n))$ is given by
+
+$$P(x) = y_1 \cdot \dfrac{(x - x_2)(x - x_3) \ldots (x - x_n)}{(x_1 - x_2) (x_1 - x_3) \ldots (x_1 - x_n)} + y_2 \cdot \dfrac{(x - x_1)(x - x_3) \ldots (x - x_n)}{(x_2 - x_1) (x_2 - x_3) \ldots (x_2 - x_n)} + $$
+
+$$ \ldots + y_n \cdot \dfrac{(x - x_1)(x - x_2) \ldots (x - x_{n-1})}{(x_n - x_1) (x_n - x_2) \ldots (x_n - x_{n-1})}.$$
+
+\vspace{1cm}
+
+<<>>=
+lagrange_interpolation <- function(x, xi, yi){
+  
+  num <- rep(1, length(xi))
+  denom <- rep(1, length(xi))
+  
+  for (i in 1:length(xi)) {
+    
+    for (j in 1:length(xi)) {
+      if(i != j){
+        num[i] <- num[i] * (x - xi[j])
+        denom[i] <- denom[i] * (xi[i] - xi[j])
+      }
+    }
+  }
+  
+  pred <- sum((num / denom) * yi)
+  return(pred)
+}
+@
+
+\newpage
+
+$\bullet$ \textbf{Example 1}
+
+<<>>=
+temp <- c(361, 367, 378, 387, 399)
+pres <- c(154.9, 167, 191, 212.5, 244.2)
+@
+
+<<>>=
+lagrange_interpolation(371.2, temp, pres)
+@
+
+$\bullet$ \textbf{Example 2}
+
+<<>>=
+x <- c(2, 2.5, 3)
+y <- c(0.69315, 0.91629, 1.09861)
+@
+
+<<>>=
+lagrange_interpolation(2.7, x, y)
+@
+
+$\bullet$ \textbf{Example 3}
+
+<<>>=
+x <- c(5, 6, 9, 11)
+y <- c(12, 13, 14, 16)
+@
+
+<<>>=
+lagrange_interpolation(10, x, y)
+@
+
+\end{document}
