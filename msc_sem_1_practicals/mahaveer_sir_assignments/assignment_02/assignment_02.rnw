@@ -1,0 +1,123 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{xcolor}
+
+\definecolor{col1}{HTML}{e75e05}
+\definecolor{stack_red}{HTML}{DB4437}
+\definecolor{stack_yellow}{HTML}{F4B400}
+\definecolor{stack_cyan}{HTML}{08e2f0}
+\definecolor{stack_blue}{HTML}{4285F4}
+\definecolor{stack_green}{HTML}{0F9D58}
+
+\title{MSMS - 105}
+\author{Ananda Biswas}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Assignment 02}
+\end{center}
+
+
+\OrnamentDiamondSolid \hspace{0.5cm} \textcolor{blue}{\textbf{Objective :}} To design and develop an animated plot that visually represents the progress of loading. \\
+
+\faArrowAltCircleRight[regular] \textcolor{col1}{\textbf{\textit{Idea}}} : We try to animate a ball falling from top and it gets bigger as it falls. The balls get stacked in 10 layers each with 10 balls representing a total of 100 percent. \textcolor{stack_red}{\textbf{RED}}, \textcolor{stack_yellow}{\textbf{YELLOW}}, \textcolor{stack_cyan}{\textbf{CYAN}}, \textcolor{stack_blue}{\textbf{BLUE}}, \textcolor{stack_green}{\textbf{GREEN}} layers respectively denote \textcolor{stack_red}{\textbf{20}}, \textcolor{stack_yellow}{\textbf{40}}, \textcolor{stack_cyan}{\textbf{60}}, \textcolor{stack_blue}{\textbf{80}}, \textcolor{stack_green}{\textbf{100}} percentage of total loading done. \\
+
+
+\faArrowAltCircleRight[regular] \textcolor{col1}{\textbf{\textit{Implementation}}} : 
+
+<<>>=
+pause <- function(seconds) {
+  start <- Sys.time()
+  while((Sys.time() - start) < seconds) {}
+}
+@
+
+<<fig.show='hide'>>=
+par(bg = "black")
+plot(NA, NA, 
+     xlim = c(1, 10), 
+     ylim = c(1, 10),
+     xaxt = "n",
+     yaxt = "n",
+     xlab = "",
+     ylab = "")
+@
+
+<<>>=
+ball_colors <- rep(c("#DB4437", "#F4B400", "#08e2f0", "#4285F4", "#0F9D58"), 
+                   rep(2, 5))
+@
+
+<<fig.show='hide', eval=FALSE>>=
+for (t in 1:10) {
+  pop <- 1:10
+  
+  for(k in 1:10){
+    
+    if(k < 10){
+      num <- sample(pop, 1)
+    } else{
+      num <- pop[1]
+    }
+    
+    cl <- rep("black", 10-t+1)
+    
+    for (m in 1:(10-t+1)) {
+      cl[m] <- ball_colors[t]
+      if(t != 10){
+        points(x = rep(num, length(10:t)), 
+               y = 10:t, 
+               col = cl, 
+               pch = 19, 
+               cex = seq(1, 4, length = 10-t+1))
+      } else{
+        points(x = num, y = 10, col = cl, pch = 19, cex = 4)
+      }
+      pause(0.15)
+      cl <- rep("black", 10-t+1)
+    }
+    
+    index <- which(pop == num)
+    pop <- pop[-index]
+  }
+}
+@
+
+\faArrowAltCircleRight[regular] \textcolor{col1}{\textbf{\textit{Stages of the Animation}}} : 
+
+\begin{table}[!htbp]
+
+\begin{center}
+\begin{tabular}{ccc}
+
+\includegraphics[scale = 0.35]{3} & \includegraphics[scale = 0.35]{20} & \includegraphics[scale = 0.35]{40} \\
+
+3 \% done and in-progress & 20 \% done and in-progress & 40 \% done and in-progress \\
+
+& & \\
+
+\includegraphics[scale = 0.35]{60} & \includegraphics[scale = 0.35]{80} & \includegraphics[scale = 0.35]{100} \\
+
+60 \% done and in-progress & 80 \% done and in-progress & 100 \% done \\
+
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{document}
