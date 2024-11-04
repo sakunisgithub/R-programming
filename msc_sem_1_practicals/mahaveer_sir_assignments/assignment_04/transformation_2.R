@@ -28,8 +28,8 @@ for (i in 1:100) {
   points(x[i], y[i], col = "black", pch = 19)
   segments(0, 0, x[i], y[i], col = "black", lwd = 2)
   
-  points(b[1, i], b[2, i], type = "p", asp = 1, col = "green", pch = 19)
-  points(b[1, 1:i], b[2, 1:i], type = "p", asp = 1, col = "green", pch = 19)
+  points(b[1, i], b[2, i], col = "green", pch = 19)
+  points(b[1, 1:i], b[2, 1:i], col = "green", pch = 19)
   
   segments(0, 0, b[1, i], b[2, i], col = "red", lwd = 2)
   segments(0, 0, b[1, 1:i], b[2, 1:i], col = "red", lwd = 2)
