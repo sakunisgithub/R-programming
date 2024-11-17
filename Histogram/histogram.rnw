@@ -1,0 +1,97 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{Histogram}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<>>=
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange")
+@
+
+\newpage
+
+$\bullet$ When \textbf{breaks} is a number, it denotes the number of classes, i.e. the number of vertical cells in the diagram.
+<<>>=
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = 10)
+@
+
+\newpage
+
+$\bullet$ When \textbf{breaks} is a vector, it gives the breakpoints between the histogram cells.
+<<>>=
+range(mtcars$mpg)
+
+breaks_vector <- seq(from = 10, to = 34, by = 3)
+
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = breaks_vector)
+@
+
+\newpage
+
+$\bullet$ \textit{xaxp = c(10, 34, 8)} displays 8 equidistant breakpoints in the histogram, starting from 10 up to 34. \\
+
+\hspace{0.5cm} \textit{xaxt} argument and \textit{axis()} function can also be used here.
+
+<<>>=
+breaks_vector <- seq(from = 10, to = 34, by = 3)
+
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequencies",
+     col = "orange",
+     breaks = breaks_vector,
+     xaxp = c(10, 34, 8))
+@
+
+\newpage
+
+$\bullet$ Histogram with frequency density
+<<>>=
+hist(mtcars$mpg,
+     xlab = "Classes",
+     ylab = "Frequency Densities",
+     col = "orange",
+     probability = TRUE)
+@
+
+\newpage
+
+<<>>=
+hist(quakes$mag, probability = TRUE)
+lines(density(quakes$mag))
+@
+
+\newpage
+
+$\bullet$ A plot that resembles a ``discrete histogram" :
+<<>>=
+plot(table(airquality$Temp), 
+     type = "h", 
+     lwd = 5,
+     xlab = "Temperatures",
+     ylab = "Frequencies",
+     main = "Frequencies of the Temperatures",
+     col = "blue")
+@
+
+\end{document}
