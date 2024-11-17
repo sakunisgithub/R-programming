@@ -1,0 +1,73 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+
+\title{Pie Chart}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+<<size="tiny">>=
+raw_data <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/performance_of_national_parties_in_general_election_2019.csv')
+@
+
+<<>>=
+summary(raw_data)
+@
+
+<<>>=
+data.1 <- raw_data[,c("name_of_the_party", "number_of_votes_secured")]
+print(data.1)
+@
+
+<<>>=
+summary(data.1)
+@
+
+
+<<>>=
+slices <- c(data.1$number_of_votes_secured)
+
+party_name <- c(data.1$name_of_the_party)
+
+party_color <- c("green", "grey", "orange", "red", "pink", "blue", "yellow")
+
+pie(slices, main = "Vote Share of National Parties in GE 2019", col = party_color)
+
+legend("bottomright", 
+       legend = data.1$name_of_the_party, 
+       fill = party_color, 
+       cex = 0.60,
+       bty = "n")
+@
+
+$\bullet$ \textit{bty} implies borer-type.
+
+\newpage
+
+<<>>=
+slice <- c(data.1$number_of_votes_secured)
+
+party_names <- c("AITC", "BSP", "BJP", "CPI", "CPI(M)", "INC", "NCP")
+
+party_colors <- c("green", "grey", "orange", "red", "pink", "blue", "yellow")
+
+percentage <- round(slice/sum(slice)*100)
+
+lbs <- paste(party_names, percentage, "%", sep = " ")
+
+pie(slice, 
+    labels = lbs, 
+    main = "Vote Share of Different Political Parties in General Election 2019",
+    clockwise = TRUE, # by default it is set to FALSE
+    col = party_colors)
+@
+
+
+\end{document}
