@@ -1,0 +1,125 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.75 in, bottom = 0.75 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Practical 12}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\ifr{IndieFlower-Regular.ttf}
+% how to use ---- {\ifr write text here}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} To simulate and calculate total sales for 4 regions over 5 months and plot the results.
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program, Plot and Interpretation}}
+
+\leftpointright \hspace{0.2cm} Data simulation
+<<>>=
+sales <- c()
+temp <- c(2, 4, 7, 10, 5)
+
+for (i in 1:4) {
+  for (j in 1:5) {
+    sales <- append(sales, round(rnorm(1, 10*i + 20*temp[j], 1), digits = 2))
+  }
+}
+
+regions <- rep(c("Region1", "Region2", "Region3", "Region4"), rep(5, 4))
+months <- rep(c("Month1", "Month2", "Month3", "Month4", "Month5"), 4)
+
+sales_df <- data.frame(region = as.factor(regions),
+                       month = as.factor(months),
+                       sales = sales)
+
+# View(sales_df)
+@
+
+
+<<>>=
+summary(sales_df)
+@
+
+<<warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+\newpage
+
+\leftpointright \hspace{0.2cm} Region-wise sales
+<<>>=
+region_sale <- sales_df %>%
+  group_by(region) %>%
+  summarise(total_sale = sum(sales))
+@
+
+<<>>=
+region_sale %>%
+  ggplot(aes(x = region, y = total_sale)) +
+  geom_col(fill = c("#e1d216", "#16d5e1", "#9416e1", "#f81a7f"),
+           col = "black") +
+  geom_text(aes(label = total_sale),
+            vjust = -0.5,
+            size = 4) +
+  labs(x = "Region", y = "Total Sale",
+       title = "Sales in Different Regions")
+@
+
+\smallpencil {\ifr When total sale of all 5 months is considered, Region1 has the lowest sales and Region4 has the highest sales.} \\
+
+
+\newpage
+
+\leftpointright \hspace{0.2cm} Month-wise sales
+
+<<>>=
+month_sales <- sales_df %>%
+  group_by(month) %>%
+  summarise(total_sale = sum(sales))
+@
+
+
+<<>>=
+month_sales %>%
+  ggplot(aes(x = month, y = total_sale)) +
+  geom_col(fill = c("#59f814", "#54e614", "#4fd514", "#46ba14", "#41ac12"),
+           col = "black") +
+  geom_text(aes(label = total_sale),
+            vjust = -0.5,
+            size = 4) +
+  labs(x = "Month", y = "Total Sale",
+       title = "Month-wise Total Sales")
+@
+
+\smallpencil {\ifr When we aggregate sales of all the regions over different months, we see that there is a sharp increase in total sales over months.}
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{1cm} {\ifr Our data have an increasing trend of total sales over months. Also, "Region4" has highest number of sales.}
+
+\end{document}
