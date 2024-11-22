@@ -1,0 +1,308 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{twemojis}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 05}
+\end{center}
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Polynomial Approximation}}
+
+\vspace{0.5cm}
+
+\smallpencil \hspace{0.2cm} Find a linear fit to the following data.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+
+\hline
+
+$x$ & 1 & 2 & 3 & 4 & 5 \\
+
+\hline
+
+$f(x)$ & 1.2 & 2.3 & 2.9 & 4.1 & 5.2 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\end{table}
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Let $f(x) \approx P_1(x) = a_0 + a_1 x$.
+
+<<>>=
+df1 <- data.frame(x = 1:5,
+                  y = c(1.2, 2.3, 2.9, 4.1, 5.2))
+@
+
+<<>>=
+fit1 <- lm(y ~ x, data = df1)
+fit1$coefficients
+@
+
+So, $P_1(x) = \Sexpr{fit1$coefficients[1]} + \Sexpr{fit1$coefficients[2]} x$.
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<fig.show='hide'>>=
+df1 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(col = "red", size = 3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
+  labs(title = "Fitting a linear polynomial")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit1.png",
+       units = "in",
+       bg = "white")
+@
+
+<<fig.show='hide'>>=
+fit1_residuals <- data.frame(index = 1:5, residual = fit1$residuals)
+
+fit1_residuals %>%
+  ggplot(aes(x = index, y = residual)) +
+  geom_point(col = "red", size = 3) +
+  geom_hline(yintercept = 0, col = "blue", linewidth = 1) +
+  labs(title = "Residual Plot")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit1_residuals.png",
+       units = "in",
+       bg = "white")
+@
+
+\newpage
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+
+\begin{tabular}{cc}
+
+\includegraphics[scale = 0.5]{fit1} & 
+\includegraphics[scale = 0.5]{fit1_residuals}
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\smallpencil \hspace{0.2cm} Find a linear fit to the following data.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+
+\hline
+
+$x$ & 0.2 & 0.4 & 0.6 & 0.8 & 1 \\
+
+\hline
+
+$f(x)$ & 0.447 & 0.632 & 0.775 & 0.894 & 1 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\end{table}
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Let $f(x) \approx P_1(x) = a_0 + a_1 x$.
+
+<<>>=
+df2 <- data.frame(x = c(0.2, 0.4, 0.6, 0.8, 1),
+                  y = c(0.447, 0.632, 0.775, 0.894, 1))
+@
+
+<<>>=
+fit2 <- lm(y ~ x, data = df2)
+fit2$coefficients
+@
+
+So, $P_1(x) = \Sexpr{fit2$coefficients[1]} + \Sexpr{fit2$coefficients[2]} x$.
+
+<<fig.show='hide'>>=
+df2 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(col = "red", size = 3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
+  labs(title = "Fitting a linear polynomial")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit2.png",
+       units = "in",
+       bg = "white")
+@
+
+<<fig.show='hide'>>=
+fit2_residuals <- data.frame(index = 1:5, residual = fit2$residuals)
+
+fit2_residuals %>%
+  ggplot(aes(x = index, y = residual)) +
+  geom_point(col = "red", size = 3) +
+  geom_hline(yintercept = 0, col = "blue", linewidth = 1) +
+  labs(title = "Residual Plot")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit2_residuals.png",
+       units = "in",
+       bg = "white")
+@
+
+\newpage
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+
+\begin{tabular}{cc}
+
+\includegraphics[scale = 0.5]{fit2} & 
+\includegraphics[scale = 0.5]{fit2_residuals}
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\smallpencil \hspace{0.2cm} Fit a second-degree polynomial to the following data.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+
+\hline
+
+$x$ & 1 & 2 & 3 & 4 & 5 \\
+
+\hline
+
+$f(x)$ & 2.2 & 4.8 & 8.5 & 14.1 & 20.2 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\end{table}
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Let $f(x) \approx P_2(x) = a_0 + a_1 x + a_2 x^2$.
+
+<<>>=
+df3 <- data.frame(x = 1:5,
+                  y = c(2.2, 4.8, 8.5, 14.1, 20.2))
+@
+
+<<>>=
+fit3 <- lm(y ~ x + I(x^2), data = df3)
+fit3$coefficients
+@
+
+So, $P_2(x) = \Sexpr{fit3$coefficients[1]} + \Sexpr{fit3$coefficients[2]} x + \Sexpr{fit3$coefficients[3]} x^2$.
+
+<<fig.show='hide'>>=
+df3 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(col = "red", size = 3) +
+  geom_smooth(method = "lm", formula = y ~ x + I(x^2), se = FALSE) +
+  labs(title = "Fitting a quadratic polynomial")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit3.png",
+       units = "in",
+       bg = "white")
+@
+
+<<fig.show='hide'>>=
+fit3_residuals <- data.frame(index = 1:5, residual = fit3$residuals)
+
+fit3_residuals %>%
+  ggplot(aes(x = index, y = residual)) +
+  geom_point(col = "red", size = 3) +
+  geom_hline(yintercept = 0, col = "blue", linewidth = 1) +
+  labs(title = "Residual Plot")
+@
+
+<<echo=FALSE>>=
+ggsave(path = "D:\\Programming Languages\\R\\msc_sem_1_practicals\\namrata_madam_practicals\\practical_05",
+       width = 6,
+       height = 6,
+       device = 'png',
+       dpi = 500,
+       filename = "fit3_residuals.png",
+       units = "in",
+       bg = "white")
+@
+
+\newpage
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+
+\begin{tabular}{cc}
+
+\includegraphics[scale = 0.5]{fit3} & 
+\includegraphics[scale = 0.5]{fit3_residuals}
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\end{document}

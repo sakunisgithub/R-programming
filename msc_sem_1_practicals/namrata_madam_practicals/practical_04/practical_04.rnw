@@ -16,7 +16,7 @@
 \maketitle
 
 \begin{center}
-\textbf{Practical 03}
+\textbf{Practical 04}
 \end{center}
 
 \smallpencil \hspace{0.5cm} \textcolor{blue}{\textbf{Implement Lagrange's Interpolation method to approximate value of a function at a given point.}}
