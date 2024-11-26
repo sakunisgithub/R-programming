@@ -1,0 +1,79 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 0.75 in, right = 0.75 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 105 : Practical}
+\author{Ananda Biswas}
+\date{26 November, 2024}
+
+\newfontface\ifr{IndieFlower-Regular.ttf}
+% how to use ---- {\ifr write text here}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} For $n = \{5, 10, 15, 20, 25, 30\}$ calculate the value of $$\sqrt{1 + 2 \sqrt{1 + 3 \sqrt{1 + 4 \sqrt{1 + 5 \sqrt{1 + \ldots \sqrt{1 + (n-1)\sqrt{1 + n}}}}}}}$$ .
+
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+nested_square_root <- function(n){
+  
+  result <- sqrt(1 + n)
+  
+  for(i in (n-1):2){
+    result <- sqrt(1 + i * result)
+  }
+  
+  return(result)
+}
+@
+
+<<>>=
+nested_square_root(5)
+@
+
+<<>>=
+nested_square_root(10)
+@
+
+<<>>=
+nested_square_root(15)
+@
+
+<<>>=
+nested_square_root(20)
+@
+
+<<>>=
+nested_square_root(25)
+@
+
+<<>>=
+nested_square_root(30)
+@
+
+
+\end{document}
