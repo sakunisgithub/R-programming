@@ -1,0 +1,107 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 0.75 in, right = 0.75 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 105 : Practical}
+\author{Ananda Biswas}
+\date{26 November, 2024}
+
+\newfontface\ifr{IndieFlower-Regular.ttf}
+% how to use ---- {\ifr write text here}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider the following setup :
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{0.5cm}|>{\centering}m{0.5cm}|>{\centering}m{0.5cm}|>{\centering\arraybackslash}m{0.5cm}|}
+
+\hline
+ & 2 & 3 & \\
+ 
+\hline
+
+4 & & 2 & 1 \\
+
+\hline
+
+3 & 1 & & \\
+
+\hline
+
+& 4 & 1 & 3 \\
+
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+Write R program to fill in the blank cells such that each of $\{1, 2, 3, 4\}$ appears only once in each row and each column.
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+mat <- matrix(c(NA, 2, 3, NA, 4, NA, 2, 1, 3, 1, NA, NA, NA, 4, 1, 3), 
+              nrow = 4, ncol = 4, byrow = TRUE)
+mat
+@
+
+<<>>=
+A <- 1:4
+@
+
+<<>>=
+del <- function(vec){
+  indices <- c()
+  for (i in 1:length(vec)) {
+    indices[i] <- which(A == vec[i])
+  }
+  return(A[-indices])
+}
+@
+
+<<>>=
+for (i in 1:dim(mat)[1]) {
+  for (j in 1:dim(mat)[2]) {
+    if(is.na(mat[i, j])){
+      
+      a <- unique( c( mat[i,][which( !is.na(mat[i,]) )], 
+                      mat[,j][which( !is.na(mat[,j]) )]) )
+      
+      mat[i, j] <- as.numeric(del(a))
+      
+    }
+  }
+}
+@
+
+
+<<>>=
+mat
+@
+
+\end{document}
