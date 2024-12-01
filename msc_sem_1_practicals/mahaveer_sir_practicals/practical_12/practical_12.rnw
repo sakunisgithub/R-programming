@@ -20,8 +20,8 @@
 \author{Ananda Biswas}
 \date{\today}
 
-\newfontface\ifr{IndieFlower-Regular.ttf}
-% how to use ---- {\ifr write text here}
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
 
 \begin{document}
 
@@ -88,7 +88,7 @@ region_sale %>%
        title = "Sales in Different Regions")
 @
 
-\smallpencil {\ifr When total sale of all 5 months is considered, Region1 has the lowest sales and Region4 has the highest sales.} \\
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont When total sale of all 5 months is considered, Region1 has the lowest sales and Region4 has the highest sales. \par}
 
 
 \newpage
@@ -114,12 +114,12 @@ month_sales %>%
        title = "Month-wise Total Sales")
 @
 
-\smallpencil {\ifr When we aggregate sales of all the regions over different months, we see that there is a sharp increase in total sales over months.}
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont When we aggregate sales of all the regions over different months, we see that there is a sharp increase in total sales over months. \par}
 
 
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{1cm} {\ifr Our data have an increasing trend of total sales over months. Also, "Region4" has highest number of sales.}
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Our data have an increasing trend of total sales over months. Also, "Region4" has highest number of sales. \par}
 
 \end{document}
