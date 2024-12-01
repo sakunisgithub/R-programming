@@ -70,8 +70,8 @@
 \author{Ananda Biswas}
 \date{\today}
 
-\newfontface\ifr{IndieFlower-Regular.ttf}
-% how to use ---- {\ifr write text here}
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -120,12 +120,12 @@
 \end{alltt}
 \begin{verbatim}
 ##      region     month       sales       
-##  Region1:5   Month1:4   Min.   : 50.24  
-##  Region2:5   Month2:4   1st Qu.: 98.53  
-##  Region3:5   Month3:4   Median :124.96  
-##  Region4:5   Month4:4   Mean   :137.09  
-##              Month5:4   3rd Qu.:172.28  
-##                         Max.   :239.35
+##  Region1:5   Month1:4   Min.   : 50.64  
+##  Region2:5   Month2:4   1st Qu.: 97.06  
+##  Region3:5   Month3:4   Median :124.57  
+##  Region4:5   Month4:4   Mean   :137.01  
+##              Month5:4   3rd Qu.:172.21  
+##                         Max.   :240.31
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -168,7 +168,7 @@
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
 \end{knitrout}
 
-\smallpencil {\ifr When total sale of all 5 months is considered, Region1 has the lowest sales and Region4 has the highest sales.} \\
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont When total sale of all 5 months is considered, Region1 has the lowest sales and Region4 has the highest sales. \par}
 
 
 \newpage
@@ -203,12 +203,12 @@
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
 \end{knitrout}
 
-\smallpencil {\ifr When we aggregate sales of all the regions over different months, we see that there is a sharp increase in total sales over months.}
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont When we aggregate sales of all the regions over different months, we see that there is a sharp increase in total sales over months. \par}
 
 
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{1cm} {\ifr Our data have an increasing trend of total sales over months. Also, "Region4" has highest number of sales.}
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Our data have an increasing trend of total sales over months. Also, "Region4" has highest number of sales. \par}
 
 \end{document}
