@@ -88,7 +88,7 @@ source('https://raw.githubusercontent.com/sakunisgithub/R-programming/master/my_
 
 \faArrowAltCircleRight[regular] \textit{\textbf{Karl Pearson's Correlation Coefficient}} \\
 
-Here we compute $r_{xy} = \dfrac{\text{cov } (x, y)}{\sqrt{\text{var } x} \cdot \sqrt{\text{var } y}}$, where $\text{cov } (x, y) = \dfrac{1}{n-1} \sum \limits_{i = 1}^{n} (x_i - \bar{x})(y_i - \bar{y})$.
+Here we compute $r_{xy} = \dfrac{\text{cov } (x, y)}{\sqrt{\text{var } (x)} \cdot \sqrt{\text{var } (y)}}$, where $\text{cov } (x, y) = \dfrac{1}{n-1} \sum \limits_{i = 1}^{n} (x_i - \bar{x})(y_i - \bar{y})$.
 
 <<size="footnotesize">>=
 my_covariance_function <- function(x, y){
