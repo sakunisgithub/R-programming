@@ -1,0 +1,73 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Practical 14}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} Write an R program to generate all possible subsets of the finite sample space $\Omega = \{4, 5, 6\}.$
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+x1 <- c(4, 5, 6)
+@
+
+<<>>=
+generate_subset <- function(set){
+  backtrack_subset(set, 1, c())
+}
+
+backtrack_subset <- function(set, index, current_subset){
+  if(index > length(set)){
+    print(current_subset)
+  } else{
+    current_subset <- unique(c(current_subset, set[index]))
+    backtrack_subset(set, index + 1, current_subset)
+    
+    current_subset <- current_subset[-length(current_subset)]
+    backtrack_subset(set, index + 1, current_subset)
+  }
+}
+@
+
+<<>>==
+generate_subset(x1)
+@
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.3cm} We get a class of all 8 subsets of $\{4, 5, 6\}$, thus a $\sigma-$field on $\Omega = \{4, 5, 6\}$.
+
+\end{document}
