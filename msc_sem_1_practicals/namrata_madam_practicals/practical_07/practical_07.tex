@@ -1,0 +1,501 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{twemojis}
+\usepackage{tasks}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{December 5, 2024}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 07}
+\end{center}
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Gauss-Legendre Integration Methods}}
+
+\vspace{0.5cm}
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 1 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre one point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre one point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx 2 \cdot f(0). $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{transformation} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{t}\hldef{,} \hlkwc{a}\hldef{,} \hlkwc{b}\hldef{)\{}
+  \hlkwd{return}\hldef{( ( (b} \hlopt{-} \hldef{a)} \hlopt{/} \hlnum{2} \hldef{)} \hlopt{*} \hldef{t} \hlopt{+} \hldef{(b} \hlopt{+} \hldef{a)} \hlopt{/} \hlnum{2}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{one_point} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{func}\hldef{,} \hlkwc{a}\hldef{,} \hlkwc{b}\hldef{)\{}
+
+  \hldef{integration} \hlkwb{<-} \hlnum{2} \hlopt{*} \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlnum{0}\hldef{, a, b))}
+
+  \hldef{result} \hlkwb{<-} \hldef{( (b} \hlopt{-} \hldef{a)} \hlopt{/} \hlnum{2} \hldef{)} \hlopt{*} \hldef{integration}
+
+  \hlkwd{return}\hldef{(result)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 2 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre two point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre two point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx f\left(-\dfrac{1}{\sqrt{3}}\right) + f\left(\dfrac{1}{\sqrt{3}}\right). $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{two_point} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{func}\hldef{,} \hlkwc{a}\hldef{,} \hlkwc{b}\hldef{)\{}
+
+  \hldef{integration} \hlkwb{<-} \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlopt{-}\hldef{(}\hlnum{1} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlnum{3}\hldef{)), a, b))} \hlopt{+}
+                 \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlnum{1} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlnum{3}\hldef{), a, b))}
+
+  \hldef{result} \hlkwb{<-} \hldef{( (b} \hlopt{-} \hldef{a)} \hlopt{/} \hlnum{2} \hldef{)} \hlopt{*} \hldef{integration}
+
+  \hlkwd{return}\hldef{(result)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 3 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre three point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre three point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx \dfrac{1}{9} \left[ 5 f\left( - \sqrt{\dfrac{3}{5}}\right) + 8 f(0) + 5 f\left(  \sqrt{\dfrac{3}{5}}\right) \right]. $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{three_point} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{func}\hldef{,} \hlkwc{a}\hldef{,} \hlkwc{b}\hldef{)\{}
+
+  \hldef{temp} \hlkwb{<-} \hlnum{5} \hlopt{*} \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlopt{-}\hlkwd{sqrt}\hldef{(}\hlnum{3}\hlopt{/}\hlnum{5}\hldef{), a, b))} \hlopt{+}
+                 \hlnum{8} \hlopt{*} \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlnum{0}\hldef{, a, b))} \hlopt{+}
+                 \hlnum{5} \hlopt{*} \hlkwd{func}\hldef{(}\hlkwd{transformation}\hldef{(}\hlkwd{sqrt}\hldef{(}\hlnum{3}\hlopt{/}\hlnum{5}\hldef{), a, b))}
+
+  \hldef{integration} \hlkwb{<-} \hldef{temp} \hlopt{/} \hlnum{9}
+
+  \hldef{result} \hlkwb{<-} \hldef{( (b} \hlopt{-} \hldef{a)} \hlopt{/} \hlnum{2} \hldef{)} \hlopt{*} \hldef{integration}
+
+  \hlkwd{return}\hldef{(result)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $\displaystyle{\int \limits_{1}^{2} \dfrac{2x}{1 + x^4} \,\, dx}$ using the Gauss-Legendre 1-point, 2-point and 3-point quadrature rules.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{2}\hlopt{*}\hldef{x} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hldef{x}\hlopt{^}\hlnum{4}\hldef{)}
+
+\hlkwd{one_point}\hldef{(f1,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.4948454
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{two_point}\hldef{(f1,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5433755
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f1,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5405911
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Evaluate the integrals
+\settasks{
+	label=(\roman*),
+	label-width=4ex
+}
+	\begin{tasks}(2)
+		\task $I = \displaystyle{\int \limits_{0}^{2} \dfrac{1}{3 + 4x} \,\, dx}$
+		\task $I = \displaystyle{\int \limits_{0}^{2} \dfrac{1}{x^2 + 2x + 10} \,\, dx}$
+	\end{tasks}
+
+\begin{enumerate}[(a)]
+
+\item by Gauss-Legendre two-point and three-point formulas;
+
+\item Write $I$ as $I_1 + I_2$ where $I_1 = \displaystyle{\int \limits_{0}^{1} f(x) \,\, dx}$ and $I_2 = \displaystyle{\int \limits_{1}^{2} f(x) \,\, dx}$. Then evaluate each of the integrals by Gauss-Legendre two-point and three-point formulas.
+\end{enumerate}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{(}\hlnum{3} \hlopt{+} \hlnum{4}\hlopt{*}\hldef{x)}
+
+\hlkwd{two_point}\hldef{(f2,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3206107
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{two_point}\hldef{(f2,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)} \hlopt{+} \hlkwd{two_point}\hldef{(f2,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3242383
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f2,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3243897
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f2,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)} \hlopt{+} \hlkwd{three_point}\hldef{(f2,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3247954
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f3} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{(x}\hlopt{^}\hlnum{2} \hlopt{+} \hlnum{2}\hlopt{*}\hldef{x} \hlopt{+} \hlnum{10}\hldef{)}
+
+\hlkwd{two_point}\hldef{(f3,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1546392
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{two_point}\hldef{(f3,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)} \hlopt{+} \hlkwd{two_point}\hldef{(f3,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.154554
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f3,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.154548
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f3,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)} \hlopt{+} \hlkwd{three_point}\hldef{(f3,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1545492
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{2}^{3} \dfrac{\cos 2x}{1 + \sin x} \,\, dx$$ by Gauss-Legendre two-point and three-point integration rules.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f4} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{cos}\hldef{(}\hlnum{2}\hlopt{*}\hldef{x)} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hlkwd{sin}\hldef{(x))}
+
+\hlkwd{two_point}\hldef{(f4,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.2035084
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f4,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.2027139
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Obtain an approximate value of $$I = \int \limits_{-1}^{1} \sqrt{1 - x^2} \,\, \cos x \,\, dx$$ by Gauss-Legendre three-point formula.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f5} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{sqrt}\hldef{(}\hlnum{1} \hlopt{-} \hldef{x}\hlopt{^}\hlnum{2}\hldef{)} \hlopt{*} \hlkwd{cos}\hldef{(x)}
+
+\hlkwd{three_point}\hldef{(f5,} \hlopt{-}\hlnum{1}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.391131
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{0}^{1} \dfrac{1}{1 + x} \,\, dx$$ by using Gauss-Legendre three-point formula.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f6} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hldef{x)}
+
+\hlkwd{two_point}\hldef{(f6,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6923077
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f6,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6931217
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Obtain the approximate value of $$I = \int \limits_{-1}^{1} e^{-x^2} \cos x \,\, dx$$ by Gauss-Legendre three-point formula.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f7} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hldef{)} \hlopt{*} \hlkwd{cos}\hldef{(x)}
+
+\hlkwd{three_point}\hldef{(f7,} \hlopt{-}\hlnum{1}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.324708
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{1}^{2} \dfrac{1}{1 + x^3} \,\, dx$$ by Gauss-Legendre three-point formula.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f8} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hldef{x}\hlopt{^}\hlnum{3}\hldef{)}
+
+\hlkwd{three_point}\hldef{(f8,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.254387
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{0}^{2} \dfrac{x^2 + 2x + 1}{1 + (x+1)^4} \,\, dx$$ by Gauss-Legendre three-point formula.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f9} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) (x}\hlopt{^}\hlnum{2} \hlopt{+} \hlnum{2}\hlopt{*}\hldef{x} \hlopt{+} \hlnum{1}\hldef{)} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hldef{(x} \hlopt{+} \hlnum{1}\hldef{)}\hlopt{^}\hlnum{4}\hldef{)}
+
+\hlkwd{three_point}\hldef{(f9,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5364222
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\leftpointright \hspace{0.5cm} Apply Gauss-Legendre two-point formula to evaluate $\displaystyle{\int \limits_{-1}^{1} \dfrac{1}{1 + x^2} \,\, dx}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f10} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{(}\hlnum{1} \hlopt{+} \hldef{x}\hlopt{^}\hlnum{2}\hldef{)}
+
+\hlkwd{two_point}\hldef{(f10,} \hlopt{-}\hlnum{1}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\leftpointright \hspace{0.5cm} Use Gauss-Legendre three-point formula to evaluate
+\settasks{
+	label=(\roman*),
+	label-width=4ex
+}
+	\begin{tasks}(2)
+		\task $\displaystyle{\int \limits_{1}^{2} \dfrac{1}{x} \,\, dx}$
+		\task $\displaystyle{\int \limits_{0}^{1} \dfrac{1}{1 + x^2} \,\, dx}$
+		\task $\displaystyle{\int \limits_{0}^{1} \dfrac{1}{\sqrt{1 + x^4}}\,\,dx}$
+		\task $\displaystyle{\int \limits_{0.2}^{1.5} e^{-x^2} \,\, dx}$
+	\end{tasks}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f11} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hldef{x}
+
+\hlkwd{three_point}\hldef{(f11,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6931217
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{three_point}\hldef{(f10,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.785267
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f12} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlnum{1} \hlopt{+} \hldef{x}\hlopt{^}\hlnum{4}\hldef{)}
+
+\hlkwd{three_point}\hldef{(f12,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.9271835
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f13} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hldef{)}
+
+\hlkwd{three_point}\hldef{(f13,} \hlnum{0.2}\hldef{,} \hlnum{1.5}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6586021
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{document}

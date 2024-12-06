@@ -1,0 +1,267 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top=1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{twemojis}
+\usepackage{tasks}
+
+\title{MSMS 106}
+\author{Ananda Biswas}
+\date{December 5, 2024}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Practical 07}
+\end{center}
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Gauss-Legendre Integration Methods}}
+
+\vspace{0.5cm}
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 1 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre one point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre one point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx 2 \cdot f(0). $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+<<>>=
+transformation <- function(t, a, b){
+  return( ( (b - a) / 2 ) * t + (b + a) / 2)
+}
+@
+
+
+<<>>=
+one_point <- function(func, a, b){
+  
+  integration <- 2 * func(transformation(0, a, b))
+                          
+  result <- ( (b - a) / 2 ) * integration
+  
+  return(result)
+}
+@
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 2 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre two point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre two point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx f\left(-\dfrac{1}{\sqrt{3}}\right) + f\left(\dfrac{1}{\sqrt{3}}\right). $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+<<>>=
+two_point <- function(func, a, b){
+  
+  integration <- func(transformation(-(1 / sqrt(3)), a, b)) + 
+                 func(transformation(1 / sqrt(3), a, b))
+  
+  result <- ( (b - a) / 2 ) * integration
+  
+  return(result)
+}
+@
+
+\smallpencil \hspace{0.2cm} \textcolor{blue}{\textbf{Question 3 : }} \\
+
+\hspace{1cm} Write an R program to approximate the integral of $f(x)$ over the finite interval $[a, b]$ using Gauss-Legendre three point formula. \\
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Gauss-Legendre three point formula is given by $$\int \limits_{-1}^{1} f(x) \,\, dx \approx \dfrac{1}{9} \left[ 5 f\left( - \sqrt{\dfrac{3}{5}}\right) + 8 f(0) + 5 f\left(  \sqrt{\dfrac{3}{5}}\right) \right]. $$
+
+We transform the given interval $\left[ a, b \right]$ to $\left[ -1, 1 \right]$ by the transformation $x = \dfrac{b - a}{2} \cdot t + \dfrac{b + a}{2}$.
+
+<<>>=
+three_point <- function(func, a, b){
+  
+  temp <- 5 * func(transformation(-sqrt(3/5), a, b)) + 
+                 8 * func(transformation(0, a, b)) + 
+                 5 * func(transformation(sqrt(3/5), a, b))
+  
+  integration <- temp / 9
+  
+  result <- ( (b - a) / 2 ) * integration
+
+  return(result)
+}
+@
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $\displaystyle{\int \limits_{1}^{2} \dfrac{2x}{1 + x^4} \,\, dx}$ using the Gauss-Legendre 1-point, 2-point and 3-point quadrature rules.
+
+<<>>=
+f1 <- function(x) 2*x / (1 + x^4)
+
+one_point(f1, 1, 2)
+@
+
+<<>>=
+two_point(f1, 1, 2)
+@
+
+<<>>=
+three_point(f1, 1, 2)
+@
+
+\leftpointright \hspace{0.5cm} Evaluate the integrals
+\settasks{
+	label=(\roman*),
+	label-width=4ex
+}
+	\begin{tasks}(2)
+		\task $I = \displaystyle{\int \limits_{0}^{2} \dfrac{1}{3 + 4x} \,\, dx}$
+		\task $I = \displaystyle{\int \limits_{0}^{2} \dfrac{1}{x^2 + 2x + 10} \,\, dx}$
+	\end{tasks}
+
+\begin{enumerate}[(a)]
+
+\item by Gauss-Legendre two-point and three-point formulas;
+
+\item Write $I$ as $I_1 + I_2$ where $I_1 = \displaystyle{\int \limits_{0}^{1} f(x) \,\, dx}$ and $I_2 = \displaystyle{\int \limits_{1}^{2} f(x) \,\, dx}$. Then evaluate each of the integrals by Gauss-Legendre two-point and three-point formulas.
+\end{enumerate}
+
+<<>>=
+f2 <- function(x) 1 / (3 + 4*x)
+
+two_point(f2, 0, 2)
+@
+
+<<>>=
+two_point(f2, 0, 1) + two_point(f2, 1, 2)
+@
+
+<<>>=
+three_point(f2, 0, 2)
+@
+
+<<>>=
+three_point(f2, 0, 1) + three_point(f2, 1, 2)
+@
+
+<<>>=
+f3 <- function(x) 1 / (x^2 + 2*x + 10)
+
+two_point(f3, 0, 2)
+@
+
+<<>>=
+two_point(f3, 0, 1) + two_point(f3, 1, 2)
+@
+
+<<>>=
+three_point(f3, 0, 2)
+@
+
+<<>>=
+three_point(f3, 0, 1) + three_point(f3, 1, 2)
+@
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{2}^{3} \dfrac{\cos 2x}{1 + \sin x} \,\, dx$$ by Gauss-Legendre two-point and three-point integration rules.
+
+<<>>=
+f4 <- function(x) cos(2*x) / (1 + sin(x))
+
+two_point(f4, 2, 3)
+@
+
+<<>>=
+three_point(f4, 2, 3)
+@
+
+\leftpointright \hspace{0.5cm} Obtain an approximate value of $$I = \int \limits_{-1}^{1} \sqrt{1 - x^2} \,\, \cos x \,\, dx$$ by Gauss-Legendre three-point formula.
+
+<<>>=
+f5 <- function(x) sqrt(1 - x^2) * cos(x)
+
+three_point(f5, -1, 1)
+@
+
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{0}^{1} \dfrac{1}{1 + x} \,\, dx$$ by using Gauss-Legendre three-point formula.
+
+<<>>=
+f6 <- function(x) 1 / (1 + x)
+
+two_point(f6, 0, 1)
+@
+
+<<>>==
+three_point(f6, 0, 1)
+@
+
+\leftpointright \hspace{0.5cm} Obtain the approximate value of $$I = \int \limits_{-1}^{1} e^{-x^2} \cos x \,\, dx$$ by Gauss-Legendre three-point formula.
+
+<<>>=
+f7 <- function(x) exp(-x^2) * cos(x)
+
+three_point(f7, -1, 1)
+@
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{1}^{2} \dfrac{1}{1 + x^3} \,\, dx$$ by Gauss-Legendre three-point formula.
+
+<<>>=
+f8 <- function(x) 1 / (1 + x^3)
+
+three_point(f8, 1, 2)
+@
+
+\leftpointright \hspace{0.5cm} Evaluate the integral $$I = \int \limits_{0}^{2} \dfrac{x^2 + 2x + 1}{1 + (x+1)^4} \,\, dx$$ by Gauss-Legendre three-point formula.
+
+<<>>=
+f9 <- function(x) (x^2 + 2*x + 1) / (1 + (x + 1)^4)
+
+three_point(f9, 0, 2)
+@
+
+\leftpointright \hspace{0.5cm} Apply Gauss-Legendre two-point formula to evaluate $\displaystyle{\int \limits_{-1}^{1} \dfrac{1}{1 + x^2} \,\, dx}$.
+
+<<>>=
+f10 <- function(x) 1 / (1 + x^2)
+
+two_point(f10, -1, 1)
+@
+
+\newpage
+
+\leftpointright \hspace{0.5cm} Use Gauss-Legendre three-point formula to evaluate
+\settasks{
+	label=(\roman*),
+	label-width=4ex
+}
+	\begin{tasks}(2)
+		\task $\displaystyle{\int \limits_{1}^{2} \dfrac{1}{x} \,\, dx}$
+		\task $\displaystyle{\int \limits_{0}^{1} \dfrac{1}{1 + x^2} \,\, dx}$
+		\task $\displaystyle{\int \limits_{0}^{1} \dfrac{1}{\sqrt{1 + x^4}}\,\,dx}$
+		\task $\displaystyle{\int \limits_{0.2}^{1.5} e^{-x^2} \,\, dx}$
+	\end{tasks}
+
+<<>>=
+f11 <- function(x) 1 / x
+
+three_point(f11, 1, 2)
+@
+
+<<>>=
+three_point(f10, 0, 1)
+@
+
+<<>>=
+f12 <- function(x) 1 / sqrt(1 + x^4)
+
+three_point(f12, 0, 1)
+@
+
+<<>>=
+f13 <- function(x) exp(-x^2)
+
+three_point(f13, 0.2, 1.5)
+@
+
+\end{document}
