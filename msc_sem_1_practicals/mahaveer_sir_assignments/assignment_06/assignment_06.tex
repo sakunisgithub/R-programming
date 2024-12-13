@@ -1,0 +1,230 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.75 in, bottom = 0.75 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 105 : Assignment 06}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+Random number generation from an Exponential distribution by ``\underline{Inverse Transformation Method}".
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let $X$ be a continuous random variable with CDF $F_{X}(x)$. We want random numbers from $X$. \\
+
+We must have $F_{X}(X) = Y \sim U(0, 1)$. \\
+
+Thus, $X = F_{X}^{-1}(Y)$ yields a similar distribution as of $X$ with $Y$ being an Uniform $(0, 1)$ variate, provided $F_{X}^{-1}$ exists in a closed form. \\
+
+So, at first we generate $n$ many $U(0, 1)$ random numbers, say $y_i \,\, \forall i = 1(1)n$. \\
+
+Then we calculate $x_i = F_{X}^{-1}(y_i) \,\, \forall i = 1(1)n$ to finally get random numbers from our desired distribution. \\
+
+For an Exponential distribution with rate $\lambda > 0$,
+\begin{equation*}
+f_{X}(x) = \begin{cases}
+        \lambda e^{-\lambda x}, \,\, & x > 0 \\
+        0, \,\, & \text{otherwise}
+            \end{cases}
+\end{equation*}
+
+and
+\begin{equation*}
+F_{X}(x) = \begin{cases}
+          1 - e^{-\lambda x}, \,\, & x > 0 \\
+          0, \,\, & \text{otherwise.}
+            \end{cases}
+\end{equation*}
+
+
+Thus,
+{\setlength{\jot}{15pt}
+
+\begin{align*}
+& \,\,\, F_{X}(x) = y \\
+\Longrightarrow & \,\,\, 1 - e^{-\lambda x} = y \\
+\Longrightarrow & \,\,\, e^{-\lambda x} = 1 - y \\
+\Longrightarrow & \,\,\, {-\lambda x} = ln(1 - y) \\
+\Longrightarrow & \,\,\, x = - \dfrac{ln(1 - y)}{\lambda}
+\end{align*}
+
+}
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{random_numbers} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{n}\hldef{,} \hlkwc{seed} \hldef{=} \hlkwa{NULL}\hldef{)\{}
+  \hldef{a} \hlkwb{<-} \hlnum{1103515245}
+  \hldef{b} \hlkwb{<-} \hlnum{12345}
+  \hldef{m} \hlkwb{<-} \hlnum{2}\hlopt{^}\hlnum{31} \hlopt{-} \hlnum{1}
+
+  \hlkwa{if}\hldef{(}\hlkwd{is.null}\hldef{(seed))\{}
+    \hldef{start_date} \hlkwb{<-} \hlkwd{as.POSIXct}\hldef{(}\hlsng{"2003-01-01 00:00:00"}\hldef{,} \hlkwc{tz} \hldef{=} \hlsng{"UTC"}\hldef{)}
+
+    \hldef{current_date} \hlkwb{<-} \hlkwd{Sys.time}\hldef{()}
+
+    \hldef{seed} \hlkwb{<-} \hlkwd{as.numeric}\hldef{(}\hlkwd{difftime}\hldef{(current_date, start_date,} \hlkwc{units} \hldef{=} \hlsng{"secs"}\hldef{))}
+  \hldef{\}}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(seed)}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{n) \{}
+    \hldef{x[i]} \hlkwb{<-} \hldef{(a} \hlopt{*} \hldef{x[i}\hlopt{-}\hlnum{1}\hldef{]} \hlopt{+} \hldef{b)} \hlopt{%%} \hldef{m}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(x)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{uniform_random_numbers} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{n}\hldef{,} \hlkwc{seed} \hldef{=} \hlkwa{NULL}\hldef{)\{}
+  \hlkwd{return}\hldef{(}\hlkwd{random_numbers}\hldef{(n, seed)} \hlopt{/} \hldef{(}\hlnum{2}\hlopt{^}\hlnum{31} \hlopt{-} \hlnum{1}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{exponential_random_numbers} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{n}\hldef{,} \hlkwc{lambda}\hldef{,} \hlkwc{seed} \hldef{=} \hlkwa{NULL}\hldef{)\{}
+  \hldef{num} \hlkwb{<-} \hlopt{-}\hldef{(}\hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hlkwd{uniform_random_numbers}\hldef{(n, seed))} \hlopt{/} \hldef{lambda)}
+  \hlkwd{return}\hldef{(num)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{exponential_random_numbers}\hldef{(}\hlnum{10}\hldef{,} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0.19473564 2.88198404 0.09388916 0.03137359 0.32825849 0.14272313
+##  [7] 0.59074292 0.04967599 0.22936684 0.28456345
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Visualization}}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{size} \hlkwb{=} \hlnum{1000}
+\hldef{exp_numbers} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{n} \hldef{=} \hlnum{1}\hlopt{:}\hldef{size,}
+                          \hlkwc{num} \hldef{=} \hlkwd{exponential_random_numbers}\hldef{(size,} \hlnum{1.5}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{exp_numbers} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= n,} \hlkwc{y} \hldef{= num))} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{size} \hldef{=} \hlnum{1.5}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{"Index"}\hldef{,} \hlkwc{y} \hldef{=} \hlsng{"Random Numbers"}\hldef{,}
+       \hlkwc{title} \hldef{=} \hlsng{"Random Numbers from Exp(rate = 1.5)"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+\end{knitrout}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Scatteredness of the points mimics that of an Exponential Distribution. \par}
+
+\end{document}

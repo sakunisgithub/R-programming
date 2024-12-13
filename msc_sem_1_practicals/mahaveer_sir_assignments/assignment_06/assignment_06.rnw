@@ -1,0 +1,153 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.75 in, bottom = 0.75 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 105 : Assignment 06}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+Random number generation from an Exponential distribution by ``\underline{Inverse Transformation Method}".
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let $X$ be a continuous random variable with CDF $F_{X}(x)$. We want random numbers from $X$. \\
+
+We must have $F_{X}(X) = Y \sim U(0, 1)$. \\
+
+Thus, $X = F_{X}^{-1}(Y)$ yields a similar distribution as of $X$ with $Y$ being an Uniform $(0, 1)$ variate, provided $F_{X}^{-1}$ exists in a closed form. \\
+
+So, at first we generate $n$ many $U(0, 1)$ random numbers, say $y_i \,\, \forall i = 1(1)n$. \\
+
+Then we calculate $x_i = F_{X}^{-1}(y_i) \,\, \forall i = 1(1)n$ to finally get random numbers from our desired distribution. \\
+
+For an Exponential distribution with rate $\lambda > 0$,
+\begin{equation*}
+f_{X}(x) = \begin{cases}
+        \lambda e^{-\lambda x}, \,\, & x > 0 \\
+        0, \,\, & \text{otherwise}
+            \end{cases}
+\end{equation*}
+
+and
+\begin{equation*}
+F_{X}(x) = \begin{cases}
+          1 - e^{-\lambda x}, \,\, & x > 0 \\
+          0, \,\, & \text{otherwise.}
+            \end{cases}
+\end{equation*}
+
+
+Thus,
+{\setlength{\jot}{15pt}
+
+\begin{align*}
+& \,\,\, F_{X}(x) = y \\
+\Longrightarrow & \,\,\, 1 - e^{-\lambda x} = y \\
+\Longrightarrow & \,\,\, e^{-\lambda x} = 1 - y \\
+\Longrightarrow & \,\,\, {-\lambda x} = ln(1 - y) \\
+\Longrightarrow & \,\,\, x = - \dfrac{ln(1 - y)}{\lambda}
+\end{align*}
+
+}
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+random_numbers <- function(n, seed = NULL){
+  a <- 1103515245
+  b <- 12345
+  m <- 2^31 - 1
+  
+  if(is.null(seed)){
+    start_date <- as.POSIXct("2003-01-01 00:00:00", tz = "UTC")
+
+    current_date <- Sys.time()
+
+    seed <- as.numeric(difftime(current_date, start_date, units = "secs"))
+  }
+  
+  x <- c(seed)
+  
+  for (i in 2:n) {
+    x[i] <- (a * x[i-1] + b) %% m
+  }
+  
+  return(x)
+}
+@
+
+<<>>=
+uniform_random_numbers <- function(n, seed = NULL){
+  return(random_numbers(n, seed) / (2^31 - 1))
+}
+@
+
+<<>>=
+exponential_random_numbers <- function(n, lambda, seed = NULL){
+  num <- -(log(1 - uniform_random_numbers(n, seed)) / lambda)
+  return(num)
+}
+@
+
+<<>>=
+exponential_random_numbers(10, 2)
+@
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Visualization}}
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+size = 1000
+exp_numbers <- data.frame(n = 1:size,
+                          num = exponential_random_numbers(size, 1.5))
+@
+
+<<>>=
+exp_numbers %>%
+  ggplot(aes(x = n, y = num)) +
+  geom_point(size = 1.5, col = "red") +
+  labs(x = "Index", y = "Random Numbers",
+       title = "Random Numbers from Exp(rate = 1.5)")
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Scatteredness of the points mimics that of an Exponential Distribution. \par}
+
+\end{document}
