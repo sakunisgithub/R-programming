@@ -1,0 +1,321 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Practical 17}
+\author{Ananda Biswas}
+\date{December 18, 2024}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} To find Maximum Likelihood Estimate of the parameters of the Gamma Distribution given as follows :
+
+$$f_X (x) = \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \,\, e^{-\frac{x}{\beta}} \,\, x^{\alpha - 1} \,\, I_{(0, \infty)}(x); \,\, \alpha > 0, \,\, \beta > 0 $$
+
+and to compare ML estimates for different sample sizes. 
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+$\alpha$ is called the shape parameter and $\beta$ is called the scale parameter of the distribution. \\
+
+For a sample of size $n$, the likelihood function is 
+
+$$L(\alpha, \beta) = \left( \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \right)^{n} \,\, exp \left\{-\dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i \right\} \,\, \left( \prod \limits_{i = 1}^{n} x_i \right)^{\alpha - 1}. $$
+
+
+The log-likelihood function is 
+
+$$ l(\alpha, \beta) = -n \, ln(\Gamma(\alpha)) - \alpha n \, ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} ln \, x_i .$$
+
+The partial derivative of the log-likelihood w.r.t. $\beta$ is
+
+$$ \dfrac{\partial}{\partial \beta} l(\alpha, \beta) = - \dfrac{\alpha n}{\beta} + \dfrac{1}{\beta^2}\sum \limits_{i = 1}^{n} x_i . $$
+
+Setting it to $0$ and solving for $\beta$ we get,
+
+\begin{equation}
+\hat{\beta} =  \dfrac{1}{\alpha n}\sum \limits_{i = 1}^{n} x_i = \dfrac{\bar{x}}{\alpha}.
+\end{equation}
+
+The partial derivative of the log-likelihood w.r.t. $\alpha$ is
+
+\begin{align*}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \, ln(\beta) + \sum \limits_{i = 1}^{n} ln \, x_i \\
+&= -n \, \psi(\alpha) - n \, ln\left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} ln \, x_i \\
+&= -n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i.
+\end{align*}
+
+$\psi(z) = \dfrac{d}{dz} \, ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
+
+Setting the partial derivative w.r.t. $\alpha$ to 0, we get an equation in $\alpha$ given by
+
+\begin{equation}
+g(\alpha) = - n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i = 0.
+\end{equation}
+
+We cannot obtain any closed-form solution of $g(\alpha)$, so we opt for numerical solution. \\
+
+\begin{equation}
+g'(\alpha) = - n \, \psi'(\alpha) + \dfrac{n}{\alpha}.
+\end{equation}
+
+$\psi'(\alpha)$ is called \textbf{trigamma function}. \\
+
+Using $(2)$ and $(3)$, we get an approximate solution of $g(\alpha)$ by \textbf{Newton-Raphson method}. That solution is indeed ML estimate of $\alpha$. By using that estimate of $\alpha$ in $(1)$, we will obtain ML estimate of $\beta$. \\
+
+$\bullet$ To compare MLEs from different sample sizes, we compare their MSEs. \\
+
+For a fixed sample size $n$, $\text{MSE}(\hat{\theta}_{\text{MLE}}) = \dfrac{1}{k} \sum \limits_{i = 1}^{k} (\hat{\theta_i} - \theta_0)^2$, \\
+where $\hat{\theta}_1$, $\hat{\theta}_2$, $\hat{\theta}_3$, $\ldots$, $\hat{\theta}_k$ are MLEs from different samples of fixed size $n$ and $\theta_0$ is the true value of $\theta$.
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+The following function takes random sample, initial approximation of alpha and number of iteration as inputs and gives $\hat{\alpha}$ and $\hat{\beta}$ as outputs.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Gamma_MLE} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{gamma_sample}\hldef{,} \hlkwc{shape_initial}\hldef{,} \hlkwc{n_iteration}\hldef{)\{}
+
+  \hldef{a} \hlkwb{<-} \hlkwd{c}\hldef{(shape_initial)}
+
+  \hldef{n} \hlkwb{<-} \hlkwd{length}\hldef{(gamma_sample)}
+
+  \hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{)\{}
+
+    \hldef{result} \hlkwb{<-} \hlopt{-} \hldef{n} \hlopt{*} \hlkwd{digamma}\hldef{(alpha)} \hlopt{-}
+                \hldef{n} \hlopt{*} \hlkwd{log}\hldef{(}\hlkwd{mean}\hldef{(gamma_sample))} \hlopt{+}
+                \hldef{n} \hlopt{*} \hlkwd{log}\hldef{(alpha)} \hlopt{+}
+                \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(gamma_sample))}
+
+    \hlkwd{return}\hldef{(result)}
+  \hldef{\}}
+
+  \hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{)\{}
+    \hlkwd{return}\hldef{(}\hlopt{-}\hldef{n} \hlopt{*} \hlkwd{trigamma}\hldef{(alpha)} \hlopt{+} \hldef{n} \hlopt{/} \hldef{alpha)}
+  \hldef{\}}
+
+  \hldef{iterations} \hlkwb{<-} \hldef{n_iteration}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{iterations) \{}
+    \hldef{a[i]} \hlkwb{<-} \hldef{a[i}\hlopt{-}\hlnum{1}\hldef{]} \hlopt{-} \hlkwd{f1}\hldef{(a[i}\hlopt{-}\hlnum{1}\hldef{])} \hlopt{/} \hlkwd{f2}\hldef{(a[i}\hlopt{-}\hlnum{1}\hldef{])}
+
+    \hlkwa{if}\hldef{(}\hlkwd{abs}\hldef{(}\hlkwd{f1}\hldef{(a[}\hlkwd{length}\hldef{(a)]))} \hlopt{<} \hlnum{0.001}\hldef{)} \hlkwa{break}
+  \hldef{\}}
+
+  \hldef{alpha_hat} \hlkwb{<-} \hldef{a[}\hlkwd{length}\hldef{(a)]}
+
+  \hldef{beta_hat} \hlkwb{<-} \hlkwd{mean}\hldef{(gamma_sample)} \hlopt{/} \hldef{alpha_hat}
+
+  \hlkwd{return}\hldef{(}\hlkwd{c}\hldef{(alpha_hat, beta_hat))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Now we calculate MLEs for different sample sizes.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{100}\hldef{,} \hlnum{200}\hldef{,} \hlnum{500}\hldef{,} \hlnum{1000}\hldef{,} \hlnum{5000}\hldef{,} \hlnum{10000}\hldef{,} \hlnum{100000}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimated_shape} \hlkwb{<-} \hlkwd{c}\hldef{(); estimated_scale} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(n)) \{}
+  \hldef{our_sample} \hlkwb{<-} \hlkwd{rgamma}\hldef{(n[i],} \hlkwc{shape} \hldef{=} \hlnum{6}\hldef{,} \hlkwc{scale} \hldef{=} \hlnum{2}\hldef{)}
+  \hldef{temp} \hlkwb{<-} \hlkwd{Gamma_MLE}\hldef{(our_sample,} \hlkwc{shape_initial} \hldef{=} \hlnum{8}\hldef{,} \hlkwc{n_iteration} \hldef{=} \hlnum{1000}\hldef{)}
+  \hldef{estimated_shape[i]} \hlkwb{<-} \hldef{temp[}\hlnum{1}\hldef{]}
+  \hldef{estimated_scale[i]} \hlkwb{<-} \hldef{temp[}\hlnum{2}\hldef{]}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Gamma_MLE_df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample_size} \hldef{= n,}
+                            \hlkwc{shape_hat} \hldef{= estimated_shape,}
+                            \hlkwc{scale_hat} \hldef{= estimated_scale)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Gamma_MLE_df1}
+\end{alltt}
+\begin{verbatim}
+##   sample_size shape_hat scale_hat
+## 1       1e+02  5.646208  2.173105
+## 2       2e+02  6.068502  1.925464
+## 3       5e+02  6.467655  1.883695
+## 4       1e+03  5.620465  2.092266
+## 5       5e+03  5.938579  2.019316
+## 6       1e+04  5.963645  2.032911
+## 7       1e+05  5.928704  2.024396
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the estimates of parameters seem to converge at 6 and 2 respectively. \\
+
+Now we shall compare the MSEs.
+\par}
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{MSE_alpha_hat} \hlkwb{<-} \hlkwd{c}\hldef{(); MSE_beta_hat} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(n))\{}
+
+  \hldef{alpha_hats} \hlkwb{<-} \hlkwd{c}\hldef{(); beta_hats} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hldef{) \{}
+    \hldef{a_sample} \hlkwb{<-} \hlkwd{rgamma}\hldef{(n[j],} \hlkwc{shape} \hldef{=} \hlnum{6}\hldef{,} \hlkwc{scale} \hldef{=} \hlnum{2}\hldef{)}
+    \hldef{temp} \hlkwb{<-} \hlkwd{Gamma_MLE}\hldef{(a_sample,} \hlkwc{shape_initial} \hldef{=} \hlnum{8}\hldef{,} \hlkwc{n_iteration} \hldef{=} \hlnum{1000}\hldef{)}
+    \hldef{alpha_hats[i]} \hlkwb{<-} \hldef{temp[}\hlnum{1}\hldef{]}
+    \hldef{beta_hats[i]} \hlkwb{<-} \hldef{temp[}\hlnum{2}\hldef{]}
+  \hldef{\}}
+
+  \hldef{MSE_alpha_hat[j]} \hlkwb{<-} \hlkwd{mean}\hldef{( (alpha_hats} \hlopt{-} \hlnum{6}\hldef{)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hldef{MSE_beta_hat[j]} \hlkwb{<-} \hlkwd{mean}\hldef{( (beta_hats} \hlopt{-} \hlnum{2}\hldef{)}\hlopt{^}\hlnum{2} \hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Gamma_MLE_df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample_size} \hldef{= n,}
+                            \hlkwc{MSE_alpha_hat} \hldef{= MSE_alpha_hat,}
+                            \hlkwc{MSE_beta_hat} \hldef{= MSE_beta_hat)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Gamma_MLE_df2}
+\end{alltt}
+\begin{verbatim}
+##   sample_size MSE_alpha_hat MSE_beta_hat
+## 1       1e+02  0.7305246513 7.378320e-02
+## 2       2e+02  0.3666610190 4.180519e-02
+## 3       5e+02  0.1868811028 2.150491e-02
+## 4       1e+03  0.0912236647 9.851969e-03
+## 5       5e+03  0.0145404775 1.633561e-03
+## 6       1e+04  0.0086344816 9.551587e-04
+## 7       1e+05  0.0006514183 8.104136e-05
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.3cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, MSEs of both the parameters decrease monotonically. This implies MLEs give better estimates as sample size increases. For larger and larger samples, the MLEs will smoothly converge to the true values of the parameters respectively. \par}
+
+\end{document}

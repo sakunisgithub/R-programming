@@ -1,0 +1,211 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Practical 17}
+\author{Ananda Biswas}
+\date{December 18, 2024}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} To find Maximum Likelihood Estimate of the parameters of the Gamma Distribution given as follows :
+
+$$f_X (x) = \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \,\, e^{-\frac{x}{\beta}} \,\, x^{\alpha - 1} \,\, I_{(0, \infty)}(x); \,\, \alpha > 0, \,\, \beta > 0 $$
+
+and to compare ML estimates for different sample sizes. 
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+$\alpha$ is called the shape parameter and $\beta$ is called the scale parameter of the distribution. \\
+
+For a sample of size $n$, the likelihood function is 
+
+$$L(\alpha, \beta) = \left( \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \right)^{n} \,\, exp \left\{-\dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i \right\} \,\, \left( \prod \limits_{i = 1}^{n} x_i \right)^{\alpha - 1}. $$
+
+
+The log-likelihood function is 
+
+$$ l(\alpha, \beta) = -n \, ln(\Gamma(\alpha)) - \alpha n \, ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} ln \, x_i .$$
+
+The partial derivative of the log-likelihood w.r.t. $\beta$ is
+
+$$ \dfrac{\partial}{\partial \beta} l(\alpha, \beta) = - \dfrac{\alpha n}{\beta} + \dfrac{1}{\beta^2}\sum \limits_{i = 1}^{n} x_i . $$
+
+Setting it to $0$ and solving for $\beta$ we get,
+
+\begin{equation}
+\hat{\beta} =  \dfrac{1}{\alpha n}\sum \limits_{i = 1}^{n} x_i = \dfrac{\bar{x}}{\alpha}.
+\end{equation}
+
+The partial derivative of the log-likelihood w.r.t. $\alpha$ is
+
+\begin{align*}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \, ln(\beta) + \sum \limits_{i = 1}^{n} ln \, x_i \\
+&= -n \, \psi(\alpha) - n \, ln\left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} ln \, x_i \\
+&= -n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i.
+\end{align*}
+
+$\psi(z) = \dfrac{d}{dz} \, ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
+
+Setting the partial derivative w.r.t. $\alpha$ to 0, we get an equation in $\alpha$ given by
+
+\begin{equation}
+g(\alpha) = - n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i = 0.
+\end{equation}
+
+We cannot obtain any closed-form solution of $g(\alpha)$, so we opt for numerical solution. \\
+
+\begin{equation}
+g'(\alpha) = - n \, \psi'(\alpha) + \dfrac{n}{\alpha}.
+\end{equation}
+
+$\psi'(\alpha)$ is called \textbf{trigamma function}. \\
+
+Using $(2)$ and $(3)$, we get an approximate solution of $g(\alpha)$ by \textbf{Newton-Raphson method}. That solution is indeed ML estimate of $\alpha$. By using that estimate of $\alpha$ in $(1)$, we will obtain ML estimate of $\beta$. \\
+
+$\bullet$ To compare MLEs from different sample sizes, we compare their MSEs. \\
+
+For a fixed sample size $n$, $\text{MSE}(\hat{\theta}_{\text{MLE}}) = \dfrac{1}{k} \sum \limits_{i = 1}^{k} (\hat{\theta_i} - \theta_0)^2$, \\
+where $\hat{\theta}_1$, $\hat{\theta}_2$, $\hat{\theta}_3$, $\ldots$, $\hat{\theta}_k$ are MLEs from different samples of fixed size $n$ and $\theta_0$ is the true value of $\theta$.
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+The following function takes random sample, initial approximation of alpha and number of iteration as inputs and gives $\hat{\alpha}$ and $\hat{\beta}$ as outputs.
+
+<<>>=
+Gamma_MLE <- function(gamma_sample, shape_initial, n_iteration){
+  
+  a <- c(shape_initial)
+  
+  n <- length(gamma_sample)
+  
+  f1 <- function(alpha){
+    
+    result <- - n * digamma(alpha) -
+                n * log(mean(gamma_sample)) +
+                n * log(alpha) +
+                sum(log(gamma_sample))
+    
+    return(result)
+  }
+  
+  f2 <- function(alpha){
+    return(-n * trigamma(alpha) + n / alpha)
+  }
+  
+  iterations <- n_iteration
+  
+  for (i in 2:iterations) {
+    a[i] <- a[i-1] - f1(a[i-1]) / f2(a[i-1])
+    
+    if(abs(f1(a[length(a)])) < 0.001) break
+  }
+  
+  alpha_hat <- a[length(a)]
+ 
+  beta_hat <- mean(gamma_sample) / alpha_hat
+  
+  return(c(alpha_hat, beta_hat))
+}
+@
+
+Now we calculate MLEs for different sample sizes.
+
+<<>>=
+n <- c(100, 200, 500, 1000, 5000, 10000, 100000)
+@
+
+<<>>=
+estimated_shape <- c(); estimated_scale <- c()
+@
+
+<<>>=
+for (i in 1:length(n)) {
+  our_sample <- rgamma(n[i], shape = 6, scale = 2)
+  temp <- Gamma_MLE(our_sample, shape_initial = 8, n_iteration = 1000)
+  estimated_shape[i] <- temp[1]
+  estimated_scale[i] <- temp[2]
+}
+@
+
+<<>>=
+Gamma_MLE_df1 <- data.frame(sample_size = n, 
+                            shape_hat = estimated_shape, 
+                            scale_hat = estimated_scale)
+@
+
+<<>>=
+Gamma_MLE_df1
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the estimates of parameters seem to converge at 6 and 2 respectively. \\
+
+Now we shall compare the MSEs.
+\par}
+
+
+
+
+<<>>=
+MSE_alpha_hat <- c(); MSE_beta_hat <- c()
+@
+
+<<>>=
+for(j in 1:length(n)){
+
+  alpha_hats <- c(); beta_hats <- c()
+  
+  for (i in 1:100) {
+    a_sample <- rgamma(n[j], shape = 6, scale = 2)
+    temp <- Gamma_MLE(a_sample, shape_initial = 8, n_iteration = 1000)
+    alpha_hats[i] <- temp[1]
+    beta_hats[i] <- temp[2]
+  }
+  
+  MSE_alpha_hat[j] <- mean( (alpha_hats - 6)^2 )
+  
+  MSE_beta_hat[j] <- mean( (beta_hats - 2)^2 )
+}
+@
+
+<<>>=
+Gamma_MLE_df2 <- data.frame(sample_size = n,
+                            MSE_alpha_hat = MSE_alpha_hat,
+                            MSE_beta_hat = MSE_beta_hat)
+@
+
+<<>>=
+Gamma_MLE_df2
+@
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.3cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, MSEs of both the parameters decrease monotonically. This implies MLEs give better estimates as sample size increases. For larger and larger samples, the MLEs will smoothly converge to the true values of the parameters respectively. \par}
+
+\end{document}
