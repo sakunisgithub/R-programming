@@ -1,0 +1,335 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Assignment 08}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} To find Maximum Likelihood Estimate of the parameters of the Weibull Distribution given as follows :
+
+$$f_X (x) = \dfrac{p}{\sigma} \,\, x^{p - 1} \,\, exp\left\{-\dfrac{x^p}{\sigma}\right\} \,\, I_{(0, \infty)}(x); \,\, p > 0, \,\, \sigma > 0 $$
+
+and to compare ML estimates for different sample sizes. 
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+$p$ is called the shape parameter and $\sigma$ is called the scale parameter of the distribution. \\
+
+For a sample of size $n$, the likelihood function is 
+
+$$L(p, \sigma) = \left( \dfrac{p}{\sigma} \right)^{n} \,\, exp \left\{-\dfrac{1}{\sigma}\sum \limits_{i = 1}^{n} x_i^p \right\} \,\, \left( \prod \limits_{i = 1}^{n} x_i \right)^{p - 1}. $$
+
+
+The log-likelihood function is 
+
+$$ l(p, \sigma) = n \ln p - n \ln \sigma - \dfrac{1}{\sigma}\sum \limits_{i = 1}^{n} x_i^p + ({p - 1}) \sum \limits_{i = 1}^{n} \ln x_i .$$
+
+The partial derivative of the log-likelihood w.r.t. $\sigma$ is
+
+$$ \dfrac{\partial}{\partial \sigma} l(p, \sigma) = - \dfrac{n}{\sigma} + \dfrac{1}{\sigma^2}\sum \limits_{i = 1}^{n} x_i^p . $$
+
+Setting it to $0$ and solving for $\sigma$ we get,
+
+\begin{equation}
+\hat{\sigma} =  \dfrac{1}{n}\sum \limits_{i = 1}^{n} x_i^p.
+\end{equation}
+
+The partial derivative of the log-likelihood w.r.t. $p$ is
+
+\begin{align*}
+\dfrac{\partial}{\partial p} l(p, \sigma) &= \dfrac{n}{p} - \dfrac{1}{\sigma} \sum \limits_{i = 1}^{n} (x_i^p \cdot \ln x_i) + \sum \limits_{i = 1}^{n} \ln x_i \\
+&= \dfrac{n}{p} - \dfrac{n \cdot \sum \limits_{i = 1}^{n} (x_i^p \cdot \ln x_i)}{\sum \limits_{i = 1}^{n} x_i^p} + \sum \limits_{i = 1}^{n} \ln x_i.
+\end{align*}
+
+Setting the partial derivative w.r.t. $p$ to 0, we get an equation in $p$ given by
+
+\begin{equation}
+g(p) = \dfrac{n}{p} - \dfrac{n \cdot \sum \limits_{i = 1}^{n} (x_i^p \cdot \ln x_i)}{\sum \limits_{i = 1}^{n} x_i^p} + \sum \limits_{i = 1}^{n} \ln x_i = 0.
+\end{equation}
+
+We cannot obtain any closed-form solution of $g(p)$, so we opt for numerical solution. \\
+
+\begin{equation}
+g'(p) = - \dfrac{n}{p^2} - \dfrac{n \cdot \left(\sum \limits_{i = 1}^{n} x_i^p\right) \cdot \sum \limits_{i = 1}^{n} (x_i^p \cdot (\ln x_i)^2) - n \cdot  \left[ \sum \limits_{i = 1}^{n} (x_i^p \cdot \ln x_i) \right]^2}{\left(\sum \limits_{i = 1}^{n} x_i^p\right)^2}.
+\end{equation}
+
+
+Using $(2)$ and $(3)$, we get an approximate solution of $g(p)$ by \textbf{Newton-Raphson method}. That solution is indeed ML estimate of $p$. By using that estimate of $p$ in $(1)$, we will obtain ML estimate of $\sigma$. \\
+
+$\bullet$ To compare MLEs from different sample sizes, we compare their MSEs. \\
+
+For a fixed sample size $n$, $\text{MSE}(\hat{\theta}_{\text{MLE}}) = \dfrac{1}{k} \sum \limits_{i = 1}^{k} (\hat{\theta_i} - \theta_0)^2$, \\
+where $\hat{\theta}_1$, $\hat{\theta}_2$, $\hat{\theta}_3$, $\ldots$, $\hat{\theta}_k$ are MLEs from different samples of fixed size $n$ and $\theta_0$ is the true value of $\theta$.
+
+$\bullet$ To get random sample from Weibull distribution, we shall use the CDF Inversion technique. \\
+
+We shall get Weibull random numbers from the following formula :
+
+$$w = h(u) = (-\sigma \cdot (1 - u))^\frac{1}{p}$$
+
+where $u$ is an Uniform$[0, 1]$ random number.
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+The following function takes random sample, initial approximation of $p$ and number of iteration as inputs and gives $\hat{p}$ and $\hat{\sigma}$ as outputs.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Weibull_MLE} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{weibull_sample}\hldef{,} \hlkwc{shape_initial}\hldef{,} \hlkwc{n_iteration}\hldef{)\{}
+
+  \hldef{p} \hlkwb{<-} \hlkwd{c}\hldef{(shape_initial)}
+
+  \hldef{n} \hlkwb{<-} \hlkwd{length}\hldef{(weibull_sample)}
+
+  \hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{p}\hldef{)\{}
+
+    \hldef{result} \hlkwb{<-} \hldef{n} \hlopt{/} \hldef{p} \hlopt{-}
+              \hldef{( n} \hlopt{*} \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p} \hlopt{*} \hlkwd{log}\hldef{(weibull_sample)) )} \hlopt{/}
+                        \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p)} \hlopt{+}
+              \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(weibull_sample))}
+
+    \hlkwd{return}\hldef{(result)}
+  \hldef{\}}
+
+  \hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{p}\hldef{)\{}
+
+    \hldef{temp1} \hlkwb{<-} \hldef{n} \hlopt{*} \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p)} \hlopt{*}
+                 \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p} \hlopt{*} \hlkwd{log}\hldef{(weibull_sample)}\hlopt{^}\hlnum{2}\hldef{)}
+
+    \hldef{temp2} \hlkwb{<-} \hldef{n} \hlopt{*} \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p} \hlopt{*} \hlkwd{log}\hldef{(weibull_sample))}\hlopt{^}\hlnum{2}
+
+    \hldef{temp3} \hlkwb{<-} \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p)}\hlopt{^}\hlnum{2}
+
+    \hldef{result} \hlkwb{<-} \hlopt{-} \hldef{n} \hlopt{/} \hldef{p}\hlopt{^}\hlnum{2} \hlopt{-} \hldef{(temp1} \hlopt{-} \hldef{temp2)} \hlopt{/} \hldef{temp3}
+
+    \hlkwd{return}\hldef{(result)}
+  \hldef{\}}
+
+  \hldef{iterations} \hlkwb{<-} \hldef{n_iteration}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{iterations) \{}
+    \hldef{p[i]} \hlkwb{<-} \hldef{p[i}\hlopt{-}\hlnum{1}\hldef{]} \hlopt{-} \hlkwd{f1}\hldef{(p[i}\hlopt{-}\hlnum{1}\hldef{])} \hlopt{/} \hlkwd{f2}\hldef{(p[i}\hlopt{-}\hlnum{1}\hldef{])}
+
+    \hlkwa{if}\hldef{(}\hlkwd{abs}\hldef{(}\hlkwd{f1}\hldef{(p[}\hlkwd{length}\hldef{(p)]))} \hlopt{<} \hlnum{0.001}\hldef{)} \hlkwa{break}
+  \hldef{\}}
+
+  \hldef{p_hat} \hlkwb{<-} \hldef{p[}\hlkwd{length}\hldef{(p)]}
+
+  \hldef{sigma_hat} \hlkwb{<-} \hlkwd{sum}\hldef{(weibull_sample}\hlopt{^}\hldef{p_hat)} \hlopt{/} \hldef{n}
+
+  \hlkwd{return}\hldef{(}\hlkwd{c}\hldef{(p_hat, sigma_hat))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Now we calculate MLEs for different sample sizes.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{100}\hldef{,} \hlnum{200}\hldef{,} \hlnum{500}\hldef{,} \hlnum{1000}\hldef{,} \hlnum{5000}\hldef{,} \hlnum{10000}\hldef{,} \hlnum{100000}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimated_shape} \hlkwb{<-} \hlkwd{c}\hldef{(); estimated_scale} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(n)) \{}
+  \hldef{our_sample} \hlkwb{<-} \hldef{(}\hlopt{-} \hlnum{3} \hlopt{*} \hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hlkwd{runif}\hldef{(n[i])))}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hlnum{5}\hldef{)}
+  \hldef{temp} \hlkwb{<-} \hlkwd{Weibull_MLE}\hldef{(our_sample,} \hlkwc{shape_initial} \hldef{=} \hlnum{7}\hldef{,} \hlkwc{n_iteration} \hldef{=} \hlnum{1000}\hldef{)}
+  \hldef{estimated_shape[i]} \hlkwb{<-} \hldef{temp[}\hlnum{1}\hldef{]}
+  \hldef{estimated_scale[i]} \hlkwb{<-} \hldef{temp[}\hlnum{2}\hldef{]}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Weibull_MLE_df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample_size} \hldef{= n,}
+                            \hlkwc{shape_hat} \hldef{= estimated_shape,}
+                            \hlkwc{scale_hat} \hldef{= estimated_scale)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Weibull_MLE_df1}
+\end{alltt}
+\begin{verbatim}
+##   sample_size shape_hat scale_hat
+## 1       1e+02  5.436175  3.763250
+## 2       2e+02  4.974709  2.995422
+## 3       5e+02  5.294996  3.433265
+## 4       1e+03  5.070666  2.980566
+## 5       5e+03  4.998003  2.990593
+## 6       1e+04  4.992735  3.003461
+## 7       1e+05  5.012555  3.008047
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the estimates of parameters seem to converge at 5 and 3 respectively. \\
+
+Now we shall compare the MSEs.
+\par}
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{MSE_p_hat} \hlkwb{<-} \hlkwd{c}\hldef{(); MSE_sigma_hat} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(n))\{}
+
+  \hldef{p_hats} \hlkwb{<-} \hlkwd{c}\hldef{(); sigma_hats} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hldef{) \{}
+    \hldef{a_sample} \hlkwb{<-} \hldef{(}\hlopt{-} \hlnum{3} \hlopt{*} \hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hlkwd{runif}\hldef{(n[j])))}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hlnum{5}\hldef{)}
+    \hldef{temp} \hlkwb{<-} \hlkwd{Weibull_MLE}\hldef{(a_sample,} \hlkwc{shape_initial} \hldef{=} \hlnum{7}\hldef{,} \hlkwc{n_iteration} \hldef{=} \hlnum{1000}\hldef{)}
+    \hldef{p_hats[i]} \hlkwb{<-} \hldef{temp[}\hlnum{1}\hldef{]}
+    \hldef{sigma_hats[i]} \hlkwb{<-} \hldef{temp[}\hlnum{2}\hldef{]}
+  \hldef{\}}
+
+  \hldef{MSE_p_hat[j]} \hlkwb{<-} \hlkwd{mean}\hldef{( (p_hats} \hlopt{-} \hlnum{5}\hldef{)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hldef{MSE_sigma_hat[j]} \hlkwb{<-} \hlkwd{mean}\hldef{( (sigma_hats} \hlopt{-} \hlnum{3}\hldef{)}\hlopt{^}\hlnum{2} \hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Weibull_MLE_df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample_size} \hldef{= n,}
+                            \hlkwc{MSE_p_hat} \hldef{= MSE_p_hat,}
+                            \hlkwc{MSE_sigma_hat} \hldef{= MSE_sigma_hat)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Weibull_MLE_df2}
+\end{alltt}
+\begin{verbatim}
+##   sample_size    MSE_p_hat MSE_sigma_hat
+## 1       1e+02 0.1209401775  0.2312108804
+## 2       2e+02 0.0904505858  0.1071219220
+## 3       5e+02 0.0335515569  0.0429495835
+## 4       1e+03 0.0102605852  0.0148421304
+## 5       5e+03 0.0025370187  0.0040392725
+## 6       1e+04 0.0015531529  0.0024918773
+## 7       1e+05 0.0001671952  0.0002444111
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.3cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, MSEs of both the parameters decrease monotonically. This implies MLEs give better estimates as sample size increases. For larger and larger samples, the MLEs will smoothly converge to the true values of the parameters respectively. \par}
+
+\end{document}
