@@ -49,7 +49,7 @@ $$L(\alpha, \beta) = \left( \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \right)^{n} \
 
 The log-likelihood function is 
 
-$$ l(\alpha, \beta) = -n \, ln(\Gamma(\alpha)) - \alpha n \, ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} ln \, x_i .$$
+$$ l(\alpha, \beta) = -n \ln(\Gamma(\alpha)) - \alpha n \ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} \ln x_i .$$
 
 The partial derivative of the log-likelihood w.r.t. $\beta$ is
 
@@ -64,17 +64,17 @@ Setting it to $0$ and solving for $\beta$ we get,
 The partial derivative of the log-likelihood w.r.t. $\alpha$ is
 
 \begin{align*}
-\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \, ln(\beta) + \sum \limits_{i = 1}^{n} ln \, x_i \\
-&= -n \, \psi(\alpha) - n \, ln\left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} ln \, x_i \\
-&= -n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i.
+\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \ln(\beta) + \sum \limits_{i = 1}^{n} \ln x_i \\
+&= -n \, \psi(\alpha) - n \ln \left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} \ln x_i \\
+&= -n \, \psi(\alpha) - n \ln(\bar{x}) + n \ln(\alpha) + \sum \limits_{i = 1}^{n} \ln x_i.
 \end{align*}
 
-$\psi(z) = \dfrac{d}{dz} \, ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
+$\psi(z) = \dfrac{d}{dz} \ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
 
 Setting the partial derivative w.r.t. $\alpha$ to 0, we get an equation in $\alpha$ given by
 
 \begin{equation}
-g(\alpha) = - n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i = 0.
+g(\alpha) = - n \, \psi(\alpha) - n \ln(\bar{x}) + n \ln(\alpha) + \sum \limits_{i = 1}^{n} \ln x_i = 0.
 \end{equation}
 
 We cannot obtain any closed-form solution of $g(\alpha)$, so we opt for numerical solution. \\
