@@ -99,7 +99,7 @@ $$L(\alpha, \beta) = \left( \dfrac{1}{\Gamma(\alpha) \beta^\alpha} \right)^{n} \
 
 The log-likelihood function is 
 
-$$ l(\alpha, \beta) = -n \, ln(\Gamma(\alpha)) - \alpha n \, ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} ln \, x_i .$$
+$$ l(\alpha, \beta) = -n \ln(\Gamma(\alpha)) - \alpha n \ln(\beta) - \dfrac{1}{\beta}\sum \limits_{i = 1}^{n} x_i + ({\alpha - 1}) \sum \limits_{i = 1}^{n} \ln x_i .$$
 
 The partial derivative of the log-likelihood w.r.t. $\beta$ is
 
@@ -114,17 +114,17 @@ Setting it to $0$ and solving for $\beta$ we get,
 The partial derivative of the log-likelihood w.r.t. $\alpha$ is
 
 \begin{align*}
-\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \, ln(\beta) + \sum \limits_{i = 1}^{n} ln \, x_i \\
-&= -n \, \psi(\alpha) - n \, ln\left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} ln \, x_i \\
-&= -n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i.
+\dfrac{\partial}{\partial \alpha} l(\alpha, \beta) &= -n \, \dfrac{\Gamma'(\alpha)}{\Gamma(\alpha)} - n \ln(\beta) + \sum \limits_{i = 1}^{n} \ln x_i \\
+&= -n \, \psi(\alpha) - n \ln \left(\dfrac{\bar{x}}{\alpha}\right) + \sum \limits_{i = 1}^{n} \ln x_i \\
+&= -n \, \psi(\alpha) - n \ln(\bar{x}) + n \ln(\alpha) + \sum \limits_{i = 1}^{n} \ln x_i.
 \end{align*}
 
-$\psi(z) = \dfrac{d}{dz} \, ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
+$\psi(z) = \dfrac{d}{dz} \ln(z) = \dfrac{\Gamma'(z)}{\Gamma(z)}$ is called \textbf{digamma function}. \\
 
 Setting the partial derivative w.r.t. $\alpha$ to 0, we get an equation in $\alpha$ given by
 
 \begin{equation}
-g(\alpha) = - n \, \psi(\alpha) - n \, ln(\bar{x}) + n \, ln(\alpha) + \sum \limits_{i = 1}^{n} ln \, x_i = 0.
+g(\alpha) = - n \, \psi(\alpha) - n \ln(\bar{x}) + n \ln(\alpha) + \sum \limits_{i = 1}^{n} \ln x_i = 0.
 \end{equation}
 
 We cannot obtain any closed-form solution of $g(\alpha)$, so we opt for numerical solution. \\
@@ -236,13 +236,13 @@ Now we calculate MLEs for different sample sizes.
 \end{alltt}
 \begin{verbatim}
 ##   sample_size shape_hat scale_hat
-## 1       1e+02  5.646208  2.173105
-## 2       2e+02  6.068502  1.925464
-## 3       5e+02  6.467655  1.883695
-## 4       1e+03  5.620465  2.092266
-## 5       5e+03  5.938579  2.019316
-## 6       1e+04  5.963645  2.032911
-## 7       1e+05  5.928704  2.024396
+## 1       1e+02  6.915172  1.643820
+## 2       2e+02  5.736976  2.225656
+## 3       5e+02  6.196000  1.948915
+## 4       1e+03  6.055443  1.986336
+## 5       5e+03  6.147554  1.956113
+## 6       1e+04  6.145379  1.959652
+## 7       1e+05  6.044161  1.984594
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -302,13 +302,13 @@ Now we shall compare the MSEs.
 \end{alltt}
 \begin{verbatim}
 ##   sample_size MSE_alpha_hat MSE_beta_hat
-## 1       1e+02  0.7305246513 7.378320e-02
-## 2       2e+02  0.3666610190 4.180519e-02
-## 3       5e+02  0.1868811028 2.150491e-02
-## 4       1e+03  0.0912236647 9.851969e-03
-## 5       5e+03  0.0145404775 1.633561e-03
-## 6       1e+04  0.0086344816 9.551587e-04
-## 7       1e+05  0.0006514183 8.104136e-05
+## 1       1e+02   0.667316897 7.759384e-02
+## 2       2e+02   0.306749994 3.423506e-02
+## 3       5e+02   0.114939654 1.414935e-02
+## 4       1e+03   0.058895555 7.239802e-03
+## 5       5e+03   0.017795883 2.150427e-03
+## 6       1e+04   0.006386860 8.281383e-04
+## 7       1e+05   0.000777844 9.087708e-05
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
