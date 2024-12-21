@@ -44,7 +44,7 @@ $p$ is called the shape parameter and $\sigma$ is called the scale parameter of 
 
 For a sample of size $n$, the likelihood function is 
 
-$$L(p, \sigma) = \left( \dfrac{p}{\sigma} \right)^{n} \,\, exp \left\{-\dfrac{1}{\sigma}\sum \limits_{i = 1}^{n} x_i^p \right\} \,\, \left( \prod \limits_{i = 1}^{n} x_i \right)^{p - 1}. $$
+$$L(p, \sigma) = \left( \dfrac{p}{\sigma} \right)^{n} \cdot exp \left\{-\dfrac{1}{\sigma}\sum \limits_{i = 1}^{n} x_i^p \right\} \,\, \left( \prod \limits_{i = 1}^{n} x_i \right)^{p - 1}. $$
 
 
 The log-likelihood function is 
