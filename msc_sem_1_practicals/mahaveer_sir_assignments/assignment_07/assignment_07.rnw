@@ -1,0 +1,133 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.75 in, bottom = 0.75 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 105 : Assignment 07}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+Random number generation from $N(\mu, \sigma^2)$.
+
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let $U_1$ and $U_2$ be two iid $U(0, 1)$ variates. \\
+
+Then,
+\begin{align*}
+X_1 &= \sqrt{-2 \,\, ln U_1} \,\, \cos (2 \pi U_2) \text{ and} \\
+X_2 &= \sqrt{-2 \,\, ln U_1} \,\, \sin (2 \pi U_2)
+\end{align*}
+
+are independently distributed $N(0, 1)$ variates.
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+random_numbers <- function(n, seed = NULL){
+  a <- 1103515245
+  b <- 12345
+  m <- 2^31 - 1
+  
+  if(is.null(seed)){
+    start_date <- as.POSIXct("2003-01-01 00:00:00", tz = "UTC")
+
+    current_date <- Sys.time()
+
+    seed <- as.numeric(difftime(current_date, start_date, units = "secs"))
+  }
+  
+  x <- c(seed)
+  
+  for (i in 2:n) {
+    x[i] <- (a * x[i-1] + b) %% m
+  }
+  
+  return(x)
+}
+@
+
+<<>>=
+uniform_random_numbers <- function(n, seed = NULL){
+  return(random_numbers(n, seed) / (2^31 - 1))
+}
+@
+
+<<>>=
+normal_random_numbers <- function(n, mu, sigma, seed = NULL){
+  
+  u1 <- uniform_random_numbers(n, seed)
+  u2 <- uniform_random_numbers(n, seed)
+  
+  x <- sqrt(-2 * log(u1)) * cos(2 * pi * u2)
+  
+  x <- mu + sigma * x
+  
+  return(x)
+}
+@
+
+<<>>=
+size <- 10
+normal_random_numbers(size, 1, 1)
+@
+
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Visualization}}
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+size <- 1000
+normal_numbers <- data.frame(n = 1:size,
+                          num = normal_random_numbers(size, 1, 1))
+@
+
+<<>>=
+normal_numbers %>%
+  ggplot(aes(x = n, y = num)) +
+  geom_point(size = 1.5, col = "red") +
+  geom_hline(yintercept = 1, col = "blue", linewidth = 1) +
+  labs(x = "Index", y = "Random Numbers",
+       title = "Random Numbers from N(1, 1)")
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Scatteredness of the points mimics that of a $N(1, 1)$ Distribution. \par}
+
+\end{document}

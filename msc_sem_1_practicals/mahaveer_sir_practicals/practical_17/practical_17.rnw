@@ -95,7 +95,7 @@ where $\hat{\theta}_1$, $\hat{\theta}_2$, $\hat{\theta}_3$, $\ldots$, $\hat{\the
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
 
-The following function takes random sample, initial approximation of alpha and number of iteration as inputs and gives $\hat{\alpha}$ and $\hat{\beta}$ as outputs.
+The following function takes random sample, initial approximation of $\alpha$ and number of iteration as inputs and gives $\hat{\alpha}$ and $\hat{\beta}$ as outputs.
 
 <<>>=
 Gamma_MLE <- function(gamma_sample, shape_initial, n_iteration){

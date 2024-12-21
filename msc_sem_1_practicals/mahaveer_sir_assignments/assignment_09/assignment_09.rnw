@@ -1,0 +1,143 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 106 : Assignment 09}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} To find Maximum Likelihood Estimate of the parameters of the Exponential Distribution given as follows :
+
+$$f_X (x) = \theta e^{-\theta x} \,\, I_{(0, \infty)}(x); \,\, \theta > 0 $$
+
+and to compare ML estimates for different sample sizes. 
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+For a sample of size $n$, the likelihood function is 
+
+$$L(\theta) = \theta^n \cdot exp \left\{- \theta \cdot \sum \limits_{i = 1}^{n} x_i \right\}. $$
+
+
+The log-likelihood function is 
+
+$$ l(\theta) = n \ln \theta -\theta \cdot \sum \limits_{i = 1}^{n} x_i .$$
+
+The derivative of the log-likelihood w.r.t. $\theta$ is
+
+$$ \dfrac{d}{d \theta} l(\theta) = \dfrac{n}{\theta} - \sum \limits_{i = 1}^{n} x_i . $$
+
+Setting it to $0$ and solving for $\theta$ we get,
+
+\begin{equation}
+\hat{\theta} = \dfrac{n}{\sum \limits_{i = 1}^{n} x_i} = \dfrac{1}{\bar{x}}.
+\end{equation}
+
+$\bullet$ To compare MLEs from different sample sizes, we compare their MSEs. \\
+
+For a fixed sample size $n$, $\text{MSE}(\hat{\theta}_{\text{MLE}}) = \dfrac{1}{k} \sum \limits_{i = 1}^{k} (\hat{\theta_i} - \theta_0)^2$, \\
+where $\hat{\theta}_1$, $\hat{\theta}_2$, $\hat{\theta}_3$, $\ldots$, $\hat{\theta}_k$ are MLEs from different samples of fixed size $n$ and $\theta_0$ is the true value of $\theta$.
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+The following function takes random sample as input and gives $\hat{\theta}$ as output.
+
+<<>>=
+Exponential_MLE <- function(exp_sample) 1 / mean(exp_sample)
+@
+
+Now we calculate MLEs for different sample sizes.
+
+<<>>=
+n <- c(100, 200, 500, 1000, 5000, 10000, 100000)
+@
+
+<<>>=
+estimated_theta <- c()
+@
+
+<<>>=
+for (i in 1:length(n)) {
+  our_sample <- rexp(n[i], rate = 2)
+  estimated_theta[i] <- Exponential_MLE(our_sample)
+}
+@
+
+<<>>=
+Exponential_MLE_df1 <- data.frame(sample_size = n, 
+                            theta_hat = estimated_theta)
+@
+
+<<>>=
+Exponential_MLE_df1
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the estimate of parameter seems to converge at 2. \\
+
+Now we shall compare the MSEs.
+\par}
+
+
+
+
+<<>>=
+MSE_theta_hat <- c()
+@
+
+<<>>=
+for(j in 1:length(n)){
+
+  theta_hats <- c()
+  
+  for (i in 1:100) {
+    a_sample <- rexp(n[j], rate = 2)
+    theta_hats[i] <- Exponential_MLE(a_sample)
+  }
+  
+  MSE_theta_hat[j] <- mean( (theta_hats - 2)^2 )
+}
+@
+
+<<>>=
+Exponential_MLE_df2 <- data.frame(sample_size = n,
+                            MSE_theta_hat = MSE_theta_hat)
+@
+
+<<>>=
+Exponential_MLE_df2
+@
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.3cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, MSE of the parameter decreases monotonically. This implies MLE gives better estimate as sample size increases. For larger and larger samples, the MLE will smoothly converge to the true value of the parameter. \par}
+
+\end{document}
