@@ -39,8 +39,6 @@ trajectory <- function(n){
                          replace = TRUE, 
                          prob = c(0.5, 0.5))
   
-  plot(c(0, cumsum(realizations)) ~ c(0, t), type = "o", col = "red", lwd = "2")
-  
   df <- data.frame(n = c(0, t),
                    realizations = c(0, cumsum(realizations)))
   
