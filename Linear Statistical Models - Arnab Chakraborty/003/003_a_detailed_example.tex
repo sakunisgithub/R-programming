@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
@@ -99,21 +99,21 @@ Converting our model in matrix form, we shall have,
 \begin{gather}
 	\begin{bmatrix} l_1 \\	l_2 \\	\vdots \\	l_n	\end{bmatrix}
 	=
-	\begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} 
+	\begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots & \vdots \\	1 & w_n	\end{bmatrix} 
 	\cdot
 	\begin{bmatrix}	\beta_1 \\	\beta_2 \\	\end{bmatrix}  
 	+	
 	\begin{bmatrix}  \epsilon_1 \\	\epsilon_2 \\	\vdots \\	\epsilon_n	\end{bmatrix}.
 \end{gather}
 
-$ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the \textbf{design matrix} $i.e.$ it is designed by us, we exactly know the weights $w_i$s that we gave as inputs.
+$ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots & \vdots \\	1 & w_n	\end{bmatrix} $ is the \textbf{design matrix} $i.e.$ it is designed by us, we exactly know the weights $w_i$s that we gave as inputs.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{our_data} \hlkwb{=} \hlkwd{read.csv}\hlstd{(}\hlstr{"springs.csv"}\hlstd{)}
+\hldef{our_data} \hlkwb{=} \hlkwd{read.csv}\hldef{(}\hlsng{"springs.csv"}\hldef{)}
 
-\hlstd{our_data}
+\hldef{our_data}
 \end{alltt}
 \begin{verbatim}
 ##   weight length
@@ -125,7 +125,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 ## 6    3.5  10.32
 \end{verbatim}
 \begin{alltt}
-\hlkwd{dim}\hlstd{(our_data)}
+\hlkwd{dim}\hldef{(our_data)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 6 2
@@ -136,7 +136,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(length} \hlopt{~} \hlstd{weight,} \hlkwc{data} \hlstd{= our_data)}
+\hlkwd{plot}\hldef{(length} \hlopt{~} \hldef{weight,} \hlkwc{data} \hldef{= our_data)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-2-1} 
@@ -145,7 +145,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit} \hlkwb{=} \hlkwd{lm}\hlstd{(length} \hlopt{~} \hlstd{weight,} \hlkwc{data} \hlstd{= our_data)}
+\hldef{fit} \hlkwb{=} \hlkwd{lm}\hldef{(length} \hlopt{~} \hldef{weight,} \hlkwc{data} \hldef{= our_data)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -153,7 +153,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{model.matrix}\hlstd{(fit)}
+\hlkwd{model.matrix}\hldef{(fit)}
 \end{alltt}
 \begin{verbatim}
 ##   (Intercept) weight
@@ -172,7 +172,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit}
+\hldef{fit}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -189,7 +189,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{names}\hlstd{(fit)}
+\hlkwd{names}\hldef{(fit)}
 \end{alltt}
 \begin{verbatim}
 ##  [1] "coefficients"  "residuals"     "effects"       "rank"         
@@ -202,7 +202,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit}\hlopt{$}\hlstd{coefficients}
+\hldef{fit}\hlopt{$}\hldef{coefficients}
 \end{alltt}
 \begin{verbatim}
 ## (Intercept)      weight 
@@ -214,7 +214,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit}\hlopt{$}\hlstd{residuals}
+\hldef{fit}\hlopt{$}\hldef{residuals}
 \end{alltt}
 \begin{verbatim}
 ##            1            2            3            4            5            6 
@@ -226,7 +226,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit}\hlopt{$}\hlstd{fitted.values}
+\hldef{fit}\hlopt{$}\hldef{fitted.values}
 \end{alltt}
 \begin{verbatim}
 ##         1         2         3         4         5         6 
@@ -238,7 +238,7 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit}\hlopt{$}\hlstd{rank}
+\hldef{fit}\hlopt{$}\hldef{rank}
 \end{alltt}
 \begin{verbatim}
 ## [1] 2
@@ -249,8 +249,8 @@ $ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(length} \hlopt{~} \hlstd{weight,} \hlkwc{data} \hlstd{= our_data)}
-\hlkwd{abline}\hlstd{(fit}\hlopt{$}\hlstd{coefficients)}
+\hlkwd{plot}\hldef{(length} \hlopt{~} \hldef{weight,} \hlkwc{data} \hldef{= our_data)}
+\hlkwd{abline}\hldef{(fit}\hlopt{$}\hldef{coefficients)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
@@ -300,7 +300,7 @@ In matrix form,
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{our_data} \hlkwb{=} \hlkwd{read.csv}\hlstd{(}\hlstr{"springs.csv"}\hlstd{)}
+\hldef{our_data} \hlkwb{=} \hlkwd{read.csv}\hldef{(}\hlsng{"springs.csv"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -308,7 +308,7 @@ In matrix form,
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit_quad} \hlkwb{=} \hlkwd{lm}\hlstd{(length} \hlopt{~} \hlstd{weight} \hlopt{+} \hlkwd{I}\hlstd{(weight}\hlopt{^}\hlnum{2}\hlstd{), our_data)}
+\hldef{fit_quad} \hlkwb{=} \hlkwd{lm}\hldef{(length} \hlopt{~} \hldef{weight} \hlopt{+} \hlkwd{I}\hldef{(weight}\hlopt{^}\hlnum{2}\hldef{), our_data)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -316,7 +316,7 @@ In matrix form,
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit_quad}
+\hldef{fit_quad}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -325,7 +325,7 @@ In matrix form,
 ## 
 ## Coefficients:
 ## (Intercept)       weight  I(weight^2)  
-##   3.283e+00    2.010e+00    4.679e-16
+##   3.283e+00    2.010e+00    7.245e-16
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -335,7 +335,7 @@ See that, the coefficient of $weight^2$ is close to 0; and the scatterplot of th
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{model.matrix}\hlstd{(fit_quad)}
+\hlkwd{model.matrix}\hldef{(fit_quad)}
 \end{alltt}
 \begin{verbatim}
 ##   (Intercept) weight I(weight^2)
@@ -389,9 +389,9 @@ Now we shall load the two data sets in R.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{data_lab_1} \hlkwb{=} \hlkwd{read.csv}\hlstd{(}\hlstr{"springs_lab_1.csv"}\hlstd{)}
+\hldef{data_lab_1} \hlkwb{=} \hlkwd{read.csv}\hldef{(}\hlsng{"springs_lab_1.csv"}\hldef{)}
 
-\hlstd{data_lab_1}
+\hldef{data_lab_1}
 \end{alltt}
 \begin{verbatim}
 ##   weight length
@@ -403,7 +403,7 @@ Now we shall load the two data sets in R.
 ## 6    3.5  10.32
 \end{verbatim}
 \begin{alltt}
-\hlkwd{dim}\hlstd{(data_lab_1)}
+\hlkwd{dim}\hldef{(data_lab_1)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 6 2
@@ -414,9 +414,9 @@ Now we shall load the two data sets in R.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{data_lab_2} \hlkwb{=} \hlkwd{read.csv}\hlstd{(}\hlstr{"springs_lab_2.csv"}\hlstd{)}
+\hldef{data_lab_2} \hlkwb{=} \hlkwd{read.csv}\hldef{(}\hlsng{"springs_lab_2.csv"}\hldef{)}
 
-\hlstd{data_lab_2}
+\hldef{data_lab_2}
 \end{alltt}
 \begin{verbatim}
 ##   weight length
@@ -427,7 +427,7 @@ Now we shall load the two data sets in R.
 ## 5    2.1   9.39
 \end{verbatim}
 \begin{alltt}
-\hlkwd{dim}\hlstd{(data_lab_2)}
+\hlkwd{dim}\hldef{(data_lab_2)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 5 2
@@ -440,9 +440,9 @@ We have to merge them to do operations.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{temp_1} \hlkwb{=} \hlkwd{data.frame}\hlstd{(data_lab_1,} \hlkwc{lab} \hlstd{=} \hlnum{1}\hlstd{)}
+\hldef{temp_1} \hlkwb{=} \hlkwd{data.frame}\hldef{(data_lab_1,} \hlkwc{lab} \hldef{=} \hlnum{1}\hldef{)}
 
-\hlstd{temp_1}
+\hldef{temp_1}
 \end{alltt}
 \begin{verbatim}
 ##   weight length lab
@@ -454,9 +454,9 @@ We have to merge them to do operations.
 ## 6    3.5  10.32   1
 \end{verbatim}
 \begin{alltt}
-\hlstd{temp_2} \hlkwb{=} \hlkwd{data.frame}\hlstd{(data_lab_2,} \hlkwc{lab} \hlstd{=} \hlnum{2}\hlstd{)}
+\hldef{temp_2} \hlkwb{=} \hlkwd{data.frame}\hldef{(data_lab_2,} \hlkwc{lab} \hldef{=} \hlnum{2}\hldef{)}
 
-\hlstd{temp_2}
+\hldef{temp_2}
 \end{alltt}
 \begin{verbatim}
 ##   weight length lab
@@ -467,9 +467,9 @@ We have to merge them to do operations.
 ## 5    2.1   9.39   2
 \end{verbatim}
 \begin{alltt}
-\hlstd{all_data} \hlkwb{=} \hlkwd{rbind}\hlstd{(temp_1, temp_2)}
+\hldef{all_data} \hlkwb{=} \hlkwd{rbind}\hldef{(temp_1, temp_2)}
 
-\hlstd{all_data}
+\hldef{all_data}
 \end{alltt}
 \begin{verbatim}
 ##    weight length lab
@@ -514,7 +514,7 @@ We have to change the "lab" to a factor. \\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{all_data}\hlopt{$}\hlstd{lab} \hlkwb{=} \hlkwd{factor}\hlstd{(all_data}\hlopt{$}\hlstd{lab)}
+\hldef{all_data}\hlopt{$}\hldef{lab} \hlkwb{=} \hlkwd{factor}\hldef{(all_data}\hlopt{$}\hldef{lab)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -522,25 +522,25 @@ We have to change the "lab" to a factor. \\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{class}\hlstd{(all_data)}
+\hlkwd{class}\hldef{(all_data)}
 \end{alltt}
 \begin{verbatim}
 ## [1] "data.frame"
 \end{verbatim}
 \begin{alltt}
-\hlkwd{class}\hlstd{(all_data}\hlopt{$}\hlstd{weight)}
+\hlkwd{class}\hldef{(all_data}\hlopt{$}\hldef{weight)}
 \end{alltt}
 \begin{verbatim}
 ## [1] "numeric"
 \end{verbatim}
 \begin{alltt}
-\hlkwd{class}\hlstd{(all_data}\hlopt{$}\hlstd{length)}
+\hlkwd{class}\hldef{(all_data}\hlopt{$}\hldef{length)}
 \end{alltt}
 \begin{verbatim}
 ## [1] "numeric"
 \end{verbatim}
 \begin{alltt}
-\hlkwd{class}\hlstd{(all_data}\hlopt{$}\hlstd{lab)}
+\hlkwd{class}\hldef{(all_data}\hlopt{$}\hldef{lab)}
 \end{alltt}
 \begin{verbatim}
 ## [1] "factor"
@@ -551,7 +551,7 @@ We have to change the "lab" to a factor. \\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(length} \hlopt{~} \hlstd{weight, all_data,} \hlkwc{col} \hlstd{= lab)}
+\hlkwd{plot}\hldef{(length} \hlopt{~} \hldef{weight, all_data,} \hlkwc{col} \hldef{= lab)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
@@ -562,7 +562,7 @@ Now we shall fit our linear model.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit_2} \hlkwb{=} \hlkwd{lm}\hlstd{(length} \hlopt{~} \hlstd{lab} \hlopt{+} \hlstd{weight} \hlopt{-} \hlnum{1}\hlstd{, all_data)}
+\hldef{fit_2} \hlkwb{=} \hlkwd{lm}\hldef{(length} \hlopt{~} \hldef{lab} \hlopt{+} \hldef{weight} \hlopt{-} \hlnum{1}\hldef{, all_data)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -570,7 +570,7 @@ Now we shall fit our linear model.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fit_2}
+\hldef{fit_2}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -587,7 +587,7 @@ Now we shall fit our linear model.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{model.matrix}\hlstd{(fit_2)}
+\hlkwd{model.matrix}\hldef{(fit_2)}
 \end{alltt}
 \begin{verbatim}
 ##    lab1 lab2 weight
