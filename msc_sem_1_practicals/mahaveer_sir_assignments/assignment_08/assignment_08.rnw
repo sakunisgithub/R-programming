@@ -92,7 +92,7 @@ $\bullet$ To get random sample from Weibull distribution, we shall use the CDF I
 
 We shall get Weibull random numbers from the following formula :
 
-$$w = h(u) = (-\sigma \cdot (1 - u))^\frac{1}{p}$$
+$$w = h(u) = (-\sigma \cdot \log (1 - u))^\frac{1}{p}$$
 
 where $u$ is an Uniform$[0, 1]$ random number.
 
