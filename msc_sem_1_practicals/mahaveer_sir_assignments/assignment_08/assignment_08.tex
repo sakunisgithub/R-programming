@@ -142,7 +142,7 @@ $\bullet$ To get random sample from Weibull distribution, we shall use the CDF I
 
 We shall get Weibull random numbers from the following formula :
 
-$$w = h(u) = (-\sigma \cdot (1 - u))^\frac{1}{p}$$
+$$w = h(u) = (-\sigma \cdot \log (1 - u))^\frac{1}{p}$$
 
 where $u$ is an Uniform$[0, 1]$ random number.
 
@@ -250,13 +250,13 @@ Now we calculate MLEs for different sample sizes.
 \end{alltt}
 \begin{verbatim}
 ##   sample_size shape_hat scale_hat
-## 1       1e+02  4.592817  2.465678
-## 2       2e+02  4.930790  2.925762
-## 3       5e+02  4.941355  3.027815
-## 4       1e+03  4.881331  3.008262
-## 5       5e+03  5.058350  3.062909
-## 6       1e+04  5.037246  3.033367
-## 7       1e+05  4.986499  2.984322
+## 1       1e+02  4.623118  2.936881
+## 2       2e+02  4.610086  2.448161
+## 3       5e+02  4.774754  2.809099
+## 4       1e+03  5.055009  3.163387
+## 5       5e+03  4.970609  3.006121
+## 6       1e+04  5.010457  2.984508
+## 7       1e+05  5.016560  3.012933
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -316,13 +316,13 @@ Now we shall compare the MSEs.
 \end{alltt}
 \begin{verbatim}
 ##   sample_size    MSE_p_hat MSE_sigma_hat
-## 1       1e+02 0.1505812262  0.3054930967
-## 2       2e+02 0.0967571419  0.1468317631
-## 3       5e+02 0.0406261046  0.0535557355
-## 4       1e+03 0.0205617296  0.0252301939
-## 5       5e+03 0.0027331638  0.0041297621
-## 6       1e+04 0.0015368605  0.0025068067
-## 7       1e+05 0.0001782866  0.0002485019
+## 1       1e+02 0.1299030272  0.2702849605
+## 2       2e+02 0.0743924881  0.1110302594
+## 3       5e+02 0.0277047922  0.0420507540
+## 4       1e+03 0.0158135229  0.0241695045
+## 5       5e+03 0.0030354146  0.0043112817
+## 6       1e+04 0.0014042470  0.0016959531
+## 7       1e+05 0.0001666121  0.0002509184
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
