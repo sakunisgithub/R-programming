@@ -49,14 +49,14 @@ Converting our model in matrix form, we shall have,
 \begin{gather}
 	\begin{bmatrix} l_1 \\	l_2 \\	\vdots \\	l_n	\end{bmatrix}
 	=
-	\begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} 
+	\begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots & \vdots \\	1 & w_n	\end{bmatrix} 
 	\cdot
 	\begin{bmatrix}	\beta_1 \\	\beta_2 \\	\end{bmatrix}  
 	+	
 	\begin{bmatrix}  \epsilon_1 \\	\epsilon_2 \\	\vdots \\	\epsilon_n	\end{bmatrix}.
 \end{gather}
 
-$ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots \\	1 & w_n	\end{bmatrix} $ is the \textbf{design matrix} $i.e.$ it is designed by us, we exactly know the weights $w_i$s that we gave as inputs.
+$ \begin{bmatrix}	1 & w_1 \\	1 & w_2 \\	\vdots & \vdots \\	1 & w_n	\end{bmatrix} $ is the \textbf{design matrix} $i.e.$ it is designed by us, we exactly know the weights $w_i$s that we gave as inputs.
 
 <<>>=
 our_data = read.csv("springs.csv")
