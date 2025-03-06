@@ -1,0 +1,204 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 01}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question}}
+
+\vspace{0.3cm}
+
+Fit a multiple linear regression model for the following data-set and obtain the following results.
+
+\begin{enumerate}[(a)]
+
+\item estimate of the regression coefficients and $\sigma$,
+\item confidence interval of the regression coefficients,
+\item coefficient of determination,
+\item adjusted coefficient of determination.
+\end{enumerate}
+
+\begin{table}[!htbp]
+\def\arraystretch{1}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+
+\hline
+
+$y$ & $x_1$ & $x_2$ \\
+
+\hline
+
+16.68 &	7 & 	560 \\
+11.5 &	3 & 	220 \\
+12.03 &	3 & 	340 \\
+14.88 &	4 & 	80 \\
+13.75 &	6 & 	150 \\
+18.11 &	7 & 	330 \\
+8 &	2 & 	110 \\
+17.83 &	7 & 	210 \\
+79.2 &	30 & 	1460 \\
+21 &	10 & 	215 \\
+13.5 &	4 & 	255 \\
+19.75 &	6 & 	462 \\
+24 &	9 & 	448 \\
+29 &	10 & 	776 \\
+15.35 &	6 & 	220 \\
+19 &	7 & 	132 \\
+9.5 &	 3 &	36 \\
+35.1 &	17 & 	770 \\
+17.9 &	10 & 	140 \\
+52.32 &	26 & 	810 \\
+18.75 &	9 & 	450 \\
+19.83 &	8 & 	635 \\
+10.75 &	4 & 	150 \\
+21.5 &	5 & 	605 \\
+40.33 &	16 & 	688 \\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} We fit a multiple linear regression model $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2$.
+
+<<size="tiny">>=
+raw_data <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/msc_semester_2/tripti_madam_practical_01_data.csv')
+@
+
+<<>>=
+dim(raw_data)
+@
+
+<<>>=
+names(raw_data)
+@
+
+<<>>=
+model1 <- lm(Y ~ X_1 + X_2, data = raw_data)
+model_summary <- summary(model1)
+@
+
+<<>>=
+model_summary
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Estimates of regression coefficients are \par}
+
+<<>>=
+estimates <- model_summary$coefficients[, 'Estimate']
+estimates
+@
+
+\newpage
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Estimate of error standard deviation $\sigma$ is \par}
+
+<<>>=
+sigma_hat <- model_summary$sigma
+sigma_hat
+@
+
+Now we shall calculate the confidence intervals of the regression coefficients and the intercept. $100(1 - \alpha)\%$ confidence interval for $\beta_j$ $\forall j = 0(1)2$ is given by 
+
+$$ \left( \hat{\beta_j} - t_{\frac{\alpha}{2}, n - p} \cdot \text{se}(\hat{\beta_j}), \hat{\beta_j} + t_{\frac{\alpha}{2}, n - p} \cdot \text{se}(\hat{\beta_j}) \right).$$
+
+where $n$ is total number of observations and $p$ is total number of parameters in the model.
+
+<<>>=
+std_errors <- model_summary$coefficients[, 'Std. Error']
+
+t_tabulated <- qt(0.025, 22, lower.tail = FALSE)
+
+CI_lower <- estimates - t_tabulated * std_errors
+CI_upper <- estimates + t_tabulated * std_errors
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont 95\% confidence interval for $\beta_0$ is \par}
+
+<<>>=
+CI_lower[1]; CI_upper[1]
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont 95\% confidence interval for $\beta_1$ is \par}
+
+<<>>=
+CI_lower[2]; CI_upper[2]
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont 95\% confidence interval for $\beta_2$ is \par}
+
+<<>>=
+CI_lower[3]; CI_upper[3]
+@
+
+\newpage
+
+Now we shall calculate the confidence interval of the error variance $\sigma^2$. $100(1 - \alpha)\%$ confidence interval for $\sigma^2$ is given by 
+
+$$\left( \dfrac{\text{RSS}}{\chi^2_{\frac{\alpha}{2}, n - p}}, \dfrac{\text{RSS}}{\chi^2_{1 - \frac{\alpha}{2}, n - p}} \right).$$
+
+<<>>=
+RSS <- sum(model_summary$residuals^2) # Residual Sum of Squares
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont 95\% confidence interval for $\sigma^2$ is \par}
+
+<<>>=
+RSS / qchisq(0.025, 22, lower.tail = FALSE) # lower bound
+RSS / qchisq(1-0.025, 22, lower.tail = FALSE) # upper bound
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont 95\% confidence interval for $\sigma$ is \par}
+
+<<>>=
+sqrt(RSS / qchisq(0.025, 22, lower.tail = FALSE)) # lower bound
+sqrt(RSS / qchisq(1-0.025, 22, lower.tail = FALSE)) # upper bound
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont $R^2$ for the model is \par}
+
+<<>>=
+model_summary$r.squared
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Adjusted $R^2$ for the model is \par}
+
+<<>>=
+model_summary$adj.r.squared
+@
+
+
+
+\end{document}
