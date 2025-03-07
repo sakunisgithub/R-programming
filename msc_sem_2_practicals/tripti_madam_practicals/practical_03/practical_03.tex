@@ -1,0 +1,254 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question}}
+
+\vspace{0.3cm}
+
+\begin{enumerate}[(1)]
+
+\item Calculate $L$ and $U$ such that $A = LU$ where $L$ is a lower triangular matrix and $U$ is an upper triangular matrix for given
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 1 & -1 \\
+1 & -2 & 3 \\
+2 & 3 & 1 \\
+\end{bmatrix}.
+\end{gather*}
+
+
+\item Solve the following system of linear equations using $LU$ decomposition method.
+
+\begin{align*}
+x_1 + x_2 - x_3 &= 4 \\
+x_1 - 2x_2 + 3x_3 &= -6 \\
+2x_1 + 3x_2 + x_3 &= 7 \\
+\end{align*}
+
+\end{enumerate}
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} $LU$ decomposition is only possible for non-singular matrices. It is assumed that there is no need for row swapping in the Gaussian elimination.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{LU_decomposer} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{A}\hldef{)\{}
+
+  \hlkwa{if}\hldef{(}\hlkwd{det}\hldef{(A)} \hlopt{==} \hlnum{0}\hldef{)} \hlkwd{stop}\hldef{(}\hlsng{"Matrix must be non-singular."}\hldef{)}
+
+  \hldef{I} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwc{data} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{nrow} \hldef{=} \hlkwd{nrow}\hldef{(A),} \hlkwc{ncol} \hldef{=} \hlkwd{ncol}\hldef{(A))}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(I)) \{}
+    \hldef{I[i, i]} \hlkwb{<-} \hldef{I[i, i]} \hlopt{+} \hlnum{1}
+  \hldef{\}}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{dim}\hldef{(A)[}\hlnum{1}\hldef{]}
+  \hldef{c} \hlkwb{<-} \hlkwd{dim}\hldef{(A)[}\hlnum{2}\hldef{]}
+
+  \hldef{i} \hlkwb{<-} \hlnum{1}\hldef{; j} \hlkwb{<-} \hlnum{1}
+
+  \hlkwa{while}\hldef{(j} \hlopt{<=} \hldef{c) \{}
+
+    \hlkwa{while}\hldef{(i} \hlopt{<=} \hldef{r) \{}
+
+      \hlkwa{if}\hldef{(i} \hlopt{!=} \hldef{r)\{}
+        \hldef{a1} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(A[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{r, j]} \hlopt{/} \hldef{A[i, j])}
+
+        \hldef{a2} \hlkwb{<-} \hlkwd{t}\hldef{(}\hlkwd{as.matrix}\hldef{(A[i, ]))}
+
+        \hldef{A[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{r, ]} \hlkwb{<-} \hldef{A[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{r, ]} \hlopt{-} \hldef{a1} \hlopt{%*%} \hldef{a2}
+
+        \hldef{I[(i}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{r, j]} \hlkwb{<-} \hlkwd{as.vector}\hldef{(a1)}
+
+        \hlkwa{break}
+      \hldef{\}}
+      \hldef{i} \hlkwb{<-} \hldef{i} \hlopt{+} \hlnum{1}
+    \hldef{\}}
+    \hldef{j} \hlkwb{<-} \hldef{j} \hlopt{+} \hlnum{1}
+
+    \hldef{i} \hlkwb{<-} \hldef{j}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(}\hlkwd{list}\hldef{(I, A))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\textbf{\textit{LU\_decomposer()}} returns a list containing $L$ and $U$ respectively.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{A} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{,}
+                     \hlnum{1}\hldef{,} \hlopt{-}\hlnum{2}\hldef{,} \hlnum{3}\hldef{,}
+                     \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hldef{),}
+            \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{LU_decomposer}\hldef{(A)}
+\end{alltt}
+\begin{verbatim}
+## [[1]]
+##      [,1]       [,2] [,3]
+## [1,]    1  0.0000000    0
+## [2,]    1  1.0000000    0
+## [3,]    2 -0.3333333    1
+## 
+## [[2]]
+##      [,1] [,2]      [,3]
+## [1,]    1    1 -1.000000
+## [2,]    0   -3  4.000000
+## [3,]    0    0  4.333333
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{L} \hlkwb{<-} \hlkwd{LU_decomposer}\hldef{(A)[[}\hlnum{1}\hldef{]]}
+\hldef{U} \hlkwb{<-} \hlkwd{LU_decomposer}\hldef{(A)[[}\hlnum{2}\hldef{]]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{b} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{4}\hldef{,} \hlopt{-}\hlnum{6}\hldef{,} \hlnum{7}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+$\bullet$ 
+\begin{align*}
+&\hspace{20pt}A\utilde{x} = \utilde{b} \\
+&\Rightarrow LU\utilde{x} = \utilde{b} \\
+&\Rightarrow \utilde{x} = U^{-1}L^{-1}\utilde{b} \\
+\end{align*}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{solve}\hldef{(U)} \hlopt{%*%} \hlkwd{solve}\hldef{(L)} \hlopt{%*%} \hldef{b}
+\end{alltt}
+\begin{verbatim}
+##      [,1]
+## [1,]    1
+## [2,]    2
+## [3,]   -1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The solution of the given system of equations is \par}
+
+\begin{gather*}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+2 \\
+-1 \\
+\end{bmatrix}.
+\end{gather*}
+
+\end{document}

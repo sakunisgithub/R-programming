@@ -1,0 +1,161 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question}}
+
+\vspace{0.3cm}
+
+\begin{enumerate}[(1)]
+
+\item Calculate $L$ and $U$ such that $A = LU$ where $L$ is a lower triangular matrix and $U$ is an upper triangular matrix for given
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 1 & -1 \\
+1 & -2 & 3 \\
+2 & 3 & 1 \\
+\end{bmatrix}.
+\end{gather*}
+
+
+\item Solve the following system of linear equations using $LU$ decomposition method.
+
+\begin{align*}
+x_1 + x_2 - x_3 &= 4 \\
+x_1 - 2x_2 + 3x_3 &= -6 \\
+2x_1 + 3x_2 + x_3 &= 7 \\
+\end{align*}
+
+\end{enumerate}
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} $LU$ decomposition is only possible for non-singular matrices. It is assumed that there is no need for row swapping in the Gaussian elimination.
+
+<<>>=
+LU_decomposer <- function(A){
+  
+  if(det(A) == 0) stop("Matrix must be non-singular.")
+  
+  I <- matrix(data = 0, nrow = nrow(A), ncol = ncol(A))
+  
+  for (i in 1:nrow(I)) {
+    I[i, i] <- I[i, i] + 1
+  }
+  
+  r <- dim(A)[1]
+  c <- dim(A)[2]
+  
+  i <- 1; j <- 1
+  
+  while(j <= c) {
+    
+    while(i <= r) {
+      
+      if(i != r){
+        a1 <- as.matrix(A[(i+1):r, j] / A[i, j])
+        
+        a2 <- t(as.matrix(A[i, ]))
+        
+        A[(i+1):r, ] <- A[(i+1):r, ] - a1 %*% a2
+        
+        I[(i+1):r, j] <- as.vector(a1)
+        
+        break
+      }
+      i <- i + 1
+    }
+    j <- j + 1
+    
+    i <- j
+  }
+  
+  return(list(I, A))
+}
+@
+
+\textbf{\textit{LU\_decomposer()}} returns a list containing $L$ and $U$ respectively.
+
+<<>>=
+A <- matrix(data = c(1, 1, -1,
+                     1, -2, 3,
+                     2, 3, 1),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+<<>>=
+L <- LU_decomposer(A)[[1]]
+U <- LU_decomposer(A)[[2]]
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm}
+
+<<>>=
+b <- matrix(data = c(4, -6, 7), nrow = 3, ncol = 1, byrow = TRUE)
+@
+
+$\bullet$ 
+\begin{align*}
+&\hspace{20pt}A\utilde{x} = \utilde{b} \\
+&\Rightarrow LU\utilde{x} = \utilde{b} \\
+&\Rightarrow \utilde{x} = U^{-1}L^{-1}\utilde{b} \\
+\end{align*}
+
+<<>>=
+solve(U) %*% solve(L) %*% b
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The solution of the given system of equations is \par}
+
+\begin{gather*}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+2 \\
+-1 \\
+\end{bmatrix}.
+\end{gather*}
+
+\end{document}
