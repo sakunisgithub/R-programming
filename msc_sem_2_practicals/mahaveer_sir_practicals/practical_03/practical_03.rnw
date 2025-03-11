@@ -1,0 +1,239 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.7 in, bottom = 0.7 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Objective}}
+
+\hspace{1cm} $X_1, X_2, \ldots , X_{n} \overset{\text{iid}}{\sim} Exp(\text{mean} = \theta).$
+
+
+\begin{enumerate}[(i)]
+\item Using CLT we have to show that $\bar{X}$ is a CAN estimator for $\theta$.
+\item We also have to obtain a CAN estimator for $P[X > t] = e^{-t / \theta}$ and its asymptotic variance.
+\end{enumerate}
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory, R Program, Plot and Interpretation}}
+
+\leftpointright \hspace{0.5cm} First we shall show that $\bar{X}$ is a consistent estimator for $\theta$ $i.e.$ $P[|\bar{X_n} - \theta| < \epsilon]$ tends to 1 as sample size $n$ increases. \\
+
+We generate 10000 samples of size $n$ and calculate the relative frequency of $[|\bar{X_n} - \theta| < \epsilon]$, this is the probability obtained by empirical approach. As sample size $n$ increases, the empirical probability converges to 1. \\
+
+We consider $\theta = 2$.
+
+<<>>=
+theta <- 2
+@
+
+<<>>=
+prob <- function(size, epsilon){
+  
+  sample_list <- list()
+  
+  for(i in 1:10000){
+    sample_list[[i]] <- rexp(size, rate = 1 / theta)
+  }
+  
+  x_bar <- sapply(sample_list, mean)
+  
+  m <- length(which(abs(x_bar - theta) < epsilon))
+  
+  return(m/10000)
+}
+@
+
+Here we take $\epsilon = 0.5$.
+
+<<>>=
+probs <- c()
+
+for (i in seq(10, 300, 5)) {
+  probs <- append(probs, prob(size = i, epsilon = 0.5))
+}
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+df1 <- data.frame(sample_size = seq(10, 300, 5), probability = probs)
+
+df1 %>%
+  ggplot(aes(x = sample_size, y = probability)) +
+  geom_point(size = 2, col = "red") +
+  labs(x = "Sample Size", y = "Probability",
+       title = "Convergence in Probability")
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the probability converges to 1. This implies that the sample mean is a consistent estimator of $\theta$. \par}
+
+
+\leftpointright \hspace{0.5cm} Now we shall show that $\bar{X_n}$ has an asymptotic normal distribution. \\
+
+We generate 10000 samples of size $n$, from there we get 10000 $\bar{X_n}$. We plot their histogram along with density curve. As sample size $n$ increases, the density curve resembles that of a normal distribution.
+
+\newpage
+
+First we take $n = 2$.
+
+<<>>=
+sample_list <- list(); size <- 2
+
+for(i in 1:10000){
+  sample_list[[i]] <- rexp(size, rate = 1 / theta)
+}
+
+x_bar <- sapply(sample_list, mean)
+@
+
+<<message=FALSE, warning=FALSE>>=
+df2 <- data.frame(means = x_bar)
+
+df2 %>%
+  ggplot(aes(x = means)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "#0FD8F0", col = "black") +
+  geom_density(col = "red", linewidth = 1) +
+  labs(x = "Sample Mean", y = "Density", 
+       title = "Histogram with density curve, sample size = 2")
+@
+
+\newpage
+
+Next we take $n = 5$.
+
+<<>>=
+sample_list <- list(); size <- 5
+
+for(i in 1:10000){
+  sample_list[[i]] <- rexp(size, rate = 1 / theta)
+}
+
+x_bar <- sapply(sample_list, mean)
+@
+
+<<message=FALSE, warning=FALSE>>=
+df2 <- data.frame(means = x_bar)
+
+df2 %>%
+  ggplot(aes(x = means)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "#0FD8F0", col = "black") +
+  geom_density(col = "red", linewidth = 1) +
+  labs(x = "Sample Mean", y = "Density", 
+       title = "Histogram with density curve, sample size = 5")
+@
+
+
+\newpage
+
+Next we take $n = 10$.
+
+<<>>=
+sample_list <- list(); size <- 10
+
+for(i in 1:10000){
+  sample_list[[i]] <- rexp(size, rate = 1 / theta)
+}
+  
+x_bar <- sapply(sample_list, mean)
+@
+
+<<message=FALSE, warning=FALSE>>=
+df2 <- data.frame(means = x_bar)
+
+df2 %>%
+  ggplot(aes(x = means)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "#0FD8F0", col = "black") +
+  geom_density(col = "red", linewidth = 1) +
+  labs(x = "Sample Mean", y = "Density", 
+       title = "Histogram with density curve, sample size = 10")
+@
+
+
+\newpage
+
+Finally we take $n = 20$.
+
+<<>>=
+sample_list <- list(); size <- 20
+
+for(i in 1:10000){
+  sample_list[[i]] <- rexp(size, rate = 1 / theta)
+}
+  
+x_bar <- sapply(sample_list, mean)
+@
+
+<<message=FALSE, warning=FALSE>>=
+df2 <- data.frame(means = x_bar)
+
+df2 %>%
+  ggplot(aes(x = means)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "#0FD8F0", col = "black") +
+  geom_density(col = "red", linewidth = 1) +
+  labs(x = "Sample Mean", y = "Density", 
+       title = "Histogram with density curve, sample size = 20")
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The density curve has pretty much resemblance with that of a normal density curve, thus implying convergence in distribution of the sample mean. \par}
+
+{\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Hence it is established that the sample mean is a CAN estimator for $\theta$. \par}
+
+\vspace{1cm}
+
+\leftpointright \hspace{0.5cm} Now we have to obtain a CAN estimator for $\psi{(\theta)} = e^{-t/ \theta}$. $\psi{(\theta)}$ is differentiable function of $\theta$, $\dfrac{d\psi}{d\theta}$ is non-vanishing and continuous. We already have $\bar{X}$ is a CAN estimator for $\theta$. Thus by invariance property of a CAN estimator, $\psi{(\bar{X})}$ is a CAN estimator of $\psi{(\theta)}$ and 
+$$\psi{(\bar{X})} \sim AN \left(\psi{(\theta)}, \dfrac{\theta^2}{n} \left( \dfrac{d\psi}{d\theta} \right)^2 \right).$$
+
+So asymptotic variance of $\psi{(\bar{X})}$ is $\dfrac{t^2}{n \theta^2} e^{-2t / \theta}.$ \\
+
+Here we take $t = 1$ and $\theta = 2$. \\
+
+So $\psi{(\theta)} = \Sexpr{exp(-1/2)}$.
+
+<<>>=
+estimate <- function(n) return(exp(-1/mean(rexp(n, rate = 1/2))))
+
+asv <- function(n) return(exp(-1) / (n * 4))
+@
+
+<<>>=
+df3 <- data.frame(sample_size = seq(5, 50, 5),
+                  estimated_psi_theta = sapply(seq(5, 50, 5), FUN = estimate), 
+                  variance = asv(seq(5, 50, 5)))
+df3
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Thus we get estimates of the parametric function for different sample sizes. The variance of the estimate decreases as sample size increases. \par}
+
+
+\end{document}
