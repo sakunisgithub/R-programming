@@ -1,0 +1,127 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 01}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question :}} Use $k-$means clustering to divide \textbf{\textit{iris}} dataset into 3 clusters.
+
+\vspace{1cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} After a choice of initial centroids, the $k-$means clustering algorithm is as follows :
+
+\begin{enumerate}[(1)]
+\item calculate the distance of each data-point from each of the centroids
+\item assign each of the data-points to its closest centroid
+\item relocate the centroids to the average location of the data-points of similar group
+\end{enumerate}
+
+And we repeat this procedure until the assignments don't change after the centroid locations were recomputed.
+
+<<>>=
+df <- iris[, -5]
+@
+
+<<>>=
+dim(df)
+@
+
+<<>>=
+m <- dim(df)[1] # number of data-points
+n <- dim(df)[2] # dimension of data-points
+
+k <- 3 # number of clusters
+@
+
+<<>>=
+X <- as.matrix(df)
+@
+
+Now we initialize the centroids as 3 randomly chosen data-points.
+
+<<>>=
+random_index <- sample(m, k)
+
+centroid <- X[random_index, ]
+@
+
+We now deploy our $k-$means clustering algorithm.
+
+<<>>=
+cluster <- c()
+
+repeat{
+  dist_mat <- matrix(0, nrow = m, ncol = k)
+  
+  for (i in 1:k) {
+    d <- apply(X, 1, FUN = function(x) return(x - centroid[i, ]))
+    
+    d <- matrix(d, nrow = m, ncol = n, byrow = TRUE)
+    
+    dist_mat[,i] <- sqrt(diag( d %*% t(d) ) )
+  }
+  
+  cluster <- apply(dist_mat, 1, FUN = function(x) return(which(x == min(x))[1]))
+  
+  new_centroid <- matrix(data = 0, nrow = k, ncol = n)
+  
+  for (i in 1:k) {
+    new_centroid[i, ] <- mean(X[which(cluster == i), ])
+  }
+  
+  if(any(centroid - new_centroid != 0)){
+    centroid <- new_centroid
+  } else{
+    break
+  }
+}
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The final clustering of the data-points is as follows : \par}
+
+<<>>=
+cluster
+@
+
+In \textbf{\textit{iris}} dataset, frequency distribution of 3 species was :
+
+<<>>=
+table(iris[,5])
+@
+
+Our $k-$means algorithm categorizes the \textbf{\textit{iris}} dataset with the frequency distribution as follows :
+
+<<>>=
+table(cluster)
+@
+
+
+
+\end{document}
