@@ -151,7 +151,9 @@ repeat{
   dist_mat <- matrix(0, nrow = m, ncol = k)
   
   for (i in 1:k) {
-    d <- apply(X, 2, FUN = function(x) return(x - as.vector(centroid[i, ])))
+    d <- apply(X, 1, FUN = function(x) return(x - centroid[i, ]))
+    
+    d <- matrix(d, nrow = m, ncol = n, byrow = TRUE)
     
     dist_mat[,i] <- sqrt(diag( d %*% t(d) ) )
   }

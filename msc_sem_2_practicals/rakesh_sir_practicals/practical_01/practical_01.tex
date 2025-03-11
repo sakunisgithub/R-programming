@@ -172,7 +172,9 @@ We now deploy our $k-$means clustering algorithm. We created a list named $\text
   \hldef{dist_mat} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{0}\hldef{,} \hlkwc{nrow} \hldef{= m,} \hlkwc{ncol} \hldef{= k)}
 
   \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{k) \{}
-    \hldef{d} \hlkwb{<-} \hlkwd{apply}\hldef{(X,} \hlnum{2}\hldef{,} \hlkwc{FUN} \hldef{=} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{return}\hldef{(x} \hlopt{-} \hlkwd{as.vector}\hldef{(centroid[i, ])))}
+    \hldef{d} \hlkwb{<-} \hlkwd{apply}\hldef{(X,} \hlnum{1}\hldef{,} \hlkwc{FUN} \hldef{=} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{return}\hldef{(x} \hlopt{-} \hldef{centroid[i, ]))}
+
+    \hldef{d} \hlkwb{<-} \hlkwd{matrix}\hldef{(d,} \hlkwc{nrow} \hldef{= m,} \hlkwc{ncol} \hldef{= n,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
 
     \hldef{dist_mat[,i]} \hlkwb{<-} \hlkwd{sqrt}\hldef{(}\hlkwd{diag}\hldef{( d} \hlopt{%*%} \hlkwd{t}\hldef{(d) ) )}
   \hldef{\}}
