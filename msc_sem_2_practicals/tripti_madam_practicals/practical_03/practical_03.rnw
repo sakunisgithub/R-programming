@@ -12,6 +12,7 @@
 \usepackage{bbding}
 \usepackage{undertilde}
 \usepackage{twemojis}
+\usepackage{simpsons}
 % how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
 \usepackage{fontspec}
 \usepackage{customdice}
@@ -61,12 +62,33 @@ x_1 - 2x_2 + 3x_3 &= -6 \\
 \end{enumerate}
 
 
-\faArrowAltCircleRight[regular] \hspace{0.2cm} $LU$ decomposition is only possible for non-singular matrices. It is assumed that there is no need for row swapping in the Gaussian elimination.
+\faArrowAltCircleRight[regular] \hspace{0.2cm} Standard $LU$ decomposition is possible only possible for square matrices with all leading principal minors being non-zero.
+
+<<>>=
+check_LPM <- function(A){
+  
+  if(dim(A)[1] != dim(A)[2]) stop("Input must be a square matrix.")
+  
+  # leading_principal_minors 
+  m <- c()
+  
+  for (i in 1:dim(A)[1]) {
+    m[i] <- det(as.matrix(A[1:i, 1:i]))
+  }
+  
+  if(all((m != 0) == TRUE)){
+    return(TRUE)
+  }else{
+    return(FALSE)
+  }
+}
+@
+
 
 <<>>=
 LU_decomposer <- function(A){
   
-  if(det(A) == 0) stop("Matrix must be non-singular.")
+  if(!check_LPM(A)) stop("All the leading principal minors must be non-zero.")
   
   I <- matrix(data = 0, nrow = nrow(A), ncol = ncol(A))
   
@@ -123,7 +145,6 @@ L <- LU_decomposer(A)[[1]]
 U <- LU_decomposer(A)[[2]]
 @
 
-\newpage
 
 \faArrowAltCircleRight[regular] \hspace{0.2cm}
 
@@ -157,5 +178,192 @@ x_3 \\
 -1 \\
 \end{bmatrix}.
 \end{gather*}
+
+\newpage
+
+\Bart \textbf{More LU Decompositions :} \\
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Example 3.22
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 2 & -3 \\
+-3 & -4 & 13 \\
+2 & 1 & -5 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, 2, -3,
+                     -3, -4, 13,
+                     2, 1, -5),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Solved Problems 3.39(a)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 3 & 5 \\
+2 & -4 & 7 \\
+-1 & -2 & 1 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, -3, 5,
+                     2, -4, 7,
+                     -1, -2, 1),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+
+\newpage
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Solved Problems 3.39(b)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 4 & -3 \\
+2 & 8 & 1 \\
+-5 & -9 & 7 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, 4, -3,
+                     2, 8, 1,
+                     -5, -9, 7),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Solved Problems 3.41
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 2 & 1 \\
+2 & 3 & 3 \\
+-3 & -10 & 2 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, 2, 1,
+                     2, 3, 3,
+                     -3, -10, 2),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Supplementary Problems 3.69(a)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & -1 & -1 \\
+3 & -4 & -2 \\
+2 & -3 & -2 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, -1, -1,
+                     3, -4, -2,
+                     2, -3, -2),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+\newpage
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Supplementary Problems 3.69(b)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 3 & -1 \\
+2 & 5 & 1 \\
+3 & 4 & 2 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, 3, -1,
+                     2, 5, 1,
+                     3, 4, 2),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Supplementary Problems 3.69(c)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+2 & 3 & 6 \\
+4 & 7 & 9 \\
+3 & 5 & 4 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(2, 3, 6,
+                     4, 7, 9,
+                     3, 5, 4),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
+
+
+\leftpointright \hspace{0.2cm} Schaums Outline of Linear Algebra : Supplementary Problems 3.69(d)
+
+\begin{gather*}
+A = 
+\begin{bmatrix}
+1 & 2 & 3 \\
+2 & 4 & 7 \\
+3 & 7 & 10 \\
+\end{bmatrix}.
+\end{gather*}
+
+<<echo=FALSE>>=
+A <- matrix(data = c(1, 2, 3,
+                     2, 4, 7,
+                     3, 7, 10),
+            nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+LU_decomposer(A)
+@
 
 \end{document}
