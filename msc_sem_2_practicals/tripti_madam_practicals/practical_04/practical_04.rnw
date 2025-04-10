@@ -1,0 +1,72 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 04}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} Consider the ``Swiss" dataset in MASS package of R. Perform the following clustering algorithms to divide the data-set into clusters.
+
+\begin{enumerate}[(a)]
+
+\item $k-$means clustering algorithm to divide the data-set into 3 clusters;
+\item Agglomerative Hierarchical Clustering.
+
+\end{enumerate}
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{$k-$means clustering algorithm to divide the data-set into 3 clusters}
+
+<<>>=
+library(MASS)
+
+dim(swiss)
+
+head(swiss)
+@
+
+<<>>=
+kmeans(swiss, 3)
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Agglomerative Hierarchical Clustering}
+
+<<>>=
+d <- dist(swiss)
+
+x <- hclust(d, method = "average")
+
+plot(x)
+@
+
+\end{document}
