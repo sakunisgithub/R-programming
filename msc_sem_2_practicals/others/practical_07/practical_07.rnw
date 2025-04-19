@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 07}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} For the following distance matrix, perform hierarchical clustering and plot a dendogram.
+
+\begin{gather*}
+\begin{bmatrix}
+0 & 5 & 10 & 15 & 20 \\
+& 0 & 5 & 10 & 15 \\
+& & 0 & 5 & 10 \\
+& & & 0 & 5 \\
+& & & & 0 \\
+\end{bmatrix}
+\end{gather*}
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Agglomerative Hierarchical Clustering}
+
+<<>>=
+d <- matrix(c(0, 5, 10, 15, 20,
+              5, 0, 5, 10, 15,
+              10, 5, 0, 5, 10,
+              15, 10, 5, 0, 5,
+              20, 15, 10, 5, 0), nrow = 5, ncol = 5, byrow = TRUE)
+@
+
+<<>>=
+x <- hclust(as.dist(d), method = "average")
+@
+
+\newpage
+
+<<>>=
+plot(x, xlab = "")
+@
+
+\end{document}
