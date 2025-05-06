@@ -1,0 +1,162 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 09}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} Fit a decision tree model using the \textbf{Loan Defaulters' Dataset} given as follows :
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering\arraybackslash}m{5cm}|}
+
+\hline
+
+\textbf{Home Owner} & \textbf{Married Status} & \textbf{Defaulted} & \textbf{Annual Income(\$)} \\
+
+\hline
+
+yes & single    & no  & 125000 \\
+
+\hline
+
+no  & married   & no  & 100000 \\
+
+\hline
+
+no  & single    & no  &  70000 \\
+
+\hline
+
+yes & married   & no  & 120000 \\
+
+\hline
+
+no  & divorcee  & yes &  95000 \\
+
+\hline
+
+no  & married   & no  &  60000 \\
+
+\hline
+
+yes & divorcee  & no  & 220000 \\
+
+\hline
+
+no  & single    & yes &  85000 \\
+
+\hline
+
+no  & married   & no  &  75000 \\
+
+\hline
+
+no  & single    & yes &  90000 \\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+Will a divorcee home owner with annual income \$120000 default in his loan ? \\[1.5em]
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Building Decision Tree Model}
+
+<<>>=
+library(rpart)
+library(rpart.plot)
+@
+
+<<size='tiny'>>=
+df <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/msc_semester_2/loan_defaulter_data.csv')
+@
+
+\newpage
+
+<<>>=
+tree_model <- rpart(Defaulted ~ .,
+                    data = df,
+                    method = "class",
+                    parms = list(split = "information"),
+                    control = rpart.control(minsplit = 2,
+                                            minbucket = 1,
+                                            cp = 0.01))
+@
+
+<<>>=
+print(tree_model)
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Visualizing the Decision Tree Model}
+
+<<>>=
+rpart.plot(tree_model, 
+           type = 5, 
+           extra = 0,
+           box.palette = c("#93fd9e", "#fd939d"))
+@
+
+\newpage
+
+The following diagram displays labels at all nodes, giving a comprehensive idea how the tree was made.
+
+<<>>=
+rpart.plot(tree_model, 
+           type = 4, 
+           extra = 104, 
+           clip.right.labs = FALSE,
+           box.palette = c("#93fd9e", "#fd939d"))
+@
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Prediction on New Example}
+
+<<>>=
+new_example <- data.frame(Home_Owner = "yes",
+                          Married_Status = "divorcee",
+                          Annual_Income = 120000)
+@
+
+<<>>=
+predict(tree_model, new_example)
+@
+
+{\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Our decision tree model predicts that a divorcee home owner with annual income 120000 dollars will not default in his loan. \par}
+
+\end{document}
