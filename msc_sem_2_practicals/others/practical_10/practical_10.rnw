@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 10}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} In a certain social mobility study, the population under consideration was divided into three income groups: upper, middle and lower. It has been found that 70\% of sons of upper income group parents themselves become upper income, 20\% middle income and 10\% lower income. Of the sons of middle-income parents, 30\% move to upper income group, 50\% remain in middle income group and 20\% become lower. Of the sons of lower income parents, 10\% move to upper income group, 20\% to middle income group and 70\% remain lower. Draw up a matrix to represent these movements.
+
+At a certain point of time, the population is found to have 10\% men in upper income group, 50\% in middle income group and 40\% in lower. Assuming that each man has one son and one grandson, what will be the group composition of grandsons? \\[1.5em]
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Transition Probability Matrix}
+
+<<>>=
+TPM <- matrix(c(0.7, 0.2, 0.1,
+                0.3, 0.5, 0.2,
+                0.1, 0.2, 0.7), nrow = 3, ncol = 3, byrow = TRUE)
+
+states <- c("upper", "middle", "lower")
+
+rownames(TPM) <- states
+colnames(TPM) <- states
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The transition probability matrix is \par}
+<<>>=
+TPM
+@
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Future Distribution from Initial Distribution}
+
+<<>>=
+X_0 <- matrix(c(0.1, 0.5, 0.4), nrow = 1)
+X_1 <- X_0 %*% TPM
+X_2 <- X_1 %*% TPM
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The group composition of grandsons is \par}
+
+<<>>=
+X_2
+@
+
+
+\end{document}
