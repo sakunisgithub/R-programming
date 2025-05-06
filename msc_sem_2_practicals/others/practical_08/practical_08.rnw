@@ -1,0 +1,107 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 08}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} Obtain an initial basic feasible solution of the following transportation problem :
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{c|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering}m{1cm}|>{\centering\arraybackslash}m{1cm}|c}
+
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{$D_1$} & \multicolumn{1}{c}{$D_2$} & \multicolumn{1}{c}{$D_3$} & \multicolumn{1}{c}{$D_4$} & \multicolumn{1}{c}{$a_i$} \\
+
+\cline{2-5}
+
+$O_1$ & 19 & 30 & 50 & 12 & 7 \\
+
+\cline{2-5}
+
+$O_2$ & 70 & 30 & 40 & 60 & 10 \\
+
+\cline{2-5}
+
+$O_3$ & 40 & 10 & 60 & 20 & 18 \\
+
+\cline{2-5}
+
+\multicolumn{1}{c}{$b_j$} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{7} & \multicolumn{1}{c}{15} & \multicolumn{1}{c}{} \\
+
+
+\end{tabular}
+\end{center}
+
+\end{table}
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Transportation Problem}
+
+<<>>=
+library(lpSolve)
+@
+
+<<>>=
+supply <- c(7, 10, 18)
+demand <- c(5, 8, 7, 15)
+@
+
+<<>>=
+cost_matrix <- matrix(c(19, 30, 50, 12,
+                        70, 30, 40, 60,
+                        40, 10, 60, 20), nrow = 3, ncol = 4, byrow = TRUE)
+@
+
+<<>>=
+solution <- lp.transport(cost.mat = cost_matrix,
+                         direction = "min",
+                         row.signs = rep("=", nrow(cost_matrix)),
+                         row.rhs = supply,
+                         col.signs = rep("=", ncol(cost_matrix)),
+                         col.rhs = demand)
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The allotment matrix is \par}
+
+<<>>=
+solution$solution
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The cost for the above allotment is \par}
+
+<<>>=
+solution$objval
+@
+
+\end{document}
