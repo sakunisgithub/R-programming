@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 06 - Supplementary Derivations}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+\faArrowAltCircleRight[regular]
+
+\[
+f(t; \alpha, \lambda) = \frac{\alpha}{\lambda} \left( \frac{t}{\lambda} \right)^{\alpha - 1} e^{-(t/\lambda)^\alpha}, \quad t > 0.
+\]
+
+
+For a sample of size $n$, the likelihood function is given by
+
+\begin{align*}
+L(\alpha, \lambda) &= \prod \limits_{i = 1}^{n} \frac{\alpha}{\lambda} \left( \frac{x_i}{\lambda} \right)^{\alpha - 1} e^{-(x_i / \lambda)^\alpha} \\
+&= \left( \dfrac{\alpha}{\lambda} \right)^n \left( \prod \limits_{i = 1}^{n}  \dfrac{x_i}{\lambda} \right)^{\alpha - 1} \text{exp}\left\{- \sum \limits_{i = 1}^{n} \left( \dfrac{x_i}{\lambda}\ \right)^{\alpha} \right\}.
+\end{align*}
+
+\vspace{0.5cm}
+
+The log-likelihood function is given by
+
+$$l(\alpha, \lambda) = n \log \alpha - n \log \lambda + (\alpha - 1) \sum_{i=1}^{n} \log \left( \frac{x_i}{\lambda} \right) - \sum_{i=1}^{n} \left( \frac{x_i}{\lambda} \right)^{\alpha}.$$
+
+Now, 
+\begin{align*}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \lambda) &= \dfrac{n}{\alpha} + \sum \limits_{i=1}^{n} \log \left( \dfrac{x_i}{\lambda} \right) - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{align*}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} l(\alpha, \lambda) &= -\dfrac{n}{\lambda} + (\alpha - 1) \sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n}{\lambda} - (\alpha - 1) \dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}} = v(\alpha, \lambda) \text{, say}.
+\end{align*}
+
+\newpage
+
+Now,
+\begin{align*}
+u_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} u(\alpha, \lambda) = -\dfrac{n}{\alpha^2} - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \left[ \log \left( \dfrac{x_i}{\lambda} \right) \right]^2;\\[0.3cm]
+u_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} u(\alpha, \lambda) =
+\sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right)
+- \sum \limits_{i=1}^{n} \left[\dfrac{(-\alpha) x_i^{\alpha}}{\lambda^{\alpha + 1}} \log \left( \dfrac{x_i}{\lambda} \right) + \left( \dfrac{x_i}{\lambda} \right)^{\alpha}\dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) \right]\\[0.3cm]
+&\phantom{= \frac{\partial}{\partial \lambda} u(\alpha, \lambda) \hspace{0.1cm}} = -\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}} \left( \alpha \log \left( \dfrac{x_i}{\lambda} \right) + 1 \right) \right].
+\end{align*}
+
+Also,
+\begin{align*}
+v_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} v(\alpha, \lambda) =
+-\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}}
++ \dfrac{\alpha}{\lambda} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) \right]\\[0.3cm]
+&\phantom{= \frac{\partial}{\partial \alpha} v(\alpha, \lambda) \hspace{0.1cm}} =
+-\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}}
+\left( \alpha \log \left( \dfrac{x_i}{\lambda} \right) + 1 \right) \right];\\[0.3cm]
+v_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} v(\alpha, \lambda) =
+\dfrac{n \alpha}{\lambda^2} - \sum \limits_{i=1}^{n} \dfrac{\alpha(\alpha + 1) x_i^{\alpha}}{\lambda^{\alpha + 2}}.
+\end{align*}
+
+
+\end{document}

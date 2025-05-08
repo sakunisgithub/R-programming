@@ -1,0 +1,140 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 06 - Supplementary Derivations}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\faArrowAltCircleRight[regular]
+
+\[
+f(t; \alpha, \lambda) = \frac{\alpha}{\lambda} \left( \frac{t}{\lambda} \right)^{\alpha - 1} e^{-(t/\lambda)^\alpha}, \quad t > 0.
+\]
+
+
+For a sample of size $n$, the likelihood function is given by
+
+\begin{align*}
+L(\alpha, \lambda) &= \prod \limits_{i = 1}^{n} \frac{\alpha}{\lambda} \left( \frac{x_i}{\lambda} \right)^{\alpha - 1} e^{-(x_i / \lambda)^\alpha} \\
+&= \left( \dfrac{\alpha}{\lambda} \right)^n \left( \prod \limits_{i = 1}^{n}  \dfrac{x_i}{\lambda} \right)^{\alpha - 1} \text{exp}\left\{- \sum \limits_{i = 1}^{n} \left( \dfrac{x_i}{\lambda}\ \right)^{\alpha} \right\}.
+\end{align*}
+
+\vspace{0.5cm}
+
+The log-likelihood function is given by
+
+$$l(\alpha, \lambda) = n \log \alpha - n \log \lambda + (\alpha - 1) \sum_{i=1}^{n} \log \left( \frac{x_i}{\lambda} \right) - \sum_{i=1}^{n} \left( \frac{x_i}{\lambda} \right)^{\alpha}.$$
+
+Now, 
+\begin{align*}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \lambda) &= \dfrac{n}{\alpha} + \sum \limits_{i=1}^{n} \log \left( \dfrac{x_i}{\lambda} \right) - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{align*}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} l(\alpha, \lambda) &= -\dfrac{n}{\lambda} + (\alpha - 1) \sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n}{\lambda} - (\alpha - 1) \dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}} = v(\alpha, \lambda) \text{, say}.
+\end{align*}
+
+\newpage
+
+Now,
+\begin{align*}
+u_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} u(\alpha, \lambda) = -\dfrac{n}{\alpha^2} - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \left[ \log \left( \dfrac{x_i}{\lambda} \right) \right]^2;\\[0.3cm]
+u_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} u(\alpha, \lambda) =
+\sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right)
+- \sum \limits_{i=1}^{n} \left[\dfrac{(-\alpha) x_i^{\alpha}}{\lambda^{\alpha + 1}} \log \left( \dfrac{x_i}{\lambda} \right) + \left( \dfrac{x_i}{\lambda} \right)^{\alpha}\dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) \right]\\[0.3cm]
+&\phantom{= \frac{\partial}{\partial \lambda} u(\alpha, \lambda) \hspace{0.1cm}} = -\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}} \left( \alpha \log \left( \dfrac{x_i}{\lambda} \right) + 1 \right) \right].
+\end{align*}
+
+Also,
+\begin{align*}
+v_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} v(\alpha, \lambda) =
+-\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}}
++ \dfrac{\alpha}{\lambda} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) \right]\\[0.3cm]
+&\phantom{= \frac{\partial}{\partial \alpha} v(\alpha, \lambda) \hspace{0.1cm}} =
+-\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}}
+\left( \alpha \log \left( \dfrac{x_i}{\lambda} \right) + 1 \right) \right];\\[0.3cm]
+v_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} v(\alpha, \lambda) =
+\dfrac{n \alpha}{\lambda^2} - \sum \limits_{i=1}^{n} \dfrac{\alpha(\alpha + 1) x_i^{\alpha}}{\lambda^{\alpha + 2}}.
+\end{align*}
+
+
+\end{document}
