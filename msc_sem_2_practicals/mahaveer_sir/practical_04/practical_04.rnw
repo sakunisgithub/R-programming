@@ -41,8 +41,7 @@ f(t; \alpha, \lambda) = \frac{\alpha}{\lambda} \left( \frac{t}{\lambda} \right)^
 
 The objective is to evaluate the performance of \textbf{maximum likelihood estimation (MLE)} for different sample sizes. First, generate random samples of sizes $n = 60, 80, 100, 120$ and $140$ from this Weibull distribution. For each sample, estimate the parameters $\alpha$ and $\lambda$ using MLE.
 
-Next, compute the \textbf{standard errors} of the ML estimates and evaluate their accuracy by estimating the \textbf{bias} and the \textbf{mean squared error (MSE)}. Also evaluate the distribution of MLE of each parameter. Discuss the asymptotic properties of MLE, particularly its consistency and efficiency, based on the observed results.
-
+Next, compute the \textbf{standard errors} of the ML estimates and evaluate their accuracy by estimating the \textbf{bias} and the \textbf{mean squared error (MSE)}.
 
 
 
@@ -62,11 +61,13 @@ The log-likelihood function is given by
 $$l(\alpha, \lambda) = n \log \alpha - n \log \lambda + (\alpha - 1) \sum_{i=1}^{n} \log \left( \frac{x_i}{\lambda} \right) - \sum_{i=1}^{n} \left( \frac{x_i}{\lambda} \right)^{\alpha}.$$
 
 Now, 
-\begin{align*}
-\dfrac{\partial}{\partial \alpha} l(\alpha, \lambda) &= \dfrac{n}{\alpha} + \sum \limits_{i=1}^{n} \log \left( \dfrac{x_i}{\lambda} \right) - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) = u(\alpha, \lambda) \text{, say and}
-\end{align*}
+\begin{equation}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \lambda) = \dfrac{n}{\alpha} + \sum \limits_{i=1}^{n} \log \left( \dfrac{x_i}{\lambda} \right) - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{equation}
 
 \newpage
+
+and
 
 \begin{align*}
 \dfrac{\partial}{\partial \lambda} l(\alpha, \lambda) &= -\dfrac{n}{\lambda} + (\alpha - 1) \sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
@@ -74,151 +75,162 @@ Now,
 &= -\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}} = v(\alpha, \lambda) \text{, say}.
 \end{align*}
 
-Solutions of the likelihood equations $u(\alpha, \lambda) = 0$ and $v(\alpha, \lambda) = 0$ can not be obtained in closed form. So we opt for numerical approach to get approximate solutions. \\
+Setting $v(\alpha, \lambda) = 0$ we get,
 
-By Newton-Raphson method for system of non-linear equations, approximate solution $(\alpha_{k+1}, \lambda_{k+1})$ after $(k+1)$ iterations is given by
-\begin{gather*}
-  \begin{bmatrix} \alpha_{k+1} \\ \lambda_{k+1} \end{bmatrix} 
-  =
-  \begin{bmatrix} \alpha_{k} \\ \lambda_{k} \end{bmatrix}
-  -
-  \begin{bmatrix} u_{\alpha}(\alpha_k, \lambda_k) & u_{\lambda}(\alpha_k, \lambda_k) \\ v_{\alpha}(\alpha_k, \lambda_k) & v_{\lambda}(\alpha_k, \lambda_k)  \end{bmatrix} ^{-1}
-  \cdot
-  \begin{bmatrix} u(\alpha_k, \lambda_k) \\ v(\alpha_k, \lambda_k) \end{bmatrix}, \,\,\,\,\,\, k = 0, 1, 2, \ldots
-\end{gather*}
 
-with notations having their usual meanings. \\
-
-Now,
 \begin{align*}
-u_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} u(\alpha, \lambda) = -\dfrac{n}{\alpha^2} - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \left[ \log \left( \dfrac{x_i}{\lambda} \right) \right]^2;\\[0.3cm]
-u_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} u(\alpha, \lambda) =
-\sum \limits_{i=1}^{n} \dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right)
-- \sum \limits_{i=1}^{n} \left[\dfrac{(-\alpha) x_i^{\alpha}}{\lambda^{\alpha + 1}} \log \left( \dfrac{x_i}{\lambda} \right) + \left( \dfrac{x_i}{\lambda} \right)^{\alpha}\dfrac{\lambda}{x_i} \cdot \left( -\dfrac{x_i}{\lambda^2} \right) \right]\\[0.3cm]
-&\phantom{= \frac{\partial}{\partial \lambda} u(\alpha, \lambda) \hspace{0.1cm}} = -\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}} \left( \alpha \log \left( \dfrac{x_i}{\lambda} \right) + 1 \right) \right].
+-\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot x_i^{\alpha}}{\lambda^{\alpha + 1}} &= 0 \nonumber \\
+\Rightarrow \dfrac{n}{\lambda} &= \sum \limits_{i=1}^{n} \dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}} \nonumber \\
+\Rightarrow \dfrac{n}{\lambda} &= \dfrac{1}{\lambda^{\alpha + 1}} \sum \limits_{i=1}^{n}{x_i^{\alpha}} \nonumber \\
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{n} \sum \limits_{i=1}^{n}{x_i^{\alpha}} \nonumber \\
+\therefore \lambda &= \left( \dfrac{1}{n} \sum \limits_{i=1}^{n}{x_i^{\alpha}} \right)^{\frac{1}{\alpha}} \tag{2} \\
 \end{align*}
 
-Also,
-\begin{align*}
-v_{\alpha}(\alpha, \lambda) &= \dfrac{\partial}{\partial \alpha} v(\alpha, \lambda) =
--\dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \left[\dfrac{x_i^{\alpha}}{\lambda^{\alpha + 1}}
-+ \dfrac{\alpha}{\lambda} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{x_i}{\lambda} \right) \right];\\[0.3cm]
-v_{\lambda}(\alpha, \lambda) &= \dfrac{\partial}{\partial \lambda} v(\alpha, \lambda) =
-\dfrac{n \alpha}{\lambda^2} - \sum \limits_{i=1}^{n} \dfrac{\alpha(\alpha + 1) x_i^{\alpha}}{\lambda^{\alpha + 2}}.
-\end{align*}
+\setcounter{equation}{2}
 
-\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Program}}
+
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now, 
+\begin{equation}
+u_{\alpha}(\alpha, \lambda) = \dfrac{\partial}{\partial \alpha} u(\alpha, \lambda) = -\dfrac{n}{\alpha^2} - \sum \limits_{i=1}^{n} \left( \dfrac{x_i}{\lambda} \right)^{\alpha} \left[ \log \left( \dfrac{x_i}{\lambda} \right) \right]^2;\\[0.3cm]
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(2)$; then we use the obtained value of $\lambda$ in $(1)$ and $(3)$ to improve the estimate of $\alpha$ by Newton-Raphson method.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+estimate_lambda <- function(s, alpha) mean(s^alpha)^(1/alpha)
+@
 
 <<>>=
 u <- function(alpha, lambda, s){
-  
+    
   a <- length(s) / alpha
-  
+    
   b <- sum(log(s / lambda))
-  
+    
   c <- sum((s / lambda)^alpha * log(s / lambda))
-  
+    
   return(a + b - c)
 }
 @
 
-<<>>=
-v <- function(alpha, lambda, s){
-  
-  a <- - (length(s) * alpha) / lambda
-  
-  b <- sum(alpha * s^alpha) / lambda^(alpha + 1)
-  
-  return(a + b)
-}
-@
 
 <<>>=
 u_alpha <- function(alpha, lambda, s){
-  
+    
   a <- - length(s) / alpha^2
-  
+    
   b <- sum((s / lambda)^alpha * log(s / lambda)^2)
-  
+    
   return(a - b)
 }
 @
 
+
 <<>>=
-u_lambda <- function(alpha, lambda, s){
+estimate_alpha <- function(s, initial, epsilon = 0.0001, iterations = 100){
   
-  a <- - length(s) / lambda
+  alphas <- c(initial)
   
-  b <- sum(s^alpha * (alpha * log(s / lambda) + 1)) / lambda^(alpha + 1)
+  for (i in 2:iterations) {
+    l <- estimate_lambda(s, alphas[i-1])
+    
+    alphas[i] <- alphas[i-1] - u(alphas[i-1], l, s) / u_alpha(alphas[i-1], l, s)
+    
+    if(abs((alphas[i] - alphas[i-1])) < epsilon) break
+  }
   
-  return(a + b)
+  return(alphas[length(alphas)])
 }
 @
 
 <<>>=
-v_alpha1 <- function(alpha, lambda, s){
-
-  a <- - length(s) / lambda
-
-  b <- sum(s^alpha) / lambda^(alpha + 1)
-
-  c <- sum( (s / lambda)^alpha * log(s / lambda) ) * (alpha / lambda)
-
-  return(a + b + c)
-}
-
-v_alpha <- function(alpha, lambda, s) {
-  a <- -length(s) / lambda
-  z <- s / lambda
-  b <- sum(z^alpha) / lambda^(alpha + 1)
-  c <- sum(alpha * z^alpha * log(z)) / lambda^(alpha + 1)
-  return(a + b + c)
-}
-
-
+true_alpha <- 3; true_lambda <- 2
 @
 
 <<>>=
-v_lambda <- function(alpha, lambda, s){
+sample_sizes <- c(60, 80, 100, 120, 140)
+@
+
+<<>>=
+alpha_hat = lambda_hat = c()
+@
+
+<<>>=
+for (n in sample_sizes) {
   
-  a <- (length(s) * alpha) / lambda^2
+  x <- rweibull(n, shape = true_alpha, scale = true_lambda)
   
-  b <- sum(s^alpha) * (alpha * (alpha + 1)) / lambda^(alpha + 2)
+  a <- estimate_alpha(x, 1)
   
-  return(a - b)
+  alpha_hat <- append(alpha_hat, a)
+  
+  lambda_hat <- append(lambda_hat, estimate_lambda(x, a))
 }
 @
 
 <<>>=
-x <- rweibull(100, shape = 3, scale = 2)
+df1 <- data.frame(Sample_Size = sample_sizes,
+                  alpha_hat = alpha_hat,
+                  lambda_hat = lambda_hat)
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Estimates of the parameters for different sample sizes are as follows : \par}
+
+<<>>=
+df1
+@
+
+Now we shall evaluate the accuracy of the estimates.
+
+<<>>=
+alpha_bias = lambda_bias = alpha_SE = lambda_SE = alpha_MSE = lambda_MSE = c()
 @
 
 <<>>=
-df <- data.frame(alpha_hat = c(2), lambda_hat = c(1))
-@
-
-<<>>=
-for (i in 1:20) {
-
-  a <- df$alpha_hat[i]; l <- df$lambda_hat[i]
+for (k in 1:length(sample_sizes)) {
   
-  A <- matrix(c(a, l), nrow = 2, byrow = TRUE)
+  alpha_estimates = lambda_estimates = c()
   
-  J <- matrix(c(u_alpha(a, l, x), u_lambda(a, l, x),
-                v_alpha(a, l, x), v_lambda(a, l, x)), nrow = 2, ncol = 2, byrow = TRUE)
+  for (i in 1:100){
+    
+    x <- rweibull(sample_sizes[k], shape = true_alpha, scale = true_lambda)
+    
+    alpha_estimates[i] <- estimate_alpha(x, 1)
+    
+    lambda_estimates[i] <- estimate_lambda(x, alpha_estimates[i])
+  }
   
-  B <- matrix(c(u(a, l, x), v(a, l, x)), nrow = 2, byrow = TRUE)
- 
-  new <- A - solve(J) %*% B
- 
-  df[(i+1),] <- c(new[1,], new[2,])
+  alpha_bias[k] <- mean(alpha_estimates) - true_alpha
+  
+  lambda_bias[k] <- mean(lambda_estimates) - true_lambda
+  
+  alpha_SE[k] <- sd(alpha_estimates)
+  
+  lambda_SE[k] <- sd(lambda_estimates)
+  
+  alpha_MSE[k] <- mean( (alpha_estimates - true_alpha)^2 )
+  
+  lambda_MSE[k] <- mean( (lambda_estimates - true_lambda)^2 )
 }
 @
 
 <<>>=
-df
+df2 <- data.frame(sample_sizes, 
+                  alpha_bias, alpha_SE, alpha_MSE, 
+                  lambda_bias, lambda_SE, lambda_MSE)
 @
 
-\smallpencil \hspace{1cm} % Start writing from here
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Bias, Standard error and MSE of the estimates for different sample sizes are as follows : \par}
+<<>>=
+df2
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Accuracy of the estimates increase as sample size increases. \par}
 
 \end{document}
