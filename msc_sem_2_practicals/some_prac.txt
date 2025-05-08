@@ -1,0 +1,266 @@
+#P01
+
+df <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/student_screen_watch_time.csv')
+dim(df)
+
+times <- df$exact_minutes[!is.na(df$exact_minutes)]
+times
+length(times)
+
+prob <- function(size, epsilon, population){
+  
+  sample_list <- list()
+  
+  for(i in 1:1000){
+    sample_list[[i]] <- sample(population, size, replace = FALSE)
+  }
+  
+  sample_means <- sapply(sample_list, mean)
+  
+  m <- length(which(abs(sample_means - mean(population)) < epsilon))
+  
+  return(m/1000)
+}
+
+probs <- c()
+
+for (i in 1:33) {
+  probs[i] <- prob(size = i, epsilon = 10, population = times)
+}
+
+probs
+
+df2 <- data.frame(size = 1:33, probabilites = probs)
+
+library(tidyverse)
+
+df2 %>%
+  ggplot(aes(x = size, y = probabilites)) +
+  geom_point(size = 2, col = "red") +
+  geom_hline(yintercept = 1, col = "blue", linewidth = 1) +
+  labs(x = "Sample Size", y = "Probability",
+       title = "Convergence in Probability of Sample Mean to Population Mean")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#P02
+
+theta <- 2
+
+epsilon <- 1
+
+x_order_n <- c()
+
+prob <- function(size, epsilon){
+  
+  sample_list <- list()
+  
+  for(i in 1:1000){
+    sample_list[[i]] <- runif(size, 0, theta)
+  }
+  
+  x_order_n <- sapply(sample_list, max)
+  
+  m <- length(which(abs(x_order_n - theta) < epsilon))
+  
+  return(m/1000)
+}
+
+probs <- c()
+
+for (i in 1:30) {
+  probs[i] <- prob(size = i, epsilon = 1)
+}
+
+probs
+
+library(tidyverse)
+
+df1 <- data.frame(sample_size = 1:30, probability = probs)
+
+df1 %>%
+  ggplot(aes(x = sample_size, y = probability)) +
+  geom_point(size = 2, col = "red") +
+  labs(x = "Sample Size", y = "Probability")
+
+# part 2
+for(s in 1:10){
+  
+  x_order_n <- c()
+  
+  for (i in 1:1000) {
+    x_order_n[i] <- max(runif(s, 0, theta))
+  }
+  
+  values <- s*(x_order_n - theta)
+  
+  hist(values, probability = TRUE, breaks = 20)
+  curve(dexp(-x, rate = 1/theta), add = TRUE, lwd = 2)
+  
+  Sys.sleep(1)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#P05
+
+lambda <- 4
+
+s <- rpois(100, lambda = lambda)
+
+numbers <- s
+
+mean(numbers)
+
+lambda_hat <- c()
+
+for (i in 1:1000) {
+  lambda_hat[i] <- mean(rpois(100, lambda))
+}
+
+hist(sqrt(100) * (lambda_hat - lambda), probability = TRUE)
+curve(dnorm(x, 0, sqrt(lambda)), lwd = 2, add = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#P06
+
+estimate_lambda <- function(s, alpha) mean(s^alpha)^(1/alpha)
+
+estimate_alpha <- function(s, initial, epsilon = 0.0001, iterations = 100){
+  
+  alphas <- c(initial)
+  
+  for (i in 2:iterations) {
+    l <- estimate_lambda(s, alphas[i-1])
+    
+    alphas[i] <- alphas[i-1] - u(alphas[i-1], l, s) / u_alpha(alphas[i-1], l, s)
+    
+    if(abs((alphas[i] - alphas[i-1])) < epsilon) break
+  }
+  
+  return(alphas[length(alphas)])
+}
+
+# true values
+true_alpha <- 3; true_lambda <- 2
+
+# sample
+x <- rweibull(200, shape = true_alpha, scale = true_lambda)
+
+# ML Estimates
+alpha_hat <- estimate_alpha(x, 1); alpha_hat
+
+lambda_hat <- estimate_lambda(x, alpha_hat); lambda_hat
+
+# u is derivative of the log-likelihood wrt alpha
+# v is derivative of the log-likelihood wrt lambda
+
+# u_alpha is derivative of u wrt alpha
+u_alpha <- function(alpha, lambda, s){
+  
+  a <- - length(s) / alpha^2
+  
+  b <- sum((s / lambda)^alpha * log(s / lambda)^2)
+  
+  return(a - b)
+}
+
+# u_lambda is derivative of u wrt lambda
+u_lambda <- function(alpha, lambda, s){
+  
+  a <- - length(s) / lambda
+  
+  b <- sum(s^alpha * (alpha * log(s / lambda) + 1)) / lambda^(alpha + 1)
+  
+  return(a + b)
+}
+
+# v_alpha is derivative of v wrt alpha
+v_alpha <- function(alpha, lambda, s){
+  
+  a <- - length(s) / lambda
+  
+  b <- sum(s^alpha) / lambda^(alpha + 1)
+  
+  c <- sum( (s / lambda)^alpha * log(s / lambda) ) * (alpha / lambda)
+  
+  return(a + b + c)
+}
+
+# v_lambda is derivative of v wrt lambda
+v_lambda <- function(alpha, lambda, s){
+  
+  a <- (length(s) * alpha) / lambda^2
+  
+  b <- sum(s^alpha) * (alpha * (alpha + 1)) / lambda^(alpha + 2)
+  
+  return(a - b)
+}
+
+a <- alpha_hat; l <- lambda_hat
+
+# Hessian Matrix
+J <- matrix(c(u_alpha(a, l, x), u_lambda(a, l, x),
+              v_alpha(a, l, x), v_lambda(a, l, x)), nrow = 2, ncol = 2, byrow = TRUE)
+
+J
+
+# inv(-Hessian)
+solve(-J)
+
+sqrt(solve(-J))
+
+diag(sqrt(solve(-J)))
+
