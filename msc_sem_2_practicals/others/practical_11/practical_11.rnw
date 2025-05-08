@@ -1,0 +1,234 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 0.9 in, right = 0.9 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+\usepackage{hyperref}
+\usepackage{simpsons}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 206 : Practical 11}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \hspace{0.2cm} \textcolor{blue}{\textbf{Question : }} Write a program to generate random sample from Poisson Process with parameter $\lambda$. \\[0.5em]
+
+Also write programs to generate $X(t)$ if 
+
+\begin{enumerate}[(a)]
+
+\item ${\displaystyle P(X(t) = k) = \binom{k + \alpha - 1}{k} \left( \dfrac{\beta}{t+\beta} \right)^{\alpha} \left( \dfrac{t}{t+\beta} \right)^k ; \,\,\, k = 0, 1, 2, \ldots}$.
+
+\item $P(X(t) = k) = \left( \dfrac{t}{t+\mu} \right)^k \left( \dfrac{\mu}{t+\mu} \right); \,\,\, k = 0, 1, 2, \ldots$.
+
+\end{enumerate}
+
+\vspace{0.2cm}
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{A realization of Poisson Process}\\[1em]
+
+We take $\lambda = 2$ and observe the Poisson Process upto time $T = 5$.
+
+<<>>=
+T <- 5
+
+lambda <- 2
+@
+
+We observe the arrival times upto time $T$, for that we generate exponentially distributed random numbers with rate $\lambda$ until total time becomes $T$. The count of the arrival times form a realization of a Poisson Process with parameter $\lambda$.
+
+<<>>=
+times <- c(0)
+
+i <- 2
+
+sum_times <- 0
+
+while(sum_times < T){
+  
+  times[i] <- round(rexp(1, rate = lambda), digits = 2)
+  
+  sum_times <- sum(times)
+  
+  i <- i + 1
+}
+
+occurrence_times <- cumsum(times[-length(times)])
+
+x <- 0:(length(occurrence_times)-1)
+@
+
+<<>>=
+df1 <- data.frame(States = x, Occurrence_Time = occurrence_times)
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont States and their arrival times are as follows : \par}
+
+<<>>=
+df1
+@
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont A realization of a Poisson Process with $\lambda = \Sexpr{lambda}$ in $(0, \Sexpr{T}]$ is as follows : \par}
+
+$$X(t) = 
+\begin{cases}
+0, & \text{if } 0 \leq t < \Sexpr{occurrence_times[1]} \\
+1, & \text{if } \Sexpr{occurrence_times[1]} \leq t < \Sexpr{occurrence_times[2]} \\
+2, & \text{if } \Sexpr{occurrence_times[2]} \leq t < \Sexpr{occurrence_times[3]} \\
+\vdots & \vdots \\
+\Sexpr{x[length(x)-1]}, & \text{if } \Sexpr{occurrence_times[length(occurrence_times)-1]} \leq t < \Sexpr{occurrence_times[length(occurrence_times)]} \\
+\Sexpr{x[length(x)]}, & \text{if } \Sexpr{occurrence_times[length(occurrence_times)]} \leq t \leq \Sexpr{T}
+\end{cases}$$
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{Visualization}
+
+<<>>=
+plot(c(x, x[length(x)]) ~ c(occurrence_times, T),
+     type = "s",
+     col = "blue",
+     xaxt = "n",
+     yaxt = "n",
+     xlim = c(0, T + 0.05),
+     xlab = "Occurrence Time",
+     ylab = "State",
+     main = paste("Realization of Poisson Process with lambda = ", lambda))
+
+axis(1, at = occurrence_times, labels = occurrence_times, las = 2)
+axis(2, at = x, labels = x)
+points(occurrence_times, x, cex = 1, col = "blue", pch = 19)
+abline(v = T, col = "red")
+@
+
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{$X(t) \sim $ Negative Binomial}\\[1em]
+
+${\displaystyle P(X(t) = k) = \binom{k + \alpha - 1}{k} \left( \dfrac{\beta}{t+\beta} \right)^{\alpha} \left( \dfrac{t}{t+\beta} \right)^k ; \,\,\, k = 0, 1, 2, \ldots}$ \\
+
+\vspace{0.2cm}
+
+\textit{i.e.} $X(t) \sim \text{Negative Binomial}\left( \alpha, \dfrac{\beta}{t + \beta} \right)$. \\
+
+\vspace{0.2cm}
+
+Previously $\lambda$ was a fixed parameter. Now $\lambda$ will be sampled from $\text{Gamma}(\text{shape} = \alpha, \text{rate} = \beta).$
+
+Here we take $\alpha = 2$, $\beta = 1$.
+
+<<>>=
+alpha <- 2; beta <- 1
+@
+
+<<>>=
+T <- 5
+
+lambda <- rgamma(1, shape = alpha, rate = beta)
+@
+
+<<>>=
+times <- c(0)
+
+i <- 2
+
+sum_times <- 0
+
+while(sum_times < T){
+  
+  times[i] <- round(rexp(1, rate = lambda), digits = 2)
+  
+  sum_times <- sum(times)
+  
+  i <- i + 1
+}
+
+occurrence_times <- cumsum(times[-length(times)])
+
+x <- 0:(length(occurrence_times)-1)
+@
+
+<<>>=
+df2 <- data.frame(States = x, Occurrence_Time = occurrence_times)
+@
+
+<<>>=
+df2
+@
+
+
+\newpage
+
+\faArrowAltCircleRight[regular] \hspace{0.2cm} \underline{$ X(t) \sim $ Geometric}\\[1em]
+
+$P(X(t) = k) = \left( \dfrac{t}{t+\mu} \right)^k \left( \dfrac{\mu}{t+\mu} \right); \,\,\, k = 0, 1, 2, \ldots$ \textit{i.e.} $X(t) \sim \text{Geometric} \left( \dfrac{\mu}{t+\mu} \right). $ \\
+
+\vspace{0.2cm}
+
+Previously $\lambda$ was a fixed parameter. Now $\lambda$ will be sampled from $\text{Gamma}(\text{shape} = 1, \text{rate} = \mu) \Leftrightarrow \text{Exp}(\text{rate} = \mu).$
+
+Here we take $\mu = 2$.
+
+<<>>=
+mu <- 2
+@
+
+<<>>=
+T <- 5
+
+lambda <- rgamma(1, shape = 1, rate = mu)
+@
+
+<<>>=
+times <- c(0)
+
+i <- 2
+
+sum_times <- 0
+
+while(sum_times < T){
+  
+  times[i] <- round(rexp(1, rate = lambda), digits = 2)
+  
+  sum_times <- sum(times)
+  
+  i <- i + 1
+}
+
+occurrence_times <- cumsum(times[-length(times)])
+
+x <- 0:(length(occurrence_times)-1)
+@
+
+<<>>=
+df3 <- data.frame(States = x, Occurrence_Time = occurrence_times)
+@
+
+<<>>=
+df3
+@
+
+
+\end{document}
