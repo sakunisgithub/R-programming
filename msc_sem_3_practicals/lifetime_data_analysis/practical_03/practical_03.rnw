@@ -1,0 +1,177 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate survival times from Gamma distribution with shape $\alpha = 2$ and rate $\lambda = 0.5$ and estimate the parameters. Then plot
+
+\begin{enumerate}
+\item the Probability Density Function $f$
+\item the Cumulative Distribution Function $F$
+\item the Survival Function $S$
+\item the Hazard Function $h$
+\item the Cumulative Hazard Function $H$
+\end{enumerate}
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program and Plot}}
+
+<<>>=
+Gamma_MLE <- function(gamma_sample, shape_initial, n_iteration){
+  
+  a <- c(shape_initial)
+  
+  n <- length(gamma_sample)
+  
+  f1 <- function(alpha){
+    
+    result <- - n * digamma(alpha) -
+      n * log(mean(gamma_sample)) +
+      n * log(alpha) +
+      sum(log(gamma_sample))
+    
+    return(result)
+  }
+  
+  f2 <- function(alpha){
+    return(-n * trigamma(alpha) + n / alpha)
+  }
+  
+  iterations <- n_iteration
+  
+  for (i in 2:iterations) {
+    a[i] <- a[i-1] - f1(a[i-1]) / f2(a[i-1])
+    
+    if(abs(f1(a[length(a)])) < 0.001) break
+  }
+  
+  alpha_hat <- a[length(a)]
+  
+  beta_hat <- mean(gamma_sample) / alpha_hat
+  
+  return(c(alpha_hat, beta_hat))
+}
+@
+
+<<>>=
+n <- 50; rate <- 0.5
+
+set.seed(2)
+our_sample <- rgamma(n, shape = 2, scale = 1/rate)
+temp <- Gamma_MLE(our_sample, shape_initial = 1, n_iteration = 1000)
+@
+
+<<>>=
+estimated_shape <- temp[1]; estimated_shape
+@
+
+<<>>=
+estimated_scale <- temp[2]; estimated_scale
+@
+
+<<>>=
+t_values <- sort(our_sample)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+df1 <- data.frame(t = t_values, 
+                  ft = dgamma(t_values, shape = estimated_shape, 
+                              scale = estimated_scale))
+
+df1 %>%
+  ggplot(aes(x = t, y = ft)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "f(t)", title = "PDF from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df2 <- data.frame(t = t_values, 
+                  Ft = pgamma(t_values, shape = estimated_shape, 
+                              scale = estimated_scale))
+
+df2 %>%
+  ggplot(aes(x = t, y = Ft)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "F(t)", title = "CDF from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df3 <- data.frame(t = t_values, 
+                  St = 1 - pgamma(t_values, shape = estimated_shape, 
+                                  scale = estimated_scale))
+
+df3 %>%
+  ggplot(aes(x = t, y = St)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "S(t)", title = "Survival Function from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df4 <- data.frame(t = t_values, 
+                  ht = df1$ft / df3$St)
+
+df4 %>%
+  ggplot(aes(x = t, y = ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "h(t)", title = "Hazard Function from Estimated Parameters")
+@
+
+\smallpencil \hspace{0.5cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont For shape parameter less than 1, the hazard function decreases monotonically. \par}
+
+\newpage
+
+<<>>=
+df5 <- data.frame(t = t_values, 
+                  Ht = -log(df3$St))
+
+df5 %>%
+  ggplot(aes(x = t, y = Ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "H(t)", 
+       title = "Cumulative Hazard Function from Estimated Parameters")
+@
+
+\end{document}
