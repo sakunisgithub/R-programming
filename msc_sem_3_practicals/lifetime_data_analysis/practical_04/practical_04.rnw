@@ -1,0 +1,277 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in ]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 04}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider a lifetime variable that follows a \textbf{Weibull distribution} with shape parameter $\alpha$ and scale parameter $\lambda$. The probability density function of this distribution is given by:
+
+\[
+f(t; \alpha, \lambda) = \frac{\alpha}{\lambda} \left( \frac{t}{\lambda} \right)^{\alpha - 1} e^{-(t/\lambda)^\alpha}, \quad t > 0.
+\]
+
+Estimate the parameters by MLE and get respective Bias and Mean Squared Errors. Then plot the PDF, Survival Function, Hazard Function and Cumulative Hazard Function using the obtained estimates.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Build-up for obtaining MLE}}
+
+For a sample of size $n$, the likelihood function is given by
+
+\begin{align*}
+L(\alpha, \lambda) &= \prod \limits_{i = 1}^{n} \frac{\alpha}{\lambda} \left( \frac{t_i}{\lambda} \right)^{\alpha - 1} e^{-(t_i / \lambda)^\alpha} \\
+&= \left( \dfrac{\alpha}{\lambda} \right)^n \left( \prod \limits_{i = 1}^{n}  \dfrac{t_i}{\lambda} \right)^{\alpha - 1} \text{exp}\left\{- \sum \limits_{i = 1}^{n} \left( \dfrac{t_i}{\lambda}\ \right)^{\alpha} \right\}.
+\end{align*}
+
+\vspace{0.5cm}
+
+The log-likelihood function is given by
+
+$$l(\alpha, \lambda) = n \log \alpha - n \log \lambda + (\alpha - 1) \sum_{i=1}^{n} \log \left( \frac{t_i}{\lambda} \right) - \sum_{i=1}^{n} \left( \frac{t_i}{\lambda} \right)^{\alpha}.$$
+
+Now, 
+\begin{equation}
+\dfrac{\partial}{\partial \alpha} l(\alpha, \lambda) = \dfrac{n}{\alpha} + \sum \limits_{i=1}^{n} \log \left( \dfrac{t_i}{\lambda} \right) - \sum \limits_{i=1}^{n} \left( \dfrac{t_i}{\lambda} \right)^{\alpha} \log \left( \dfrac{t_i}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{equation}
+
+\newpage
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} l(\alpha, \lambda) &= -\dfrac{n}{\lambda} + (\alpha - 1) \sum \limits_{i=1}^{n} \dfrac{\lambda}{t_i} \cdot \left( -\dfrac{t_i}{\lambda^2} \right) + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot t_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n}{\lambda} - (\alpha - 1) \dfrac{n}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot t_i^{\alpha}}{\lambda^{\alpha + 1}}\\[0.3cm]
+&= -\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot t_i^{\alpha}}{\lambda^{\alpha + 1}} = v(\alpha, \lambda) \text{, say}.
+\end{align*}
+
+Setting $v(\alpha, \lambda) = 0$ we get,
+
+
+\begin{align*}
+-\dfrac{n \alpha}{\lambda} + \sum \limits_{i=1}^{n} \dfrac{\alpha \cdot t_i^{\alpha}}{\lambda^{\alpha + 1}} &= 0 \nonumber \\
+\Rightarrow \dfrac{n}{\lambda} &= \sum \limits_{i=1}^{n} \dfrac{t_i^{\alpha}}{\lambda^{\alpha + 1}} \nonumber \\
+\Rightarrow \dfrac{n}{\lambda} &= \dfrac{1}{\lambda^{\alpha + 1}} \sum \limits_{i=1}^{n}{t_i^{\alpha}} \nonumber \\
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{n} \sum \limits_{i=1}^{n}{t_i^{\alpha}} \nonumber \\
+\therefore \lambda &= \left( \dfrac{1}{n} \sum \limits_{i=1}^{n}{t_i^{\alpha}} \right)^{\frac{1}{\alpha}} \tag{2} \\
+\end{align*}
+
+\setcounter{equation}{2}
+
+
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now, 
+\begin{equation}
+u_{\alpha}(\alpha, \lambda) = \dfrac{\partial}{\partial \alpha} u(\alpha, \lambda) = -\dfrac{n}{\alpha^2} - \sum \limits_{i=1}^{n} \left( \dfrac{t_i}{\lambda} \right)^{\alpha} \left[ \log \left( \dfrac{t_i}{\lambda} \right) \right]^2;\\[0.3cm]
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(2)$; then we use the obtained value of $\lambda$ in $(1)$ and $(3)$ to improve the estimate of $\alpha$ by Newton-Raphson method.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+estimate_lambda <- function(s, alpha) mean(s^alpha)^(1/alpha)
+@
+
+<<>>=
+u <- function(alpha, lambda, s){
+    
+  a <- length(s) / alpha
+    
+  b <- sum(log(s / lambda))
+    
+  c <- sum((s / lambda)^alpha * log(s / lambda))
+    
+  return(a + b - c)
+}
+@
+
+
+<<>>=
+u_alpha <- function(alpha, lambda, s){
+    
+  a <- - length(s) / alpha^2
+    
+  b <- sum((s / lambda)^alpha * log(s / lambda)^2)
+    
+  return(a - b)
+}
+@
+
+
+<<>>=
+estimate_alpha <- function(s, initial, epsilon = 0.0001, iterations = 100){
+  
+  alphas <- c(initial)
+  
+  for (i in 2:iterations) {
+    l <- estimate_lambda(s, alphas[i-1])
+    
+    alphas[i] <- alphas[i-1] - u(alphas[i-1], l, s) / u_alpha(alphas[i-1], l, s)
+    
+    if(abs((alphas[i] - alphas[i-1])) < epsilon) break
+  }
+  
+  return(alphas[length(alphas)])
+}
+@
+
+<<>>=
+true_alpha <- 3; true_lambda <- 2
+@
+
+<<>>=
+sample_size <- 100
+@
+
+<<>>=
+alpha_hat = lambda_hat = c()
+@
+
+<<>>=
+x <- rweibull(sample_size, shape = true_alpha, scale = true_lambda)
+  
+alpha_hat <- estimate_alpha(x, 1)
+  
+lambda_hat <- estimate_lambda(x, alpha_hat)
+@
+
+\newpage
+
+\smallpencil {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Estimates of the parameters for sample size = 100 are as follows : \par}
+
+<<>>=
+alpha_hat; lambda_hat
+@
+
+Now we shall evaluate the bias and MSE of the estimates.
+
+<<>>=
+alpha_bias = lambda_bias = alpha_MSE = lambda_MSE = c()
+@
+
+<<>>=
+alpha_estimates = lambda_estimates = c()
+  
+for (i in 1:100){
+    
+  x <- rweibull(sample_size, shape = true_alpha, scale = true_lambda)
+    
+  alpha_estimates[i] <- estimate_alpha(x, 1)
+    
+  lambda_estimates[i] <- estimate_lambda(x, alpha_estimates[i])
+}
+  
+alpha_bias <- mean(alpha_estimates) - true_alpha
+  
+lambda_bias <- mean(lambda_estimates) - true_lambda
+
+alpha_MSE <- mean( (alpha_estimates - true_alpha)^2 )
+  
+lambda_MSE <- mean( (lambda_estimates - true_lambda)^2 )
+@
+
+<<>>=
+alpha_bias; lambda_bias; alpha_MSE; lambda_MSE
+@
+
+We take a mean of the different estimates to be our final estimate.
+
+<<>>=
+alpha <- mean(alpha_estimates); lambda <- mean(lambda_estimates)
+@
+
+<<>>=
+alpha; lambda
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+t_values <- rweibull(sample_size, scale = lambda, shape = alpha)
+@
+
+
+<<>>=
+df1 <- data.frame(t = t_values, 
+                  ft = dweibull(t_values, shape = alpha, 
+                              scale = lambda))
+
+df1 %>%
+  ggplot(aes(x = t, y = ft)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "f(t)", 
+       title = "PDF from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df2 <- data.frame(t = t_values, 
+                  St = 1 - pweibull(t_values, shape = alpha, 
+                              scale = lambda))
+
+df2 %>%
+  ggplot(aes(x = t, y = St)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "S(t)", 
+       title = "Survival Function from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df3 <- data.frame(t = t_values, 
+                  ht = df1$ft / df2$St)
+
+df3 %>%
+  ggplot(aes(x = t, y = ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "h(t)", 
+       title = "Hazard Function from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df4 <- data.frame(t = t_values, 
+                  Ht = -log(df2$St))
+
+df4 %>%
+  ggplot(aes(x = t, y = Ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "H(t)", 
+       title = "Cumulative Hazard Function from Estimated Parameters")
+@
+\end{document}
