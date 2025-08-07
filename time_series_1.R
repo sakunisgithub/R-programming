@@ -12,7 +12,7 @@ df1 %>%
   geom_segment(aes(x = h, xend = h, y = 0, yend = value), linewidth = 1, col = 'blue') +
   labs(y = "rho(h)", title = "AR(1) ACF with alpha = 0.35")
 
-# catious ---- this writes in a git repo
+# caution ---- this writes in a git repo
 ggsave(path = "D:\\Users\\Documents\\LaTeX\\M.Sc.Semester_3\\MSMS-301",
        width = 7,
        height = 7,
@@ -31,7 +31,7 @@ df2 %>%
   geom_segment(aes(x = h, xend = h, y = 0, yend = value), linewidth = 1, col = 'blue') +
   labs(y = "rho(h)", title = "AR(1) ACF with alpha = 0.85")
 
-# catious ---- this writes in a git repo
+# caution ---- this writes in a git repo
 ggsave(path = "D:\\Users\\Documents\\LaTeX\\M.Sc.Semester_3\\MSMS-301",
        width = 7,
        height = 7,
@@ -50,7 +50,7 @@ df3 %>%
   geom_segment(aes(x = h, xend = h, y = 0, yend = value), linewidth = 1, col = 'blue') +
   labs(y = "rho(h)", title = "AR(1) ACF with alpha = -0.35")
 
-# catious ---- this writes in a git repo
+# caution ---- this writes in a git repo
 ggsave(path = "D:\\Users\\Documents\\LaTeX\\M.Sc.Semester_3\\MSMS-301",
        width = 7,
        height = 7,
