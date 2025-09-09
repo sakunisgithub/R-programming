@@ -1,0 +1,137 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{undertilde}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Given that $\utilde{X} \sim N_3(\utilde{\mu}, \Sigma)$ with
+
+\begin{gather*}
+\utilde{\mu} = \begin{bmatrix} 1 \\ 0.5 \\ 0.25 \end{bmatrix},
+\qquad
+\Sigma = \begin{bmatrix} 1 & 0.8 & 0.4 \\ 0.8 & 1 & 0.56 \\ 0.4 & 0.56 & 1 \end{bmatrix}.
+\end{gather*}
+
+\begin{enumerate}[(1)]
+\item Find the marginal distribution of $Y^{(1)}$ and $\utilde{Y}^{(2)}$ where
+
+$$Y^{(1)} = X_1 - \Sigma_{12}\Sigma_{22}^{-1}\utilde{X}^{(2)}, \qquad \utilde{Y}^{(2)} = \utilde{X}^{(2)} = \begin{bmatrix} X_2 \\ X_3 \end{bmatrix}.$$
+
+\item Find the conditional distribution $X_1 | X_2$.
+
+\item Find the multiple correlation coefficient $R_{1.23}$ and the partial correlation coefficient $r_{12.3}$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\dice{1} \hspace{0.1cm} The marginal distribution of $Y^{(1)}$ is $N(\mu_1 - \Sigma_{12}\Sigma_{22}^{-1}\utilde{\mu}^{(2)}, \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21})$.
+
+<<>>=
+mu <- matrix(c(1, 0.5, 0.25), nrow = 3, byrow = TRUE)
+
+Sigma <- matrix(c(1, 0.8, 0.4,
+                  0.8, 1, 0.56,
+                  0.4, 0.56, 1), nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+<<>>=
+a1 <- mu[1, 1]
+
+a2 <- Sigma[1, 2:3] %*% solve(Sigma[-1, -1]) %*% mu[2:3]
+@
+
+<<>>=
+a1 - a2
+@
+
+<<>>=
+a3 <- Sigma[1, 1] - Sigma[1, 2:3] %*% solve(Sigma[-1, -1]) %*% Sigma[2:3, 1]; a3
+@
+
+$\therefore$ $Y^{(1)} \sim N(\Sexpr{a1 - a2}, \Sexpr{a3})$.
+
+\newpage
+
+The marginal distribution of $\utilde{Y}^{(2)}$ is $N_2(\mu^{(2)}, \Sigma_{22})$ where
+
+\begin{gather*}
+\utilde{\mu}^{(2)} = \begin{bmatrix} 0.5 \\ 0.25 \end{bmatrix},
+\qquad
+\Sigma_{22} = \begin{bmatrix} 1 & 0.56 \\ 0.56 & 1 \end{bmatrix}.
+\end{gather*}
+
+
+\dice{2} \hspace{0.1cm} The conditional distribution $X_1 | X_2 = x_2$ is $N\left(\mu_1 - \rho \dfrac{\sigma_1}{\sigma_2}(x_2 - \mu_2), \sigma_1^2 (1-\rho^2)\right)$.
+
+<<>>=
+x2 <- 1
+b1 <- mu[1] - Sigma[1, 2] * (x2 - mu[2])
+
+b2 <- (1 - Sigma[1, 2]^2)
+@
+
+<<>>=
+b1; b2
+@
+
+
+$\therefore$ $X_1 | X_2 = 1 \sim N(\Sexpr{b1}, \Sexpr{b2})$.\\
+
+In general, $X_1 | X_2 = x_2 \sim N(\Sexpr{mu[1]}-\Sexpr{Sigma[1, 2]}(x_2 - \Sexpr{mu[2]}), \Sexpr{1 - Sigma[1, 2]^2})$ $\forall x_2 \in \mathbb{R}$.\\[1em]
+
+\dice{3} \hspace{0.1cm} $R_{1.23} = \sqrt{\dfrac{\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}}{\Sigma_{11}}}$.
+
+<<>>=
+R_1.23 <- sqrt(Sigma[1, 2:3] %*% solve(Sigma[-1, -1]) %*% Sigma[2:3, 1])
+R_1.23
+@
+
+$\therefore$ $R_{1.23} = \Sexpr{R_1.23}.$\\[1em]
+
+$r_{12.3} = - \dfrac{R_{12}}{\sqrt{R_{11} R_{22}}}$, here the variances are 1, so $R = \Sigma$.
+
+<<>>=
+cofactor <- function(mat, i, j) {
+  minor <- mat[-i, -j]
+  return ((-1)^(i + j) * det(minor))
+}
+@
+
+<<>>=
+r_1.23 <- - cofactor(Sigma, 1, 2) / sqrt(cofactor(Sigma, 1, 1) * cofactor(Sigma, 2, 2))
+r_1.23
+@
+
+$\therefore$ $r_{1.23} = \Sexpr{r_1.23}$.
+
+\end{document}

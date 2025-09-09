@@ -1,0 +1,94 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 0.9 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{undertilde}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 04}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Let the components of $\utilde{X}$ correspond to the scores on tests in Arithmetic speed $(X_1)$, Arithmetic power $(X_2)$, Memory for words $(X_3)$, Memory for meaningful symbols $(X_4)$ and Memory for meaningless symbols $(X_5)$. The observed correlations in a sample of $140$ observations are given below:
+
+\begin{gather*}
+R = 
+\begin{bmatrix}
+1.0000 & 0.4248 & 0.0420 & 0.0215 & 0.0573 \\
+0.4248 & 1.0000 & 0.1487 & 0.2489 & 0.2843 \\
+0.0420 & 0.1487 & 1.0000 & 0.6693 & 0.4662 \\
+0.0215 & 0.2489 & 0.6693 & 1.0000 & 0.6915 \\
+0.0573 & 0.2843 & 0.4662 & 0.6915 & 1.0000
+\end{bmatrix}
+\end{gather*}
+
+\begin{enumerate}[(a)]
+\item Find the partial correlation coefficient between $X_1$ and $X_2$ holding other variables fixed.
+
+\item Find the multiple correlation coefficient $R_{1.2345}$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+R <- matrix(c(1.0000, 0.4248, 0.0420, 0.0215, 0.0573,
+              0.4248, 1.0000, 0.1487, 0.2489, 0.2843,
+              0.0420, 0.1487, 1.0000, 0.6693, 0.4662,
+              0.0215, 0.2489, 0.6693, 1.0000, 0.6915,
+              0.0573, 0.2843, 0.4662, 0.6915, 1.0000), nrow = 5, ncol = 5, byrow = TRUE)
+@
+
+\dice{1} \hspace{0.1cm} The partial correlation coefficient between $X_1$ and $X_2$ is $r_{12.345} = - \dfrac{R_{12}}{\sqrt{R_{11} R_{22}}}$.
+
+<<>>=
+cofactor <- function(mat, i, j) {
+  minor <- mat[-i, -j]
+  return ((-1)^(i + j) * det(minor))
+}
+@
+
+<<>>=
+r_12.345 <- - cofactor(R, 1, 2) / sqrt(cofactor(R, 1, 1) * cofactor(R, 2, 2))
+r_12.345
+@
+
+$\therefore$ $r_{12.345} = \Sexpr{r_12.345}$.\\[1em]
+
+
+\dice{2} \hspace{0.1cm} The multiple correlation coefficient between $X_1$ and $X_2, X_3, X_4, X_5$ in terms of correlation matrix $R$ is given by $$R_{1.2345} = \sqrt{1 - \dfrac{|R|}{|R_2|}}$$.
+
+<<>>=
+R_1.2345 <- sqrt(1 - det(R) / det(R[-1, -1]))
+R_1.2345
+@
+
+$\therefore$ $R_{1.2345} = \Sexpr{R_1.2345}.$
+
+
+
+\end{document}

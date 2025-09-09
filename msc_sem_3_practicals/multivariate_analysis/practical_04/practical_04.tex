@@ -1,0 +1,166 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 0.9 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{undertilde}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 04}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Let the components of $\utilde{X}$ correspond to the scores on tests in Arithmetic speed $(X_1)$, Arithmetic power $(X_2)$, Memory for words $(X_3)$, Memory for meaningful symbols $(X_4)$ and Memory for meaningless symbols $(X_5)$. The observed correlations in a sample of $140$ observations are given below:
+
+\begin{gather*}
+R = 
+\begin{bmatrix}
+1.0000 & 0.4248 & 0.0420 & 0.0215 & 0.0573 \\
+0.4248 & 1.0000 & 0.1487 & 0.2489 & 0.2843 \\
+0.0420 & 0.1487 & 1.0000 & 0.6693 & 0.4662 \\
+0.0215 & 0.2489 & 0.6693 & 1.0000 & 0.6915 \\
+0.0573 & 0.2843 & 0.4662 & 0.6915 & 1.0000
+\end{bmatrix}
+\end{gather*}
+
+\begin{enumerate}[(a)]
+\item Find the partial correlation coefficient between $X_1$ and $X_2$ holding other variables fixed.
+
+\item Find the multiple correlation coefficient $R_{1.2345}$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{R} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1.0000}\hldef{,} \hlnum{0.4248}\hldef{,} \hlnum{0.0420}\hldef{,} \hlnum{0.0215}\hldef{,} \hlnum{0.0573}\hldef{,}
+              \hlnum{0.4248}\hldef{,} \hlnum{1.0000}\hldef{,} \hlnum{0.1487}\hldef{,} \hlnum{0.2489}\hldef{,} \hlnum{0.2843}\hldef{,}
+              \hlnum{0.0420}\hldef{,} \hlnum{0.1487}\hldef{,} \hlnum{1.0000}\hldef{,} \hlnum{0.6693}\hldef{,} \hlnum{0.4662}\hldef{,}
+              \hlnum{0.0215}\hldef{,} \hlnum{0.2489}\hldef{,} \hlnum{0.6693}\hldef{,} \hlnum{1.0000}\hldef{,} \hlnum{0.6915}\hldef{,}
+              \hlnum{0.0573}\hldef{,} \hlnum{0.2843}\hldef{,} \hlnum{0.4662}\hldef{,} \hlnum{0.6915}\hldef{,} \hlnum{1.0000}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\dice{1} \hspace{0.1cm} The partial correlation coefficient between $X_1$ and $X_2$ is $r_{12.345} = - \dfrac{R_{12}}{\sqrt{R_{11} R_{22}}}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{cofactor} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{mat}\hldef{,} \hlkwc{i}\hldef{,} \hlkwc{j}\hldef{) \{}
+  \hldef{minor} \hlkwb{<-} \hldef{mat[}\hlopt{-}\hldef{i,} \hlopt{-}\hldef{j]}
+  \hlkwd{return} \hldef{((}\hlopt{-}\hlnum{1}\hldef{)}\hlopt{^}\hldef{(i} \hlopt{+} \hldef{j)} \hlopt{*} \hlkwd{det}\hldef{(minor))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{r_12.345} \hlkwb{<-} \hlopt{-} \hlkwd{cofactor}\hldef{(R,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlkwd{cofactor}\hldef{(R,} \hlnum{1}\hldef{,} \hlnum{1}\hldef{)} \hlopt{*} \hlkwd{cofactor}\hldef{(R,} \hlnum{2}\hldef{,} \hlnum{2}\hldef{))}
+\hldef{r_12.345}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.4314625
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $r_{12.345} = 0.4314625$.\\[1em]
+
+
+\dice{2} \hspace{0.1cm} The multiple correlation coefficient between $X_1$ and $X_2, X_3, X_4, X_5$ in terms of correlation matrix $R$ is given by $$R_{1.2345} = \sqrt{1 - \dfrac{|R|}{|R_2|}}$$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{R_1.2345} \hlkwb{<-} \hlkwd{sqrt}\hldef{(}\hlnum{1} \hlopt{-} \hlkwd{det}\hldef{(R)} \hlopt{/} \hlkwd{det}\hldef{(R[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{]))}
+\hldef{R_1.2345}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.436401
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $R_{1.2345} = 0.436401.$
+
+
+
+\end{document}

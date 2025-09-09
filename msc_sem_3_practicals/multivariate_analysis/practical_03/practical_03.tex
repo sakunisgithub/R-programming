@@ -1,0 +1,242 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{undertilde}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 03}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Given that $\utilde{X} \sim N_3(\utilde{\mu}, \Sigma)$ with
+
+\begin{gather*}
+\utilde{\mu} = \begin{bmatrix} 1 \\ 0.5 \\ 0.25 \end{bmatrix},
+\qquad
+\Sigma = \begin{bmatrix} 1 & 0.8 & 0.4 \\ 0.8 & 1 & 0.56 \\ 0.4 & 0.56 & 1 \end{bmatrix}.
+\end{gather*}
+
+\begin{enumerate}[(1)]
+\item Find the marginal distribution of $Y^{(1)}$ and $\utilde{Y}^{(2)}$ where
+
+$$Y^{(1)} = X_1 - \Sigma_{12}\Sigma_{22}^{-1}\utilde{X}^{(2)}, \qquad \utilde{Y}^{(2)} = \utilde{X}^{(2)} = \begin{bmatrix} X_2 \\ X_3 \end{bmatrix}.$$
+
+\item Find the conditional distribution $X_1 | X_2$.
+
+\item Find the multiple correlation coefficient $R_{1.23}$ and the partial correlation coefficient $r_{12.3}$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\dice{1} \hspace{0.1cm} The marginal distribution of $Y^{(1)}$ is $N(\mu_1 - \Sigma_{12}\Sigma_{22}^{-1}\utilde{\mu}^{(2)}, \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21})$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{mu} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.5}\hldef{,} \hlnum{0.25}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+\hldef{Sigma} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.8}\hldef{,} \hlnum{0.4}\hldef{,}
+                  \hlnum{0.8}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0.56}\hldef{,}
+                  \hlnum{0.4}\hldef{,} \hlnum{0.56}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a1} \hlkwb{<-} \hldef{mu[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{]}
+
+\hldef{a2} \hlkwb{<-} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hlopt{:}\hlnum{3}\hldef{]} \hlopt{%*%} \hlkwd{solve}\hldef{(Sigma[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{])} \hlopt{%*%} \hldef{mu[}\hlnum{2}\hlopt{:}\hlnum{3}\hldef{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a1} \hlopt{-} \hldef{a2}
+\end{alltt}
+\begin{verbatim}
+##           [,1]
+## [1,] 0.5979021
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a3} \hlkwb{<-} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{]} \hlopt{-} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hlopt{:}\hlnum{3}\hldef{]} \hlopt{%*%} \hlkwd{solve}\hldef{(Sigma[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{])} \hlopt{%*%} \hldef{Sigma[}\hlnum{2}\hlopt{:}\hlnum{3}\hldef{,} \hlnum{1}\hldef{]; a3}
+\end{alltt}
+\begin{verbatim}
+##           [,1]
+## [1,] 0.3566434
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $Y^{(1)} \sim N(0.5979021, 0.3566434)$.
+
+\newpage
+
+The marginal distribution of $\utilde{Y}^{(2)}$ is $N_2(\mu^{(2)}, \Sigma_{22})$ where
+
+\begin{gather*}
+\utilde{\mu}^{(2)} = \begin{bmatrix} 0.5 \\ 0.25 \end{bmatrix},
+\qquad
+\Sigma_{22} = \begin{bmatrix} 1 & 0.56 \\ 0.56 & 1 \end{bmatrix}.
+\end{gather*}
+
+
+\dice{2} \hspace{0.1cm} The conditional distribution $X_1 | X_2 = x_2$ is $N\left(\mu_1 - \rho \dfrac{\sigma_1}{\sigma_2}(x_2 - \mu_2), \sigma_1^2 (1-\rho^2)\right)$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x2} \hlkwb{<-} \hlnum{1}
+\hldef{b1} \hlkwb{<-} \hldef{mu[}\hlnum{1}\hldef{]} \hlopt{-} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hldef{]} \hlopt{*} \hldef{(x2} \hlopt{-} \hldef{mu[}\hlnum{2}\hldef{])}
+
+\hldef{b2} \hlkwb{<-} \hldef{(}\hlnum{1} \hlopt{-} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hldef{]}\hlopt{^}\hlnum{2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{b1; b2}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6
+## [1] 0.36
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+$\therefore$ $X_1 | X_2 = 1 \sim N(0.6, 0.36)$.\\
+
+In general, $X_1 | X_2 = x_2 \sim N(1-0.8(x_2 - 0.5), 0.36)$ $\forall x_2 \in \mathbb{R}$.\\[1em]
+
+\dice{3} \hspace{0.1cm} $R_{1.23} = \sqrt{\dfrac{\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}}{\Sigma_{11}}}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{R_1.23} \hlkwb{<-} \hlkwd{sqrt}\hldef{(Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hlopt{:}\hlnum{3}\hldef{]} \hlopt{%*%} \hlkwd{solve}\hldef{(Sigma[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{])} \hlopt{%*%} \hldef{Sigma[}\hlnum{2}\hlopt{:}\hlnum{3}\hldef{,} \hlnum{1}\hldef{])}
+\hldef{R_1.23}
+\end{alltt}
+\begin{verbatim}
+##           [,1]
+## [1,] 0.8020952
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $R_{1.23} = 0.8020952.$\\[1em]
+
+$r_{12.3} = - \dfrac{R_{12}}{\sqrt{R_{11} R_{22}}}$, here the variances are 1, so $R = \Sigma$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{cofactor} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{mat}\hldef{,} \hlkwc{i}\hldef{,} \hlkwc{j}\hldef{) \{}
+  \hldef{minor} \hlkwb{<-} \hldef{mat[}\hlopt{-}\hldef{i,} \hlopt{-}\hldef{j]}
+  \hlkwd{return} \hldef{((}\hlopt{-}\hlnum{1}\hldef{)}\hlopt{^}\hldef{(i} \hlopt{+} \hldef{j)} \hlopt{*} \hlkwd{det}\hldef{(minor))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{r_1.23} \hlkwb{<-} \hlopt{-} \hlkwd{cofactor}\hldef{(Sigma,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{)} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlkwd{cofactor}\hldef{(Sigma,} \hlnum{1}\hldef{,} \hlnum{1}\hldef{)} \hlopt{*} \hlkwd{cofactor}\hldef{(Sigma,} \hlnum{2}\hldef{,} \hlnum{2}\hldef{))}
+\hldef{r_1.23}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.7585674
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $r_{1.23} = 0.7585674$.
+
+\end{document}

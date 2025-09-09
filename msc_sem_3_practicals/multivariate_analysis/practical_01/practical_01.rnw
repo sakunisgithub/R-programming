@@ -1,0 +1,114 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 01}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \textcolor{blue}{\textbf{Question}} \hspace{0.1cm} Estimate $\utilde{\mu}$ and $\Sigma$ from the data given below.
+
+\begin{table}[!htbp]
+\def\arraystretch{1.3}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering\arraybackslash}m{3cm}|}
+
+\hline
+Head Length First Son $(X_1)$ & Head Breadth First Son $(X_2)$ & Head Length Second Son $(X_3)$ & Head Breadth Second Son $(X_4)$\\
+\hline
+
+191 & 155 & 179 & 145 \\
+195 & 149 & 201 & 152 \\
+181 & 148 & 185 & 149 \\
+183 & 153 & 188 & 149 \\
+176 & 144 & 171 & 142 \\
+208 & 157 & 192 & 152 \\
+189 & 150 & 190 & 149 \\
+197 & 159 & 189 & 152 \\
+188 & 152 & 197 & 159 \\
+192 & 150 & 187 & 151 \\
+179 & 158 & 186 & 148 \\
+183 & 147 & 174 & 147 \\
+174 & 150 & 185 & 152 \\
+190 & 159 & 195 & 157 \\
+188 & 151 & 187 & 158 \\
+163 & 137 & 161 & 130 \\
+195 & 155 & 183 & 158 \\
+186 & 153 & 173 & 148 \\
+181 & 145 & 182 & 146 \\
+175 & 140 & 165 & 137 \\
+192 & 154 & 185 & 152 \\
+174 & 143 & 178 & 147 \\
+176 & 139 & 176 & 143 \\
+197 & 167 & 200 & 158 \\
+
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+$$\utilde{\mu}_{MLE} = \dfrac{1}{n} \sum \limits_{\alpha = 1}^{n} \utilde{x_{\alpha}}$$
+
+$$\hat{\Sigma} = \dfrac{A}{n}$$
+
+where $A = ((a_{ij}))$ with $a_{ij} = \sum \limits_{\alpha = 1}^{n} (x_{\alpha i} - \bar{x_i})(x_{\alpha j} - \bar{x_j}) \,\, \forall i, j = 1(1)4$. 
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<size='tiny'>>=
+df <- read.csv('https://raw.githubusercontent.com/sakunisgithub/data_sets/refs/heads/master/msc_semester_3/multivariate_practical_1.csv')
+@
+
+<<>>=
+colnames(df) <- c("X1", "X2", "X3", "X4")
+@
+
+<<>>=
+mu_hat <- apply(df, 2, mean)
+mu_hat
+@
+
+<<>>=
+n <- dim(df)[1]; n
+@
+
+<<>>=
+sigma_hat <- cov(df) * ((n-1)/n)
+sigma_hat
+@
+
+
+
+\end{document}
