@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{undertilde}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 05}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use -- \cbfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} The following covariance matrix is estimated for a sample of 28 observations:
+
+\begin{gather*}
+S =
+\begin{bmatrix}
+128.72 & 61.4076 & -21.0211 \\
+61.4076 & 56.9259 & -28.2963 \\
+-21.0211 & -28.2963 & 63.5344
+\end{bmatrix}.
+\end{gather*}
+
+The calculated mean values are $(8.8591, 4.50, 0.8571)$ and test whether these values agree with the assigned values $(5, 1, 0.2)$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+S <- matrix(c(128.72, 61.4076, -21.0211,
+              61.4076, 56.9259, -28.2963,
+              -21.0211, -28.2963, 63.5344), nrow = 3, ncol = 3, byrow = TRUE)
+@
+
+\dice{1} The test statistic for testing $H_0 : \utilde{\mu} = (5, 1, 0.2)'$ against $H_1 : \utilde{\mu} \neq (5, 1, 0.2)'$ is $$n(\overline{\utilde{X}} - \mu_0)' \Sigma^{-1} (\overline{\utilde{X}} - \mu_0).$$
+
+Under $H_0$, the test statistic has $\chi_{3}^{2}$ distribution.
+
+<<>>=
+n <- 28
+x_bar <- matrix(c(8.8591, 4.50, 0.8571), nrow = 3, ncol = 1, byrow = TRUE)
+mu_0 <- matrix(c(5, 1, 0.2), nrow = 3, ncol = 1, byrow = TRUE)
+@
+
+<<>>=
+observed <- n %*% t(x_bar - mu_0) %*% solve(S) %*% (x_bar - mu_0)
+observed
+@
+
+<<>>=
+qchisq(0.05, 3, lower.tail = FALSE)
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+Observed value of the test statistic is greater than $\chi_{0.05, 3}^{2} = \Sexpr{qchisq(0.05, 3, lower.tail = FALSE)}$. So in light of the sample, we reject $H_0$ at $5\%$ level of significance.
+
+\end{document}
