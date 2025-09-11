@@ -1,0 +1,237 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.7 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 02}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate random numbers using the Exponential distribution with rate parameter $\lambda$. Perform the following tasks:
+\begin{enumerate}
+\item Generate data-sets of sizes 30, 50, and 100 using function in R.
+\item For each sample, estimate the rate parameter $\lambda$ using Maximum Likelihood Estimation.
+\item Using the estimated parameter, compute and plot the following functions:
+  \begin{enumerate}[(a)]
+  \item Probability Density Function $f(t)$
+  \item Survival Function $S(t)$
+  \item Hazard Function $h(t)$
+  \item Cumulative Hazard Function $H(t)$.
+  \end{enumerate}
+\item Compare how the shape and values of these functions change with different sample sizes.
+\end{enumerate}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+The probability distribution function of a lifetime $T$ having Exponential Distribution with rate $\lambda > 0$ is 
+$$f(t) = \lambda e^{-\lambda t} \cdot I_{(0, \infty)}(t).$$\\
+
+The Survival Function is $S(t) = e^{-\lambda t} \,\, \forall t > 0$.\\[0.5em]
+
+The Hazard Function is $h(t) = \lambda \,\, \forall t > 0$.\\[0.5em]
+
+The Cumulative Hazard Function is $H(t) = \lambda t \,\, \forall t > 0$.\\[0.5em]
+
+By the method of Maximum Likelihood Estimation, $\hat{\lambda} = \dfrac{1}{\overline{T}}$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+f_t <- function(t, lambda) lambda * exp(-lambda * t)
+S_t <- function(t, lambda) exp(-lambda * t)
+h_t <- function(t, lambda) lambda
+H_t <- function(t, lambda) lambda * t
+@
+
+\newpage
+
+<<echo=FALSE>>=
+set.seed(1)
+@
+
+
+\dice{1} $n = 30$.
+
+<<>>=
+n <- 30
+@
+
+<<>>=
+s <- rexp(n, rate = 0.5)
+@
+
+<<>>=
+lambda_hat <- 1 / mean(s); lambda_hat
+@
+
+<<>>=
+df1 <- data.frame(t = s,
+                  f_t_hat = f_t(s, lambda_hat),
+                  S_t_hat = S_t(s, lambda_hat),
+                  h_t_hat = h_t(s, lambda_hat),
+                  H_t_hat = H_t(s, lambda_hat))
+@
+
+
+\dice{2} $n = 50$.
+
+<<>>=
+n <- 50
+@
+
+<<>>=
+s <- rexp(n, rate = 0.5)
+@
+
+<<>>=
+lambda_hat <- 1 / mean(s); lambda_hat
+@
+
+<<>>=
+df2 <- data.frame(t = s,
+                  f_t_hat = f_t(s, lambda_hat),
+                  S_t_hat = S_t(s, lambda_hat),
+                  h_t_hat = h_t(s, lambda_hat),
+                  H_t_hat = H_t(s, lambda_hat))
+
+@
+
+\dice{3} $n = 100$.
+
+<<>>=
+n <- 100
+@
+
+<<>>=
+s <- rexp(n, rate = 0.5)
+@
+
+<<>>=
+lambda_hat <- 1 / mean(s); lambda_hat
+@
+
+<<>>=
+df3 <- data.frame(t = s,
+                  f_t_hat = f_t(s, lambda_hat),
+                  S_t_hat = S_t(s, lambda_hat),
+                  h_t_hat = h_t(s, lambda_hat),
+                  H_t_hat = H_t(s, lambda_hat))
+
+@
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Plots}}
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+library(gridExtra)
+@
+
+\dice{1} $n = 30$.
+
+<<>>=
+p1 <- df1 %>%
+        ggplot(aes(x = t, y = f_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "f(t)", title = "Estimated PDF")
+
+p2 <- df1 %>%
+        ggplot(aes(x = t, y = S_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "S(t)", title = "Estimated Survival Function")
+
+p3 <- df1 %>%
+        ggplot(aes(x = t, y = h_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "h(t)", title = "Estimated Hazard Function")
+
+p4 <- df1 %>%
+        ggplot(aes(x = t, y = H_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "H(t)", title = "Estimated Cumulative Hazard Function")
+@
+
+<<>>=
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+@
+
+\dice{2} $n = 50$.
+
+<<>>=
+p1 <- df2 %>%
+        ggplot(aes(x = t, y = f_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "f(t)", title = "Estimated PDF")
+
+p2 <- df2 %>%
+        ggplot(aes(x = t, y = S_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "S(t)", title = "Estimated Survival Function")
+
+p3 <- df2 %>%
+        ggplot(aes(x = t, y = h_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "h(t)", title = "Estimated Hazard Function")
+
+p4 <- df2 %>%
+        ggplot(aes(x = t, y = H_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "H(t)", title = "Estimated Cumulative Hazard Function")
+@
+
+<<>>=
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+@
+
+
+\newpage
+
+\dice{3} $n = 100$.
+
+<<>>=
+p1 <- df3 %>%
+        ggplot(aes(x = t, y = f_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "f(t)", title = "Estimated PDF")
+
+p2 <- df3 %>%
+        ggplot(aes(x = t, y = S_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "S(t)", title = "Estimated Survival Function")
+
+p3 <- df3 %>%
+        ggplot(aes(x = t, y = h_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "h(t)", title = "Estimated Hazard Function")
+
+p4 <- df3 %>%
+        ggplot(aes(x = t, y = H_t_hat)) + geom_point(col = "blue") +
+        labs(x = "t", y = "H(t)", title = "Estimated Cumulative Hazard Function")
+@
+
+<<>>=
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+As the sample size increases, the ML estimate of $\lambda$ becomes less noisy. Consequently the estimated PDF, Survival Function, Hazard Function and Cumulative Hazard match with true shapes of these functions more closely.
+
+\end{document}
