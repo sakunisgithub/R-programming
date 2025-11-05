@@ -1,0 +1,45 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{undertilde}
+\usepackage{fontawesome5}
+
+\title{Random Sample Generation \\[0.1em] from \\[0.1em] Multivariate Normal Distribution}
+\author{Ananda Biswas}
+\date{Last updated : \today}
+
+\begin{document}
+
+\maketitle
+
+While there exists function to generate random sample from a multivariate normal distribution, but here we discuss a very simple technique that accomplishes the job. Suppose we have to generate a sample of size $n$ from $N_p\left( \utilde{\mu}, \Sigma \right)$. The steps are as follows :
+
+\begin{enumerate}[Step I.]
+\item Generate a sample of $n \times p$ from $N(0, 1)$. Club each $p$ of them to get a sample of size $n$ from $N_p\left( \utilde{0}, I_{p}\right)$.
+
+\item Consider eigenvalue decomposition of $\Sigma$ \textit{i.e.} $\Sigma = P\Lambda P'$ where $P$ is a $p \times p$ matrix with columns as eigenvectors of $\Sigma$ and $\Lambda$ is a diagonal matrix of order $p$ with eigenvalues of $\Sigma$ in its diagonal entries. $\Sigma$ is a symmetric matrix, so $P$ is an orthogonal matrix. Now,
+\begin{align*}
+\utilde{X} &\sim N_p\left( \utilde{0}, I_{p} \right) \\[0.2em]
+\Rightarrow P \sqrt{\Lambda} \cdot \utilde{X} &\sim N_p\left( \utilde{0}, P \sqrt{\Lambda} \cdot I_{p} \cdot \left(P \sqrt{\Lambda} \right)' \right) \equiv N_p\left( \utilde{0}, P \Lambda P'\right) \\[0.2em]
+\Rightarrow \utilde{\mu} + P \sqrt{\Lambda} \cdot \utilde{X} &\sim N_p\left( \utilde{\mu}, \Sigma \right).
+\end{align*}
+
+\end{enumerate}
+
+Thus, $\utilde{\mu} + P \sqrt{\Lambda} \cdot \utilde{X}$ becomes a sample from $N_p\left( \utilde{\mu}, \Sigma \right)$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+n <- 100; p <- 3
+@
+
+<<>>=
+a <- matrix(rnorm(n, mean = 0, sd = 1), nrow = p, ncol = n, byrow = TRUE)
+@
+
+
+\end{document}

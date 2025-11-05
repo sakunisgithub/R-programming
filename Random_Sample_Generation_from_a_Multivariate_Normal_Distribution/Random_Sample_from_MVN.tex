@@ -1,0 +1,103 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{undertilde}
+\usepackage{fontawesome5}
+
+\title{Random Sample Generation \\[0.1em] from \\[0.1em] Multivariate Normal Distribution}
+\author{Ananda Biswas}
+\date{Last updated : \today}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+While there exists function to generate random sample from a multivariate normal distribution, but here we discuss a very simple technique that accomplishes the job. Suppose we have to generate a sample of size $n$ from $N_p\left( \utilde{\mu}, \Sigma \right)$. The steps are as follows :
+
+\begin{enumerate}[Step I.]
+\item Generate a sample of $n \times p$ from $N(0, 1)$. Club each $p$ of them to get a sample of size $n$ from $N_p\left( \utilde{0}, I_{p}\right)$.
+
+\item Consider eigenvalue decomposition of $\Sigma$ \textit{i.e.} $\Sigma = P\Lambda P'$ where $P$ is a $p \times p$ matrix with columns as eigenvectors of $\Sigma$ and $\Lambda$ is a diagonal matrix of order $p$ with eigenvalues of $\Sigma$ in its diagonal entries. $\Sigma$ is a symmetric matrix, so $P$ is an orthogonal matrix. Now,
+\begin{align*}
+\utilde{X} &\sim N_p\left( \utilde{0}, I_{p} \right) \\[0.2em]
+\Rightarrow P \sqrt{\Lambda} \cdot \utilde{X} &\sim N_p\left( \utilde{0}, P \sqrt{\Lambda} \cdot I_{p} \cdot \left(P \sqrt{\Lambda} \right)' \right) \equiv N_p\left( \utilde{0}, P \Lambda P'\right) \\[0.2em]
+\Rightarrow \utilde{\mu} + P \sqrt{\Lambda} \cdot \utilde{X} &\sim N_p\left( \utilde{\mu}, \Sigma \right).
+\end{align*}
+
+\end{enumerate}
+
+Thus, $\utilde{\mu} + P \sqrt{\Lambda} \cdot \utilde{X}$ becomes a sample from $N_p\left( \utilde{\mu}, \Sigma \right)$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{100}\hldef{; p} \hlkwb{<-} \hlnum{3}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(n,} \hlkwc{mean} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{sd} \hldef{=} \hlnum{1}\hldef{),} \hlkwc{nrow} \hldef{= p,} \hlkwc{ncol} \hldef{= n,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}
