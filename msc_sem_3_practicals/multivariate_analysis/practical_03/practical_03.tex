@@ -200,7 +200,7 @@ In general, $X_1 | X_2 = x_2 \sim N(1-0.8(x_2 - 0.5), 0.36)$ $\forall x_2 \in \m
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{R_1.23} \hlkwb{<-} \hlkwd{sqrt}\hldef{(Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hlopt{:}\hlnum{3}\hldef{]} \hlopt{%*%} \hlkwd{solve}\hldef{(Sigma[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{])} \hlopt{%*%} \hldef{Sigma[}\hlnum{2}\hlopt{:}\hlnum{3}\hldef{,} \hlnum{1}\hldef{])}
+\hldef{R_1.23} \hlkwb{<-} \hlkwd{sqrt}\hldef{((Sigma[}\hlnum{1}\hldef{,} \hlnum{2}\hlopt{:}\hlnum{3}\hldef{]} \hlopt{%*%} \hlkwd{solve}\hldef{(Sigma[}\hlopt{-}\hlnum{1}\hldef{,} \hlopt{-}\hlnum{1}\hldef{])} \hlopt{%*%} \hldef{Sigma[}\hlnum{2}\hlopt{:}\hlnum{3}\hldef{,} \hlnum{1}\hldef{])} \hlopt{/} \hldef{Sigma[}\hlnum{1}\hldef{,} \hlnum{1}\hldef{])}
 \hldef{R_1.23}
 \end{alltt}
 \begin{verbatim}

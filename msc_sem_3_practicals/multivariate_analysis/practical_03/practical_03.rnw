@@ -112,7 +112,7 @@ In general, $X_1 | X_2 = x_2 \sim N(\Sexpr{mu[1]}-\Sexpr{Sigma[1, 2]}(x_2 - \Sex
 \dice{3} \hspace{0.1cm} $R_{1.23} = \sqrt{\dfrac{\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}}{\Sigma_{11}}}$.
 
 <<>>=
-R_1.23 <- sqrt(Sigma[1, 2:3] %*% solve(Sigma[-1, -1]) %*% Sigma[2:3, 1])
+R_1.23 <- sqrt((Sigma[1, 2:3] %*% solve(Sigma[-1, -1]) %*% Sigma[2:3, 1]) / Sigma[1, 1])
 R_1.23
 @
 
