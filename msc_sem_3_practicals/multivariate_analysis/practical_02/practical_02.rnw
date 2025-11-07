@@ -1,0 +1,132 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 02 \\[0.2em] Multivariate Analysis}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \textcolor{blue}{\textbf{Question}}
+
+\begin{enumerate}
+\item Determine the correlation matrix $R = ((\rho_{ij}))$, if $N = 25$ and
+\begin{gather*}
+S = 
+\begin{bmatrix}
+95.2933 & 52.8683 & 69.6617 & 46.1117 \\
+52.8683 & 54.3660 & 51.3117 & 35.0533 \\
+69.6617 & 51.3117 & 100.8067 & 56.5400 \\
+46.1117 & 35.0533 & 56.5400 & 45.0233
+\end{bmatrix}.
+\end{gather*}
+
+\item Calculate sample mean vector $\utilde{\bar{X}}$ and sample variance-covariance matrix $S$ for the following data.
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{2cm}|>{\centering}m{2cm}|>{\centering\arraybackslash}m{2cm}|}
+
+\hline
+Patient Number & Drug $A$ & Drug $B$ \\
+\hline
+\hline
+$1$ & $1.9$ & $0.7$ \\
+\hline
+$2$ & $0.8$ & $-1.6$ \\
+\hline
+$3$ & $1.1$ & $-0.2$ \\
+\hline
+$4$ & $0.1$ & $-0.2$ \\
+\hline
+$5$ & $-0.1$ & $-0.1$ \\
+\hline
+$6$ & $4.4$ & $3.4$ \\
+\hline
+$7$ & $5.5$ & $3.7$ \\
+\hline
+$8$ & $1.6$ & $0.8$ \\
+\hline
+$9$ & $4.6$ & $0$ \\
+\hline
+$10$ & $3.9$ & $2.0$ \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} Calculating correlation matrix : $R = \Lambda \cdot S \cdot \Lambda$ where $\Lambda$ is a diagonal matrix with elements being $\dfrac{1}{\sigma_{ii}}$.
+
+<<>>=
+S <- matrix(c(95.2933, 52.8683, 69.6617, 46.1117,
+             52.8683, 54.3660, 51.3117, 35.0533,
+             69.6617, 51.3117, 100.8067, 56.5400,
+             46.1117, 35.0533, 56.5400, 45.0233), nrow = 4, ncol = 4, byrow = TRUE)
+@
+
+<<>>=
+L <- diag(1 / sqrt(diag(S))); L
+@
+
+<<>>=
+R <- L %*% S %*% L; R
+@
+
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} Calculating sample mean vector and sample dispersion matrix :
+
+<<>>=
+X <- matrix(c(1.9, 0.7,
+              0.8, -1.6,
+              1.1, -0.2,
+              0.1, -0.2,
+              -0.1, -0.1,
+              4.4, 3.4,
+              5.5, 3.7,
+              1.6, 0.8,
+              4.6, 0,
+              3.9, 2.0), nrow = 10, ncol = 2, byrow = TRUE)
+@
+
+<<>>=
+X_bar <- colMeans(X); X_bar
+@
+
+<<>>=
+S <- cov(X); S
+@
+
+
+\end{document}

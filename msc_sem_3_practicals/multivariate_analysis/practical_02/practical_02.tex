@@ -1,0 +1,228 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 02 \\[0.2em] Multivariate Analysis}
+\author{Ananda Biswas}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\scalebox{2.0}{\twemoji{bullseye}} \textcolor{blue}{\textbf{Question}}
+
+\begin{enumerate}
+\item Determine the correlation matrix $R = ((\rho_{ij}))$, if $N = 25$ and
+\begin{gather*}
+S = 
+\begin{bmatrix}
+95.2933 & 52.8683 & 69.6617 & 46.1117 \\
+52.8683 & 54.3660 & 51.3117 & 35.0533 \\
+69.6617 & 51.3117 & 100.8067 & 56.5400 \\
+46.1117 & 35.0533 & 56.5400 & 45.0233
+\end{bmatrix}.
+\end{gather*}
+
+\item Calculate sample mean vector $\utilde{\bar{X}}$ and sample variance-covariance matrix $S$ for the following data.
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\begin{center}
+\begin{tabular}{|>{\centering}m{2cm}|>{\centering}m{2cm}|>{\centering\arraybackslash}m{2cm}|}
+
+\hline
+Patient Number & Drug $A$ & Drug $B$ \\
+\hline
+\hline
+$1$ & $1.9$ & $0.7$ \\
+\hline
+$2$ & $0.8$ & $-1.6$ \\
+\hline
+$3$ & $1.1$ & $-0.2$ \\
+\hline
+$4$ & $0.1$ & $-0.2$ \\
+\hline
+$5$ & $-0.1$ & $-0.1$ \\
+\hline
+$6$ & $4.4$ & $3.4$ \\
+\hline
+$7$ & $5.5$ & $3.7$ \\
+\hline
+$8$ & $1.6$ & $0.8$ \\
+\hline
+$9$ & $4.6$ & $0$ \\
+\hline
+$10$ & $3.9$ & $2.0$ \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} Calculating correlation matrix : $R = \Lambda \cdot S \cdot \Lambda$ where $\Lambda$ is a diagonal matrix with elements being $\dfrac{1}{\sigma_{ii}}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{S} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{95.2933}\hldef{,} \hlnum{52.8683}\hldef{,} \hlnum{69.6617}\hldef{,} \hlnum{46.1117}\hldef{,}
+             \hlnum{52.8683}\hldef{,} \hlnum{54.3660}\hldef{,} \hlnum{51.3117}\hldef{,} \hlnum{35.0533}\hldef{,}
+             \hlnum{69.6617}\hldef{,} \hlnum{51.3117}\hldef{,} \hlnum{100.8067}\hldef{,} \hlnum{56.5400}\hldef{,}
+             \hlnum{46.1117}\hldef{,} \hlnum{35.0533}\hldef{,} \hlnum{56.5400}\hldef{,} \hlnum{45.0233}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{4}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{4}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{L} \hlkwb{<-} \hlkwd{diag}\hldef{(}\hlnum{1} \hlopt{/} \hlkwd{sqrt}\hldef{(}\hlkwd{diag}\hldef{(S))); L}
+\end{alltt}
+\begin{verbatim}
+##           [,1]      [,2]       [,3]      [,4]
+## [1,] 0.1024398 0.0000000 0.00000000 0.0000000
+## [2,] 0.0000000 0.1356239 0.00000000 0.0000000
+## [3,] 0.0000000 0.0000000 0.09959907 0.0000000
+## [4,] 0.0000000 0.0000000 0.00000000 0.1490326
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{R} \hlkwb{<-} \hldef{L} \hlopt{%*%} \hldef{S} \hlopt{%*%} \hldef{L; R}
+\end{alltt}
+\begin{verbatim}
+##           [,1]      [,2]      [,3]      [,4]
+## [1,] 1.0000000 0.7345147 0.7107522 0.7039816
+## [2,] 0.7345147 1.0000000 0.6931193 0.7085109
+## [3,] 0.7107522 0.6931193 1.0000000 0.8392521
+## [4,] 0.7039816 0.7085109 0.8392521 1.0000000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} Calculating sample mean vector and sample dispersion matrix :
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{X} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1.9}\hldef{,} \hlnum{0.7}\hldef{,}
+              \hlnum{0.8}\hldef{,} \hlopt{-}\hlnum{1.6}\hldef{,}
+              \hlnum{1.1}\hldef{,} \hlopt{-}\hlnum{0.2}\hldef{,}
+              \hlnum{0.1}\hldef{,} \hlopt{-}\hlnum{0.2}\hldef{,}
+              \hlopt{-}\hlnum{0.1}\hldef{,} \hlopt{-}\hlnum{0.1}\hldef{,}
+              \hlnum{4.4}\hldef{,} \hlnum{3.4}\hldef{,}
+              \hlnum{5.5}\hldef{,} \hlnum{3.7}\hldef{,}
+              \hlnum{1.6}\hldef{,} \hlnum{0.8}\hldef{,}
+              \hlnum{4.6}\hldef{,} \hlnum{0}\hldef{,}
+              \hlnum{3.9}\hldef{,} \hlnum{2.0}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{X_bar} \hlkwb{<-} \hlkwd{colMeans}\hldef{(X); X_bar}
+\end{alltt}
+\begin{verbatim}
+## [1] 2.38 0.85
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{S} \hlkwb{<-} \hlkwd{cov}\hldef{(X); S}
+\end{alltt}
+\begin{verbatim}
+##          [,1]     [,2]
+## [1,] 4.152889 2.664444
+## [2,] 2.664444 2.867222
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}
