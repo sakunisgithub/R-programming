@@ -50,7 +50,7 @@
 
 \usepackage{alltt}
 
-\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage[top = 0.7 in, bottom = 0.7 in, left = 1 in, right = 1 in]{geometry}
 
 \usepackage{amsmath, amssymb, amsfonts}
 \usepackage{enumerate}
@@ -67,7 +67,7 @@
 \usepackage{customdice}
 % how to put dice face ------ \dice{2}
 
-\title{MSMS 308 : Practical 05}
+\title{MSMS 308 : Practical 05 \\[0.3em] Multivariate Analysis}
 \author{Ananda Biswas}
 \date{\today}
 
@@ -109,14 +109,14 @@ The calculated mean values are $(8.8591, 4.50, 0.8571)$ and test whether these v
 \end{kframe}
 \end{knitrout}
 
-\dice{1} The test statistic for testing $H_0 : \utilde{\mu} = (5, 1, 0.2)'$ against $H_1 : \utilde{\mu} \neq (5, 1, 0.2)'$ is $$n(\overline{\utilde{X}} - \mu_0)' \Sigma^{-1} (\overline{\utilde{X}} - \mu_0).$$
+\dice{1} The test statistic for testing $H_0 : \utilde{\mu} = (5, 1, 0.2)'$ against $H_1 : \utilde{\mu} \neq (5, 1, 0.2)'$ is $$T^2 = n(\overline{\utilde{X}} - \utilde{\mu_0})' S^{-1} (\overline{\utilde{X}} - \utilde{\mu_0}).$$
 
-Under $H_0$, the test statistic has $\chi_{3}^{2}$ distribution.
+Under $H_0$, $\dfrac{(n-p)T^2}{p(n-1)} \sim F_{p, n-p}$.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{n} \hlkwb{<-} \hlnum{28}
+\hldef{n} \hlkwb{<-} \hlnum{28}\hldef{; p} \hlkwb{<-} \hlnum{3}
 \hldef{x_bar} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{8.8591}\hldef{,} \hlnum{4.50}\hldef{,} \hlnum{0.8571}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
 \hldef{mu_0} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{5}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0.2}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
 \end{alltt}
@@ -126,12 +126,12 @@ Under $H_0$, the test statistic has $\chi_{3}^{2}$ distribution.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{observed} \hlkwb{<-} \hldef{n} \hlopt{%*%} \hlkwd{t}\hldef{(x_bar} \hlopt{-} \hldef{mu_0)} \hlopt{%*%} \hlkwd{solve}\hldef{(S)} \hlopt{%*%} \hldef{(x_bar} \hlopt{-} \hldef{mu_0)}
+\hldef{observed} \hlkwb{<-} \hldef{(n} \hlopt{%*%} \hlkwd{t}\hldef{(x_bar} \hlopt{-} \hldef{mu_0)} \hlopt{%*%} \hlkwd{solve}\hldef{(S)} \hlopt{%*%} \hldef{(x_bar} \hlopt{-} \hldef{mu_0))} \hlopt{*} \hldef{((n}\hlopt{-}\hldef{p)}\hlopt{/}\hldef{(p}\hlopt{*}\hldef{(n}\hlopt{-}\hlnum{1}\hldef{)))}
 \hldef{observed}
 \end{alltt}
 \begin{verbatim}
 ##          [,1]
-## [1,] 9.342625
+## [1,] 2.883526
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -139,16 +139,16 @@ Under $H_0$, the test statistic has $\chi_{3}^{2}$ distribution.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{qchisq}\hldef{(}\hlnum{0.05}\hldef{,} \hlnum{3}\hldef{,} \hlkwc{lower.tail} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hlkwd{qf}\hldef{(}\hlnum{0.05}\hldef{, p, n}\hlopt{-}\hldef{p,} \hlkwc{lower.tail} \hldef{=} \hlnum{FALSE}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 7.814728
+## [1] 2.991241
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-Observed value of the test statistic is greater than $\chi_{0.05, 3}^{2} = 7.8147279$. So in light of the sample, we reject $H_0$ at $5\%$ level of significance.
+Observed value of the test statistic is less than $F_{0.05, 3, 25} = 2.9912409$. So in light of the sample, we fail to reject $H_0$ at $5\%$ level of significance.
 
 \end{document}

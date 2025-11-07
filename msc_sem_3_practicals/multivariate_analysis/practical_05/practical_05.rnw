@@ -1,6 +1,6 @@
 \documentclass[11pt, a4paper]{article}
 
-\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage[top = 0.7 in, bottom = 0.7 in, left = 1 in, right = 1 in]{geometry}
 
 \usepackage{amsmath, amssymb, amsfonts}
 \usepackage{enumerate}
@@ -17,7 +17,7 @@
 \usepackage{customdice}
 % how to put dice face ------ \dice{2}
 
-\title{MSMS 308 : Practical 05}
+\title{MSMS 308 : Practical 05 \\[0.3em] Multivariate Analysis}
 \author{Ananda Biswas}
 \date{\today}
 
@@ -55,27 +55,27 @@ S <- matrix(c(128.72, 61.4076, -21.0211,
               -21.0211, -28.2963, 63.5344), nrow = 3, ncol = 3, byrow = TRUE)
 @
 
-\dice{1} The test statistic for testing $H_0 : \utilde{\mu} = (5, 1, 0.2)'$ against $H_1 : \utilde{\mu} \neq (5, 1, 0.2)'$ is $$n(\overline{\utilde{X}} - \mu_0)' \Sigma^{-1} (\overline{\utilde{X}} - \mu_0).$$
+\dice{1} The test statistic for testing $H_0 : \utilde{\mu} = (5, 1, 0.2)'$ against $H_1 : \utilde{\mu} \neq (5, 1, 0.2)'$ is $$T^2 = n(\overline{\utilde{X}} - \utilde{\mu_0})' S^{-1} (\overline{\utilde{X}} - \utilde{\mu_0}).$$
 
-Under $H_0$, the test statistic has $\chi_{3}^{2}$ distribution.
+Under $H_0$, $\dfrac{(n-p)T^2}{p(n-1)} \sim F_{p, n-p}$.
 
 <<>>=
-n <- 28
+n <- 28; p <- 3
 x_bar <- matrix(c(8.8591, 4.50, 0.8571), nrow = 3, ncol = 1, byrow = TRUE)
 mu_0 <- matrix(c(5, 1, 0.2), nrow = 3, ncol = 1, byrow = TRUE)
 @
 
 <<>>=
-observed <- n %*% t(x_bar - mu_0) %*% solve(S) %*% (x_bar - mu_0)
+observed <- (n %*% t(x_bar - mu_0) %*% solve(S) %*% (x_bar - mu_0)) * ((n-p)/(p*(n-1)))
 observed
 @
 
 <<>>=
-qchisq(0.05, 3, lower.tail = FALSE)
+qf(0.05, p, n-p, lower.tail = FALSE)
 @
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-Observed value of the test statistic is greater than $\chi_{0.05, 3}^{2} = \Sexpr{qchisq(0.05, 3, lower.tail = FALSE)}$. So in light of the sample, we reject $H_0$ at $5\%$ level of significance.
+Observed value of the test statistic is less than $F_{0.05, 3, 25} = \Sexpr{qf(0.05, p, n-p, lower.tail = FALSE)}$. So in light of the sample, we fail to reject $H_0$ at $5\%$ level of significance.
 
 \end{document}
