@@ -1,0 +1,251 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 06}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Obtain a sufficiently large sample from an exponential distribution under a Type II censoring scheme. After generating the sample, calculate the maximum likelihood (ML)
+estimate of the distribution parameter. Also, evaluate the performance of the estimate by
+computing the bias, variance, and mean squared error (MSE) for different sample sizes.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let \(T_1,\dots,T_n \stackrel{iid}{\sim} \mathrm{Exp}(\lambda)\) with density \(f(t)\) and survival \(S(t)\). Under Type II censoring we observe the first \(r\) failure times \(0 < t_{(1)} \leq \cdots \leq t_{(r)}\); the remaining \(n-r\) units are right-censored at the common time \(t_{(r)}\).
+
+\medskip
+The likelihood function is
+\begin{align*}
+L(\lambda) &= \dfrac{n!}{(n-r)!} \cdot \left[\prod_{i=1}^{r} f\!\big(t_{(i)}\big)\right] \cdot \Big[S\!\big(t_{(r)}\big)\Big]^{\,n-r}. \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \prod_{i=1}^{r} \Big(\lambda e^{-\lambda t_{(i)}}\Big) \; \cdot \; \Big(e^{-\lambda t_{(r)}}\Big)^{n-r} \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \lambda^{r} \; \exp\!\left(-\lambda \sum_{i=1}^{r} t_{(i)}\right) \; \exp\!\left(-\lambda (n-r)\,t_{(r)}\right) \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \lambda^{r} \; \exp\!\left\{-\lambda \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg]\right\}
+\end{align*}
+
+
+\medskip
+The log-likelihood function is
+\[
+\ell(\lambda)
+= \log \left( \dfrac{n!}{(n-r)!} \right) + r\log\lambda - \lambda \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg].
+\]
+
+\medskip
+Now we differentiate $\ell(\lambda)$ w.r.t. $\lambda$ and set the derivative to zero.
+\begin{align*}
+\dfrac{\partial\ell}{\partial\lambda} &= \dfrac{r}{\lambda} - \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg] = 0 \\[4pt]
+\Rightarrow \dfrac{r}{\lambda} &= \sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)} \\[4pt]
+\end{align*}
+
+$$ \therefore \widehat{\lambda}_{MLE} = \dfrac{r}{\,\sum \limits_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\,} $$
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+Let $n = 100$ and $r = 75$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{100}\hldef{; r} \hlkwb{<-} \hlnum{75}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{sort}\hldef{(}\hlkwd{rexp}\hldef{(n,} \hlkwc{rate} \hldef{=} \hlnum{2}\hldef{))}
+\hldef{t_values} \hlkwb{<-} \hldef{x[}\hlnum{1}\hlopt{:}\hldef{r]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{lambda_hat} \hlkwb{<-} \hldef{r} \hlopt{/} \hldef{(}\hlkwd{sum}\hldef{(t_values)} \hlopt{+} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hlkwd{max}\hldef{(t_values)); lambda_hat}
+\end{alltt}
+\begin{verbatim}
+## [1] 2.247462
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+$\therefore$ $\widehat{\lambda}_{MLE} = 2.2474623$. \\[1em]
+
+Now we shall compare the estimates for different sample sizes by evaluating their bias, variance and MSE.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{bias} \hlkwb{=} \hldef{variance} \hlkwb{=} \hldef{MSE} \hlkwb{=} \hlkwd{c}\hldef{()}
+
+\hldef{n} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{50}\hldef{,} \hlnum{100}\hldef{,} \hlnum{150}\hldef{,} \hlnum{200}\hldef{,} \hlnum{250}\hldef{,} \hlnum{300}\hldef{)}
+
+\hlcom{# suppose we censor after having first 75% observations}
+\hldef{r} \hlkwb{<-} \hlkwd{round}\hldef{(n} \hlopt{*} \hlnum{0.75}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{true_lambda} \hlkwb{<-} \hlnum{1}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(r)) \{}
+
+  \hldef{lambda_hat} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1000}\hldef{) \{}
+    \hldef{x} \hlkwb{<-} \hlkwd{sort}\hldef{(}\hlkwd{rexp}\hldef{(n[i],} \hlkwc{rate} \hldef{= true_lambda))}
+
+    \hldef{s} \hlkwb{<-} \hldef{x[}\hlnum{1}\hlopt{:}\hldef{r[i]]}
+
+    \hldef{lambda_hat[j]} \hlkwb{<-} \hldef{r[i]} \hlopt{/} \hldef{(}\hlkwd{sum}\hldef{(s)} \hlopt{+} \hldef{(n[i]} \hlopt{-} \hldef{r[i])} \hlopt{*} \hlkwd{max}\hldef{(s))}
+  \hldef{\}}
+
+  \hldef{bias[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(lambda_hat)} \hlopt{-} \hldef{true_lambda}
+
+  \hldef{variance[i]} \hlkwb{<-} \hlkwd{mean}\hldef{( (lambda_hat} \hlopt{-} \hlkwd{mean}\hldef{(lambda_hat))}\hlopt{^}\hlnum{2} \hldef{)}
+\hldef{\}}
+
+\hldef{MSE} \hlkwb{<-} \hldef{bias}\hlopt{^}\hlnum{2} \hlopt{+} \hldef{variance}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{Sample.Size} \hldef{= n,}
+                 \hlkwc{Observed} \hldef{= r,} \hlkwc{Censored} \hldef{= n} \hlopt{-} \hldef{r,}
+                 \hlkwc{Bias} \hldef{= bias,} \hlkwc{Variance} \hldef{= variance,} \hlkwc{MSE} \hldef{= MSE)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(stargazer)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Bias, variance and MSE of the estimates for different sample sizes are as follows :
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{digits} \hldef{=} \hlnum{5}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Oct 27, 2025 - 22:53:31
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Sample.Size & Observed & Censored & Bias & Variance & MSE \\ 
+\hline \\[-1.8ex] 
+$50$ & $38$ & $12$ & $0.03321$ & $0.02758$ & $0.02869$ \\ 
+$100$ & $75$ & $25$ & $0.01595$ & $0.01363$ & $0.01389$ \\ 
+$150$ & $112$ & $38$ & $0.00654$ & $0.00936$ & $0.00940$ \\ 
+$200$ & $150$ & $50$ & $0.00144$ & $0.00658$ & $0.00659$ \\ 
+$250$ & $188$ & $62$ & $0.00470$ & $0.00527$ & $0.00530$ \\ 
+$300$ & $225$ & $75$ & $0.00800$ & $0.00508$ & $0.00514$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont With increasing sample size, there is a steady decrease in bias, variance and mean squared error of the estimates. \par}
+
+\end{document}

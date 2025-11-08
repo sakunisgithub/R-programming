@@ -1,0 +1,144 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 06}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Obtain a sufficiently large sample from an exponential distribution under a Type II censoring scheme. After generating the sample, calculate the maximum likelihood (ML)
+estimate of the distribution parameter. Also, evaluate the performance of the estimate by
+computing the bias, variance, and mean squared error (MSE) for different sample sizes.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let \(T_1,\dots,T_n \stackrel{iid}{\sim} \mathrm{Exp}(\lambda)\) with density \(f(t)\) and survival \(S(t)\). Under Type II censoring we observe the first \(r\) failure times \(0 < t_{(1)} \leq \cdots \leq t_{(r)}\); the remaining \(n-r\) units are right-censored at the common time \(t_{(r)}\).
+
+\medskip
+The likelihood function is
+\begin{align*}
+L(\lambda) &= \dfrac{n!}{(n-r)!} \cdot \left[\prod_{i=1}^{r} f\!\big(t_{(i)}\big)\right] \cdot \Big[S\!\big(t_{(r)}\big)\Big]^{\,n-r}. \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \prod_{i=1}^{r} \Big(\lambda e^{-\lambda t_{(i)}}\Big) \; \cdot \; \Big(e^{-\lambda t_{(r)}}\Big)^{n-r} \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \lambda^{r} \; \exp\!\left(-\lambda \sum_{i=1}^{r} t_{(i)}\right) \; \exp\!\left(-\lambda (n-r)\,t_{(r)}\right) \\[4pt]
+&= \dfrac{n!}{(n-r)!} \; \lambda^{r} \; \exp\!\left\{-\lambda \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg]\right\}
+\end{align*}
+
+
+\medskip
+The log-likelihood function is
+\[
+\ell(\lambda)
+= \log \left( \dfrac{n!}{(n-r)!} \right) + r\log\lambda - \lambda \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg].
+\]
+
+\medskip
+Now we differentiate $\ell(\lambda)$ w.r.t. $\lambda$ and set the derivative to zero.
+\begin{align*}
+\dfrac{\partial\ell}{\partial\lambda} &= \dfrac{r}{\lambda} - \Bigg[\sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\Bigg] = 0 \\[4pt]
+\Rightarrow \dfrac{r}{\lambda} &= \sum_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)} \\[4pt]
+\end{align*}
+
+$$ \therefore \widehat{\lambda}_{MLE} = \dfrac{r}{\,\sum \limits_{i=1}^{r} t_{(i)} + (n-r)\,t_{(r)}\,} $$
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+Let $n = 100$ and $r = 75$.
+
+<<>>=
+n <- 100; r <- 75
+@
+
+<<>>=
+x <- sort(rexp(n, rate = 2))
+t_values <- x[1:r]
+@
+
+<<>>=
+lambda_hat <- r / (sum(t_values) + (n - r) * max(t_values)); lambda_hat
+@
+
+$\therefore$ $\widehat{\lambda}_{MLE} = \Sexpr{lambda_hat}$. \\[1em]
+
+Now we shall compare the estimates for different sample sizes by evaluating their bias, variance and MSE.
+
+<<>>=
+bias = variance = MSE = c()
+
+n <- c(50, 100, 150, 200, 250, 300)
+
+# suppose we censor after having first 75% observations
+r <- round(n * 0.75)
+@
+
+<<>>=
+true_lambda <- 1
+@
+
+<<>>=
+for (i in 1:length(r)) {
+  
+  lambda_hat <- c()
+  
+  for (j in 1:1000) {
+    x <- sort(rexp(n[i], rate = true_lambda))
+    
+    s <- x[1:r[i]]
+    
+    lambda_hat[j] <- r[i] / (sum(s) + (n[i] - r[i]) * max(s))
+  }
+  
+  bias[i] <- mean(lambda_hat) - true_lambda
+  
+  variance[i] <- mean( (lambda_hat - mean(lambda_hat))^2 )
+}
+
+MSE <- bias^2 + variance
+@
+
+<<>>=
+df <- data.frame(Sample.Size = n, 
+                 Observed = r, Censored = n - r,
+                 Bias = bias, Variance = variance, MSE = MSE)
+@
+
+<<warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+Bias, variance and MSE of the estimates for different sample sizes are as follows :
+
+<<results='asis'>>=
+stargazer(df, summary = FALSE, rownames = FALSE, digits = 5)
+@
+
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont With increasing sample size, there is a steady decrease in bias, variance and mean squared error of the estimates. \par}
+
+\end{document}
