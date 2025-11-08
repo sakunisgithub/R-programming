@@ -1,0 +1,173 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{customdice}
+% how to put dice face ------ \dice{2}
+
+\title{MSMS 308 : Practical 05}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+% how to use ---- {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont --write text here-- \par}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate a sample of lifetime data from a log-normal distribution, estimate its shape and scale parameters using Maximum Likelihood Estimation (MLE), and compute the Mean
+Squared Error (MSE) of the estimates through simulation. Using the estimated parameter
+values, plot the Probability Density Function (PDF), Survival Function, Hazard Function,
+and Cumulative Hazard Function of the log-normal model.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Let $T_1, T_2, \ldots, T_n$ be a sample of size $n$ from $\text{LN}(\mu, \sigma^2)$. Then $\forall$ $i = 1(1)n$, $ln \, T_i \overset{iid}{\sim} N(\mu, \sigma^2)$.\\[0.5em]
+
+The Maximum Likelihood estimates of $\mu$ and $\sigma^2$ are given by
+
+\begin{align*}
+\widehat{\mu}_{MLE} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} ln \, T_i \text{ and}
+\end{align*}
+
+\begin{align*}
+\widehat{\sigma^2}_{MLE} = \dfrac{1}{n-1} \sum \limits_{i = 1}^{n} \left(ln \, T_i - \widehat{\mu}_{MLE}\right)^2
+\end{align*}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+times <- rlnorm(100)
+log_times <- log(times)
+@
+
+<<>>=
+mean(log_times)
+@
+
+$\therefore$ $\widehat{\mu}_{MLE} = \Sexpr{mean(log_times)}$.
+
+<<>>=
+sd(log_times); sd(log_times)^2
+@
+
+$\therefore$ $\widehat{\sigma^2}_{MLE} = \Sexpr{sd(log_times)^2}$.
+
+<<>>=
+true_mu <- 0; true_sigma <- 1
+@
+
+<<>>=
+sample_size <- 100
+@
+
+Now we shall evaluate the bias and MSE of the estimates.
+
+<<>>=
+mu_estimates = sigma_square_estimates = c()
+  
+for (i in 1:100){
+    
+  times <- rlnorm(sample_size)
+    
+  mu_estimates[i] <- mean(log(times))
+    
+  sigma_square_estimates[i] <- sd(log(times))^2
+}
+  
+mu_bias <- mean(mu_estimates) - true_mu
+  
+sigma_square_bias <- mean(sigma_square_estimates) - true_sigma^2
+
+mu_MSE <- mean( (mu_estimates - true_mu)^2 )
+  
+sigma_square_MSE <- mean( (sigma_square_estimates - true_sigma^2)^2 )
+@
+
+<<>>=
+mu_bias; sigma_square_bias; mu_MSE; sigma_square_MSE
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+t_values <- rlnorm(sample_size)
+@
+
+<<>>=
+mu_hat <- mean(t_values); sigma_hat <- sd(t_values)
+@
+
+<<>>=
+df1 <- data.frame(t = t_values, 
+                  ft = dlnorm(t_values, meanlog = mu_hat, sdlog = sigma_hat))
+
+df1 %>%
+  ggplot(aes(x = t, y = ft)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "f(t)", 
+       title = "PDF from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df2 <- data.frame(t = t_values, 
+                  St = 1 - plnorm(t_values, meanlog = mu_hat, sdlog = sigma_hat))
+
+df2 %>%
+  ggplot(aes(x = t, y = St)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "S(t)", 
+       title = "Survival Function from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df3 <- data.frame(t = t_values, 
+                  ht = df1$ft / df2$St)
+
+df3 %>%
+  ggplot(aes(x = t, y = ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "h(t)", 
+       title = "Hazard Function from Estimated Parameters")
+@
+
+\newpage
+
+<<>>=
+df4 <- data.frame(t = t_values, 
+                  Ht = -log(df2$St))
+
+df4 %>%
+  ggplot(aes(x = t, y = Ht)) +
+  geom_line(col = 'blue', linewidth = 1) +
+  labs(x = "t", y = "H(t)", 
+       title = "Cumulative Hazard Function from Estimated Parameters")
+@
+
+\end{document}
