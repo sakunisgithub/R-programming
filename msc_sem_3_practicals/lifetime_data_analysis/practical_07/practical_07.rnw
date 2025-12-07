@@ -1,7 +1,10 @@
 \documentclass[11pt, a4paper]{article}
 
-\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 0.8 in, right = 0.8 in]{geometry}
 \usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
@@ -256,13 +259,570 @@ library(stargazer)
 stargazer(df1, summary = FALSE, rownames = FALSE)
 @
 
-\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Right Censoring, Type I \\[0.5em]
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Type I Right Censoring \\[0.5em]
+
+Let us have a sample of size $n$ under Type I Right censoring scheme from Weibull$(\alpha, \lambda)$ with density \(f(t)\) and survival \(S(t)\). $t_1, t_2, \ldots, t_r$ be $r$ complete observations and rest $n-r$ are censored observations at $C$.\\[0.5em]
+
+The likelihood function is given by
+
+\begin{align*}
+L(\alpha,\lambda) &= \left[\prod_{i=1}^{r} f(t_i)\right] \, [S(C)]^{\,n-r} \\[0.5em]
+&= \prod_{i=1}^{r} \left[\dfrac{\alpha}{\lambda} \left(\dfrac{t_i}{\lambda}\right)^{\alpha-1}
+\exp\!\left(-\left(\dfrac{t_i}{\lambda}\right)^{\alpha}\right)\right] \, \left[\exp\!\left(-\left(\dfrac{C}{\lambda}\right)^{\alpha}\right)\right]^{n-r} \\[0.5em]
+&= \alpha^{r}\lambda^{-\alpha r}\left(\prod_{i=1}^{r} t_i^{\alpha-1}\right)\exp\!\left[
+-\sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha}-(n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}\right].
+\end{align*}
+
+The log-likelihood function is given by
+
+\begin{align*}
+\ell(\alpha,\lambda) &= r\log \alpha - \alpha r \log \lambda + (\alpha-1)\sum_{i=1}^{r} \log t_i - \sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} - (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}.
+\end{align*}
+
+Now,
+\begin{equation}
+\dfrac{\partial}{\partial \alpha}\ell(\alpha,\lambda) = \dfrac{r}{\alpha} - r \log \lambda
++ \sum_{i=1}^{r} \log t_i - \sum_{i=1}^{r} \left( \dfrac{t_i}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_i}{\lambda} \right) - (n-r)\left( \dfrac{C}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{C}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{equation}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} \ell(\alpha,\lambda) &= \dfrac{\partial}{\partial \lambda}
+\left[- \alpha r \log \lambda - \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \right] \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} - \sum\limits_{i=1}^{r} \dfrac{\partial}{\partial \lambda}
+\left( t_i^{\alpha} \lambda^{-\alpha} \right) - (n-r)\dfrac{\partial}{\partial \lambda}
+\left( C^{\alpha} \lambda^{-\alpha} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} - \sum\limits_{i=1}^{r} t_i^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) - (n-r) C^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} + \alpha \sum\limits_{i=1}^{r} t_i^{\alpha} \lambda^{-\alpha-1}
++ \alpha (n-r) C^{\alpha} \lambda^{-\alpha-1} \\[6pt]
+&= \dfrac{\alpha}{\lambda} \left[- r + \sum\limits_{i=1}^{r} t_i^{\alpha} \lambda^{-\alpha}
++ (n-r) C^{\alpha} \lambda^{-\alpha}
+\right] \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}\right] = v(\alpha, \lambda) \text{, say}.
+\end{align*}
+
+Setting $v(\alpha, \lambda) = 0$ we get,
+
+\begin{align*}
+\dfrac{\alpha}{\lambda}\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \right] &= 0 \\[0.5em]
+\Rightarrow - r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} &= 0 \\[0.5em]
+\Rightarrow - r + \dfrac{1}{\lambda^{\alpha}}\left[ \sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right] &= 0 \\[0.5em]
+\Rightarrow \dfrac{1}{\lambda^{\alpha}} \left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right] &= r \\[0.5em]
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right]
+\end{align*}
+
+\begin{equation}
+\therefore \,\, \widehat{\lambda} = \left\{\dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}\right]\right\}^{\dfrac{1}{\alpha}}
+\end{equation}
+
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now, 
+\begin{equation}
+u_{\alpha}(\alpha,\lambda) = \dfrac{\partial}{\partial \alpha}u(\alpha,\lambda) = -\,\dfrac{r}{\alpha^{2}} - \sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_i}{\lambda}\right)\right]^{2} - (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{C}{\lambda}\right)\right]^{2}.
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(5)$; then we use the obtained value of $\lambda$ in $(4)$ and $(6)$ to improve the estimate of $\alpha$ by Newton-Raphson method. \\[0.5em]
+
+Only what is remaining is how to choose $C$. Censoring proportions $p_c \in \{0.2, 0.3, 0.4\} \Rightarrow \text{ proportion of complete observations } p_o \in \{0.8, 0.7, 0.6\}$. For our simulation purpose we set $C$ such that
+
+\begin{align*}
+P(T \leq C) &= p_o \\[6pt]
+\Rightarrow F_T(C) &= p_o \\[6pt]
+\Rightarrow 1 - \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\} &= p_o \\[6pt]
+\Rightarrow \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\}
+&= 1 - p_o \\[6pt]
+\Rightarrow \ln \left[ \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\} \right] &= \ln(1 - p_o) \\[6pt]
+\Rightarrow - \left( \dfrac{C}{\lambda} \right)^{\alpha} &= \ln(1 - p_o) \\[6pt]
+\Rightarrow \left( \dfrac{C}{\lambda} \right)^{\alpha} &= - \ln(1 - p_o) \\[6pt]
+\Rightarrow \dfrac{C}{\lambda} &= \left[ - \ln(1 - p_o) \right]^{\dfrac{1}{\alpha}} \\[6pt]
+\Rightarrow C &= \lambda \left[ - \ln(1 - p_o) \right]^{\dfrac{1}{\alpha}}.
+\end{align*}
+
+<<echo=FALSE>>=
+set.seed(7)
+@
+
+<<>>=
+true_alpha <- 3; true_lambda <- 2
+@
+
+<<>>=
+sample_size <- c(50, 100, 150, 200, 250)
+@
+
+<<>>=
+estimate_lambda <- function(failures, C, n, alpha){
+  
+  r <- length(failures)
+  
+  a <- sum(failures^alpha)
+  
+  b <- (n-r) * C^alpha
+  
+  return( ( (a + b) / r)^(1/alpha))
+}
+@
+
+<<>>=
+u <- function(alpha, lambda, failures, C, n) {
+  
+  r <- length(failures)
+  
+  a <- r / alpha
+  
+  b <- - r * log(lambda) + sum(log(failures))
+  
+  c <- sum((failures / lambda)^alpha * log(failures / lambda))
+  
+  d <- (n - r) * (C / lambda)^alpha * log(C / lambda)
+  
+  return(a + b - c - d)
+}
+@
+
+<<>>=
+u_alpha <- function(alpha, lambda, failures, C, n) {
+  
+  r <- length(failures)
+  
+  a <- - r / alpha^2
+  
+  b <- sum((failures / lambda)^alpha * (log(failures / lambda))^2)
+  
+  c <- (n - r) * (C / lambda)^alpha * (log(C / lambda))^2
+  
+  return(a - b - c)
+}
+@
+
+<<>>=
+estimate_alpha <- function(failures, C, n, initial, epsilon = 0.0001, iterations = 100) {
+  
+  alphas <- c(initial)
+  
+  for (i in 2:iterations) {
+    
+    lambda <- estimate_lambda(failures, C, n, alphas[i - 1])
+    
+    score <- u(alphas[i - 1], lambda, failures, C, n)
+    score_der <- u_alpha(alphas[i - 1], lambda, failures, C, n)
+    
+    alphas[i] <- alphas[i - 1] - score / score_der
+    
+    if (abs(alphas[i] - alphas[i - 1]) < epsilon) break
+  }
+  
+  return(alphas[length(alphas)])
+}
+@
+
+<<>>=
+alpha_hat = lambda_hat = c()
+@
+
+<<>>=
+prop_censored <- c(0.2, 0.3, 0.4)
+prop_observed <- c(0.8, 0.7, 0.6)
+@
+
+<<>>=
+for(i in 1:length(sample_size)){
+  
+  for(j in 1:length(prop_observed)){
+  
+    x <- rweibull(sample_size[i], shape = true_alpha, scale = true_lambda)
+    
+    C <- true_lambda * (- log(1 - prop_observed[j]))^(1 / true_alpha)
+    
+    failures <- x[x <= C]
+    
+    new_alpha <- estimate_alpha(failures, C, sample_size[i], 1)
+    
+    alpha_hat <- append(alpha_hat, new_alpha)
+      
+    lambda_hat <- append(lambda_hat, 
+                         estimate_lambda(failures, C, sample_size[i], new_alpha))
+  }
+}
+@
+
+Now we shall empirically calculate bias and MSE of the estimates for different sample sizes.
+
+<<>>=
+bias_and_MSE <- function(size, prop_observed){
+  
+  alpha_estimates = lambda_estimates = c()
+    
+  for (i in 1:100){
+    
+    x <- rweibull(size, shape = true_alpha, scale = true_lambda)
+    
+    C <- true_lambda * (- log(1 - prop_observed))^(1 / true_alpha)
+    
+    failures <- x[x <= C]
+    
+    new_alpha <- estimate_alpha(failures, C, size, 1)
+    
+    alpha_estimates <- append(alpha_estimates, new_alpha)
+      
+    lambda_estimates <- append(lambda_estimates, 
+                         estimate_lambda(failures, C, size, new_alpha))
+  }
+    
+  alpha_bias <- mean(alpha_estimates) - true_alpha
+    
+  lambda_bias <- mean(lambda_estimates) - true_lambda
+  
+  alpha_MSE <- mean( (alpha_estimates - true_alpha)^2 )
+    
+  lambda_MSE <- mean( (lambda_estimates - true_lambda)^2 )
+  
+  return(c(alpha_bias, lambda_bias, alpha_MSE, lambda_MSE))
+}
+@
+
+<<>>=
+alpha_bias = lambda_bias = alpha_MSE = lambda_MSE = c()
+
+for (i in 1:length(sample_size)) {
+  
+  for(j in 1:length(prop_observed)){
+  
+    temp <- bias_and_MSE(sample_size[i], prop_observed[j])
+    
+    alpha_bias <- append(alpha_bias, temp[1])
+    
+    lambda_bias <- append(lambda_bias, temp[2])
+    
+    alpha_MSE <- append(alpha_MSE, temp[3])
+    
+    lambda_MSE <- append(lambda_MSE, temp[4])
+  }
+}
+@
+
+<<>>=
+df2 <- data.frame(Sample.Size = rep(sample_size, rep(3, length(sample_size))),
+                  p_c = rep(prop_censored, length(sample_size)),
+                  alpha_hat = alpha_hat,
+                  bias.alpha = alpha_bias,
+                  MSE.alpha = alpha_MSE,
+                  lambda_hat = lambda_hat,
+                  bias.lambda = lambda_bias,
+                  MSE.lambda = lambda_MSE)
+@
+
+<<results='asis'>>=
+stargazer(df2, summary = FALSE, rownames = FALSE)
+@
+
+\scalebox{2.0}{\twemoji{keycap: 3}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Type II Right Censoring \\[0.5em]
+
+Let us have a sample of size $n$ under Type II Right censoring scheme from Weibull$(\alpha, \lambda)$ with density \(f(t)\) and survival \(S(t)\). $t_{(1)}, t_{(2)}, \ldots, t_{(r)}$ be $r$ complete observations and rest $n-r$ are censored observations at $t_{(r)}$.\\[0.5em]
+
+The likelihood function is given by
+
+\begin{align*}
+L(\alpha,\lambda)
+&= \dfrac{n!}{(n-r)!}
+\left[\prod_{i=1}^{r} f(t_{(i)})\right]\,[S(t_{(r)})]^{\,n-r} \\[0.8em]
+&= \dfrac{n!}{(n-r)!}
+\prod_{i=1}^{r}
+\left[
+\dfrac{\alpha}{\lambda}
+\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha-1}
+\exp\!\left(-\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}\right)
+\right]\,
+\left[
+\exp\!\left(-\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}\right)
+\right]^{\,n-r} \\[0.8em]
+&= \dfrac{n!}{(n-r)!}\,
+\alpha^{r}\lambda^{-\alpha r}
+\left(\prod_{i=1}^{r} t_{(i)}^{\alpha-1}\right)
+\exp\!\left[
+-\sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+-(n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right].
+\end{align*}
+
+The log-likelihood function is given by
+
+\begin{align*}
+\ell(\alpha,\lambda)
+&= \log\!\left(\frac{n!}{(n-r)!}\right)
++ r\log \alpha
+- \alpha r \log \lambda
++ (\alpha - 1)\sum_{i=1}^{r} \log t_{(i)} - \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}.
+\end{align*}
+
+Now,
+\begin{equation}
+\dfrac{\partial}{\partial \alpha}\ell(\alpha,\lambda)
+= \dfrac{r}{\alpha}
+- r \log \lambda
++ \sum_{i=1}^{r} \log t_{(i)}
+- \sum_{i=1}^{r}
+\left( \dfrac{t_{(i)}}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_{(i)}}{\lambda} \right)
+- (n-r)\left( \dfrac{t_{(r)}}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_{(r)}}{\lambda} \right)
+= u(\alpha,\lambda), \text{ say.}
+\end{equation}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} \ell(\alpha,\lambda)
+&= \dfrac{\partial}{\partial \lambda}
+\left[
+- \alpha r \log \lambda
+- \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right] \\[6pt]
+&= - \dfrac{\alpha r}{\lambda}
+- \sum_{i=1}^{r} t_{(i)}^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right)
+- (n-r) t_{(r)}^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda}
++ \alpha \sum_{i=1}^{r} t_{(i)}^{\alpha} \lambda^{-\alpha-1}
++ \alpha (n-r) t_{(r)}^{\alpha} \lambda^{-\alpha-1} \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[
+- r
++ \sum_{i=1}^{r} t_{(i)}^{\alpha} \lambda^{-\alpha}
++ (n-r) t_{(r)}^{\alpha} \lambda^{-\alpha}
+\right] \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[
+- r
++ \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
++ (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right]
+= v(\alpha,\lambda), \text{ say.}
+\end{align*}
 
 
+Setting $v(\alpha, \lambda) = 0$ we get,
 
+\begin{align*}
+\dfrac{\alpha}{\lambda}\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} \right] &= 0 \\[0.5em]
+\Rightarrow - r + \sum\limits_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} &= 0 \\[0.5em]
+\Rightarrow - r + \dfrac{1}{\lambda^{\alpha}}\left[ \sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right] &= 0 \\[0.5em]
+\Rightarrow \dfrac{1}{\lambda^{\alpha}} \left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right] &= r \\[0.5em]
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right]
+\end{align*}
 
-\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Final Result and Conclusion}}
+\begin{equation}
+\therefore \,\, \widehat{\lambda} = \left\{\dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}\right]\right\}^{\dfrac{1}{\alpha}}.
+\end{equation}
 
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now,
+\begin{equation}
+u_{\alpha}(\alpha,\lambda) = \dfrac{\partial}{\partial \alpha}u(\alpha,\lambda) = -\,\dfrac{r}{\alpha^{2}} - \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_{(i)}}{\lambda}\right)\right]^{2} - (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_{(r)}}{\lambda}\right)\right]^{2}.
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(8)$; then we use the obtained value of $\lambda$ in $(7)$ and $(9)$ to improve the estimate of $\alpha$ by Newton-Raphson method. \\[0.5em]
+
+<<echo=FALSE>>=
+set.seed(7)
+@
+
+<<>>=
+true_alpha <- 3; true_lambda <- 2
+@
+
+<<>>=
+sample_size <- c(50, 100, 150, 200, 250)
+@
+
+<<>>=
+estimate_lambda <- function(failures, n, alpha) {
+  
+  r <- length(failures)       
+  
+  t_r <- failures[r]          
+  
+  a <- sum(failures^alpha)    
+  
+  b <- (n - r) * t_r^alpha
+  
+  return( ((a + b) / r)^(1 / alpha) )
+}
+@
+
+<<>>=
+u <- function(alpha, lambda, failures, n) {
+  
+  r <- length(failures)
+  
+  t_r <- failures[r]
+  
+  a <- r / alpha
+  
+  b <- - r * log(lambda) + sum(log(failures))
+  
+  c <- sum((failures / lambda)^alpha * log(failures / lambda))
+  
+  d <- (n - r) * (t_r / lambda)^alpha * log(t_r / lambda)
+  
+  return(a + b - c - d)
+}
+@
+
+<<>>=
+u_alpha <- function(alpha, lambda, failures, n) {
+  
+  r <- length(failures)
+  
+  t_r <- failures[r]   
+  
+  a <- - r / alpha^2
+  
+  b <- sum((failures / lambda)^alpha * (log(failures / lambda))^2)
+  
+  c <- (n - r) * (t_r / lambda)^alpha * (log(t_r / lambda))^2 
+  
+  return(a - b - c)
+}
+@
+
+<<>>=
+estimate_alpha <- function(failures, n, initial, epsilon = 0.0001, iterations = 100) {
+  
+  alphas <- c(initial)
+  
+  for (i in 2:iterations) {
+    
+    lambda <- estimate_lambda(failures, n, alphas[i - 1])
+    
+    score <- u(alphas[i - 1], lambda, failures, n)
+    score_der <- u_alpha(alphas[i - 1], lambda, failures, n)
+    
+    alphas[i] <- alphas[i - 1] - score / score_der
+    
+    if (abs(alphas[i] - alphas[i - 1]) < epsilon) break
+  }
+  
+  return(alphas[length(alphas)])
+}
+@
+
+<<>>=
+alpha_hat = lambda_hat = c()
+@
+
+<<>>=
+prop_censored <- c(0.2, 0.3, 0.4)
+@
+
+<<>>=
+for(i in 1:length(sample_size)){
+  
+  for(j in 1:length(prop_censored)){
+    
+    x <- rweibull(sample_size[i], shape = true_alpha, scale = true_lambda)
+    
+    r <- floor( (1 - prop_censored[j]) * sample_size[i])
+    
+    x_ord <- sort(x)
+    
+    failures <- x_ord[1:r]
+    
+    new_alpha <- estimate_alpha(failures, sample_size[i], 1)
+    
+    alpha_hat <- append(alpha_hat, new_alpha)
+    
+    lambda_hat <- append(lambda_hat,
+                         estimate_lambda(failures, sample_size[i], new_alpha))
+  }
+}
+@
+
+Now we shall empirically calculate bias and MSE of the estimates for different sample sizes.
+
+<<>>=
+bias_and_MSE <- function(size, prop_censored){
+  
+  alpha_estimates = lambda_estimates = c()
+    
+  for (i in 1:100){
+    
+    x <- rweibull(size, shape = true_alpha, scale = true_lambda)
+    
+    r <- floor( (1 - prop_censored) * size)
+    
+    x_ord <- sort(x)
+    
+    failures <- x_ord[1:r]
+    
+    new_alpha <- estimate_alpha(failures, size, 1)
+    
+    alpha_estimates <- append(alpha_estimates, new_alpha)
+    
+    lambda_estimates <- append(lambda_estimates,
+                         estimate_lambda(failures, size, new_alpha))
+  }
+    
+  alpha_bias <- mean(alpha_estimates) - true_alpha
+    
+  lambda_bias <- mean(lambda_estimates) - true_lambda
+  
+  alpha_MSE <- mean( (alpha_estimates - true_alpha)^2 )
+    
+  lambda_MSE <- mean( (lambda_estimates - true_lambda)^2 )
+  
+  return(c(alpha_bias, lambda_bias, alpha_MSE, lambda_MSE))
+}
+@
+
+<<>>=
+alpha_bias = lambda_bias = alpha_MSE = lambda_MSE = c()
+
+for (i in 1:length(sample_size)) {
+  
+  for(j in 1:length(prop_censored)){
+  
+    temp <- bias_and_MSE(sample_size[i], prop_censored[j])
+    
+    alpha_bias <- append(alpha_bias, temp[1])
+    
+    lambda_bias <- append(lambda_bias, temp[2])
+    
+    alpha_MSE <- append(alpha_MSE, temp[3])
+    
+    lambda_MSE <- append(lambda_MSE, temp[4])
+  }
+}
+@
+
+<<>>=
+df3 <- data.frame(Sample.Size = rep(sample_size, rep(3, length(sample_size))),
+                  p_c = rep(prop_censored, length(sample_size)),
+                  alpha_hat = alpha_hat,
+                  bias.alpha = alpha_bias,
+                  MSE.alpha = alpha_MSE,
+                  lambda_hat = lambda_hat,
+                  bias.lambda = lambda_bias,
+                  MSE.lambda = lambda_MSE)
+@
+
+<<results='asis'>>=
+stargazer(df3, summary = FALSE, rownames = FALSE)
+@
 
 
 \end{document}

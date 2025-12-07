@@ -50,8 +50,11 @@
 
 \usepackage{alltt}
 
-\usepackage[top = 0.8 in, bottom = 0.8 in, left = 1 in, right = 1 in]{geometry}
+\usepackage[top = 0.8 in, bottom = 0.8 in, left = 0.8 in, right = 0.8 in]{geometry}
 \usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
@@ -348,7 +351,7 @@ Now we shall empirically calculate bias and MSE of the estimates for different s
 \end{alltt}
 \end{kframe}
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Tue, Nov 11, 2025 - 01:41:30
+% Date and time: Mon, Dec 08, 2025 - 01:51:10
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{} 
@@ -367,12 +370,723 @@ $250$ & $2.890$ & $0.0002$ & $0.025$ & $1.979$ & $$-$0.001$ & $0.002$ \\
 \end{table} 
 
 
-\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Right Censoring, Type I \\[0.5em]
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Type I Right Censoring \\[0.5em]
+
+Let us have a sample of size $n$ under Type I Right censoring scheme from Weibull$(\alpha, \lambda)$ with density \(f(t)\) and survival \(S(t)\). $t_1, t_2, \ldots, t_r$ be $r$ complete observations and rest $n-r$ are censored observations at $C$.\\[0.5em]
+
+The likelihood function is given by
+
+\begin{align*}
+L(\alpha,\lambda) &= \left[\prod_{i=1}^{r} f(t_i)\right] \, [S(C)]^{\,n-r} \\[0.5em]
+&= \prod_{i=1}^{r} \left[\dfrac{\alpha}{\lambda} \left(\dfrac{t_i}{\lambda}\right)^{\alpha-1}
+\exp\!\left(-\left(\dfrac{t_i}{\lambda}\right)^{\alpha}\right)\right] \, \left[\exp\!\left(-\left(\dfrac{C}{\lambda}\right)^{\alpha}\right)\right]^{n-r} \\[0.5em]
+&= \alpha^{r}\lambda^{-\alpha r}\left(\prod_{i=1}^{r} t_i^{\alpha-1}\right)\exp\!\left[
+-\sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha}-(n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}\right].
+\end{align*}
+
+The log-likelihood function is given by
+
+\begin{align*}
+\ell(\alpha,\lambda) &= r\log \alpha - \alpha r \log \lambda + (\alpha-1)\sum_{i=1}^{r} \log t_i - \sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} - (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}.
+\end{align*}
+
+Now,
+\begin{equation}
+\dfrac{\partial}{\partial \alpha}\ell(\alpha,\lambda) = \dfrac{r}{\alpha} - r \log \lambda
++ \sum_{i=1}^{r} \log t_i - \sum_{i=1}^{r} \left( \dfrac{t_i}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_i}{\lambda} \right) - (n-r)\left( \dfrac{C}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{C}{\lambda} \right) = u(\alpha, \lambda) \text{, say}
+\end{equation}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} \ell(\alpha,\lambda) &= \dfrac{\partial}{\partial \lambda}
+\left[- \alpha r \log \lambda - \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \right] \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} - \sum\limits_{i=1}^{r} \dfrac{\partial}{\partial \lambda}
+\left( t_i^{\alpha} \lambda^{-\alpha} \right) - (n-r)\dfrac{\partial}{\partial \lambda}
+\left( C^{\alpha} \lambda^{-\alpha} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} - \sum\limits_{i=1}^{r} t_i^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) - (n-r) C^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda} + \alpha \sum\limits_{i=1}^{r} t_i^{\alpha} \lambda^{-\alpha-1}
++ \alpha (n-r) C^{\alpha} \lambda^{-\alpha-1} \\[6pt]
+&= \dfrac{\alpha}{\lambda} \left[- r + \sum\limits_{i=1}^{r} t_i^{\alpha} \lambda^{-\alpha}
++ (n-r) C^{\alpha} \lambda^{-\alpha}
+\right] \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha}\right] = v(\alpha, \lambda) \text{, say}.
+\end{align*}
+
+Setting $v(\alpha, \lambda) = 0$ we get,
+
+\begin{align*}
+\dfrac{\alpha}{\lambda}\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \right] &= 0 \\[0.5em]
+\Rightarrow - r + \sum\limits_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} &= 0 \\[0.5em]
+\Rightarrow - r + \dfrac{1}{\lambda^{\alpha}}\left[ \sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right] &= 0 \\[0.5em]
+\Rightarrow \dfrac{1}{\lambda^{\alpha}} \left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right] &= r \\[0.5em]
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}
+\right]
+\end{align*}
+
+\begin{equation}
+\therefore \,\, \widehat{\lambda} = \left\{\dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_i^{\alpha} + (n-r) C^{\alpha}\right]\right\}^{\dfrac{1}{\alpha}}
+\end{equation}
+
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now, 
+\begin{equation}
+u_{\alpha}(\alpha,\lambda) = \dfrac{\partial}{\partial \alpha}u(\alpha,\lambda) = -\,\dfrac{r}{\alpha^{2}} - \sum_{i=1}^{r}\left(\dfrac{t_i}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_i}{\lambda}\right)\right]^{2} - (n-r)\left(\dfrac{C}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{C}{\lambda}\right)\right]^{2}.
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(5)$; then we use the obtained value of $\lambda$ in $(4)$ and $(6)$ to improve the estimate of $\alpha$ by Newton-Raphson method. \\[0.5em]
+
+Only what is remaining is how to choose $C$. Censoring proportions $p_c \in \{0.2, 0.3, 0.4\} \Rightarrow \text{ proportion of complete observations } p_o \in \{0.8, 0.7, 0.6\}$. For our simulation purpose we set $C$ such that
+
+\begin{align*}
+P(T \leq C) &= p_o \\[6pt]
+\Rightarrow F_T(C) &= p_o \\[6pt]
+\Rightarrow 1 - \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\} &= p_o \\[6pt]
+\Rightarrow \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\}
+&= 1 - p_o \\[6pt]
+\Rightarrow \ln \left[ \exp \left\{ - \left( \dfrac{C}{\lambda} \right)^{\alpha} \right\} \right] &= \ln(1 - p_o) \\[6pt]
+\Rightarrow - \left( \dfrac{C}{\lambda} \right)^{\alpha} &= \ln(1 - p_o) \\[6pt]
+\Rightarrow \left( \dfrac{C}{\lambda} \right)^{\alpha} &= - \ln(1 - p_o) \\[6pt]
+\Rightarrow \dfrac{C}{\lambda} &= \left[ - \ln(1 - p_o) \right]^{\dfrac{1}{\alpha}} \\[6pt]
+\Rightarrow C &= \lambda \left[ - \ln(1 - p_o) \right]^{\dfrac{1}{\alpha}}.
+\end{align*}
 
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{true_alpha} \hlkwb{<-} \hlnum{3}\hldef{; true_lambda} \hlkwb{<-} \hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
-\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Final Result and Conclusion}}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample_size} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{50}\hldef{,} \hlnum{100}\hldef{,} \hlnum{150}\hldef{,} \hlnum{200}\hldef{,} \hlnum{250}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimate_lambda} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{failures}\hldef{,} \hlkwc{C}\hldef{,} \hlkwc{n}\hldef{,} \hlkwc{alpha}\hldef{)\{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{a} \hlkwb{<-} \hlkwd{sum}\hldef{(failures}\hlopt{^}\hldef{alpha)}
+
+  \hldef{b} \hlkwb{<-} \hldef{(n}\hlopt{-}\hldef{r)} \hlopt{*} \hldef{C}\hlopt{^}\hldef{alpha}
+
+  \hlkwd{return}\hldef{( ( (a} \hlopt{+} \hldef{b)} \hlopt{/} \hldef{r)}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hldef{alpha))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{,} \hlkwc{lambda}\hldef{,} \hlkwc{failures}\hldef{,} \hlkwc{C}\hldef{,} \hlkwc{n}\hldef{) \{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{a} \hlkwb{<-} \hldef{r} \hlopt{/} \hldef{alpha}
+
+  \hldef{b} \hlkwb{<-} \hlopt{-} \hldef{r} \hlopt{*} \hlkwd{log}\hldef{(lambda)} \hlopt{+} \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(failures))}
+
+  \hldef{c} \hlkwb{<-} \hlkwd{sum}\hldef{((failures} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hlkwd{log}\hldef{(failures} \hlopt{/} \hldef{lambda))}
+
+  \hldef{d} \hlkwb{<-} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hldef{(C} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hlkwd{log}\hldef{(C} \hlopt{/} \hldef{lambda)}
+
+  \hlkwd{return}\hldef{(a} \hlopt{+} \hldef{b} \hlopt{-} \hldef{c} \hlopt{-} \hldef{d)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u_alpha} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{,} \hlkwc{lambda}\hldef{,} \hlkwc{failures}\hldef{,} \hlkwc{C}\hldef{,} \hlkwc{n}\hldef{) \{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{a} \hlkwb{<-} \hlopt{-} \hldef{r} \hlopt{/} \hldef{alpha}\hlopt{^}\hlnum{2}
+
+  \hldef{b} \hlkwb{<-} \hlkwd{sum}\hldef{((failures} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hldef{(}\hlkwd{log}\hldef{(failures} \hlopt{/} \hldef{lambda))}\hlopt{^}\hlnum{2}\hldef{)}
+
+  \hldef{c} \hlkwb{<-} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hldef{(C} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hldef{(}\hlkwd{log}\hldef{(C} \hlopt{/} \hldef{lambda))}\hlopt{^}\hlnum{2}
+
+  \hlkwd{return}\hldef{(a} \hlopt{-} \hldef{b} \hlopt{-} \hldef{c)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimate_alpha} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{failures}\hldef{,} \hlkwc{C}\hldef{,} \hlkwc{n}\hldef{,} \hlkwc{initial}\hldef{,} \hlkwc{epsilon} \hldef{=} \hlnum{0.0001}\hldef{,} \hlkwc{iterations} \hldef{=} \hlnum{100}\hldef{) \{}
+
+  \hldef{alphas} \hlkwb{<-} \hlkwd{c}\hldef{(initial)}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{iterations) \{}
+
+    \hldef{lambda} \hlkwb{<-} \hlkwd{estimate_lambda}\hldef{(failures, C, n, alphas[i} \hlopt{-} \hlnum{1}\hldef{])}
+
+    \hldef{score} \hlkwb{<-} \hlkwd{u}\hldef{(alphas[i} \hlopt{-} \hlnum{1}\hldef{], lambda, failures, C, n)}
+    \hldef{score_der} \hlkwb{<-} \hlkwd{u_alpha}\hldef{(alphas[i} \hlopt{-} \hlnum{1}\hldef{], lambda, failures, C, n)}
+
+    \hldef{alphas[i]} \hlkwb{<-} \hldef{alphas[i} \hlopt{-} \hlnum{1}\hldef{]} \hlopt{-} \hldef{score} \hlopt{/} \hldef{score_der}
+
+    \hlkwa{if} \hldef{(}\hlkwd{abs}\hldef{(alphas[i]} \hlopt{-} \hldef{alphas[i} \hlopt{-} \hlnum{1}\hldef{])} \hlopt{<} \hldef{epsilon)} \hlkwa{break}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(alphas[}\hlkwd{length}\hldef{(alphas)])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{alpha_hat} \hlkwb{=} \hldef{lambda_hat} \hlkwb{=} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{prop_censored} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.2}\hldef{,} \hlnum{0.3}\hldef{,} \hlnum{0.4}\hldef{)}
+\hldef{prop_observed} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.8}\hldef{,} \hlnum{0.7}\hldef{,} \hlnum{0.6}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_size))\{}
+
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(prop_observed))\{}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{rweibull}\hldef{(sample_size[i],} \hlkwc{shape} \hldef{= true_alpha,} \hlkwc{scale} \hldef{= true_lambda)}
+
+    \hldef{C} \hlkwb{<-} \hldef{true_lambda} \hlopt{*} \hldef{(}\hlopt{-} \hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hldef{prop_observed[j]))}\hlopt{^}\hldef{(}\hlnum{1} \hlopt{/} \hldef{true_alpha)}
+
+    \hldef{failures} \hlkwb{<-} \hldef{x[x} \hlopt{<=} \hldef{C]}
+
+    \hldef{new_alpha} \hlkwb{<-} \hlkwd{estimate_alpha}\hldef{(failures, C, sample_size[i],} \hlnum{1}\hldef{)}
+
+    \hldef{alpha_hat} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_hat, new_alpha)}
+
+    \hldef{lambda_hat} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_hat,}
+                         \hlkwd{estimate_lambda}\hldef{(failures, C, sample_size[i], new_alpha))}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Now we shall empirically calculate bias and MSE of the estimates for different sample sizes.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{bias_and_MSE} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{size}\hldef{,} \hlkwc{prop_observed}\hldef{)\{}
+
+  \hldef{alpha_estimates} \hlkwb{=} \hldef{lambda_estimates} \hlkwb{=} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hldef{)\{}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{rweibull}\hldef{(size,} \hlkwc{shape} \hldef{= true_alpha,} \hlkwc{scale} \hldef{= true_lambda)}
+
+    \hldef{C} \hlkwb{<-} \hldef{true_lambda} \hlopt{*} \hldef{(}\hlopt{-} \hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hldef{prop_observed))}\hlopt{^}\hldef{(}\hlnum{1} \hlopt{/} \hldef{true_alpha)}
+
+    \hldef{failures} \hlkwb{<-} \hldef{x[x} \hlopt{<=} \hldef{C]}
+
+    \hldef{new_alpha} \hlkwb{<-} \hlkwd{estimate_alpha}\hldef{(failures, C, size,} \hlnum{1}\hldef{)}
+
+    \hldef{alpha_estimates} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_estimates, new_alpha)}
+
+    \hldef{lambda_estimates} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_estimates,}
+                         \hlkwd{estimate_lambda}\hldef{(failures, C, size, new_alpha))}
+  \hldef{\}}
+
+  \hldef{alpha_bias} \hlkwb{<-} \hlkwd{mean}\hldef{(alpha_estimates)} \hlopt{-} \hldef{true_alpha}
+
+  \hldef{lambda_bias} \hlkwb{<-} \hlkwd{mean}\hldef{(lambda_estimates)} \hlopt{-} \hldef{true_lambda}
+
+  \hldef{alpha_MSE} \hlkwb{<-} \hlkwd{mean}\hldef{( (alpha_estimates} \hlopt{-} \hldef{true_alpha)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hldef{lambda_MSE} \hlkwb{<-} \hlkwd{mean}\hldef{( (lambda_estimates} \hlopt{-} \hldef{true_lambda)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hlkwd{return}\hldef{(}\hlkwd{c}\hldef{(alpha_bias, lambda_bias, alpha_MSE, lambda_MSE))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{alpha_bias} \hlkwb{=} \hldef{lambda_bias} \hlkwb{=} \hldef{alpha_MSE} \hlkwb{=} \hldef{lambda_MSE} \hlkwb{=} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_size)) \{}
+
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(prop_observed))\{}
+
+    \hldef{temp} \hlkwb{<-} \hlkwd{bias_and_MSE}\hldef{(sample_size[i], prop_observed[j])}
+
+    \hldef{alpha_bias} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_bias, temp[}\hlnum{1}\hldef{])}
+
+    \hldef{lambda_bias} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_bias, temp[}\hlnum{2}\hldef{])}
+
+    \hldef{alpha_MSE} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_MSE, temp[}\hlnum{3}\hldef{])}
+
+    \hldef{lambda_MSE} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_MSE, temp[}\hlnum{4}\hldef{])}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{Sample.Size} \hldef{=} \hlkwd{rep}\hldef{(sample_size,} \hlkwd{rep}\hldef{(}\hlnum{3}\hldef{,} \hlkwd{length}\hldef{(sample_size))),}
+                  \hlkwc{p_c} \hldef{=} \hlkwd{rep}\hldef{(prop_censored,} \hlkwd{length}\hldef{(sample_size)),}
+                  \hlkwc{alpha_hat} \hldef{= alpha_hat,}
+                  \hlkwc{bias.alpha} \hldef{= alpha_bias,}
+                  \hlkwc{MSE.alpha} \hldef{= alpha_MSE,}
+                  \hlkwc{lambda_hat} \hldef{= lambda_hat,}
+                  \hlkwc{bias.lambda} \hldef{= lambda_bias,}
+                  \hlkwc{MSE.lambda} \hldef{= lambda_MSE)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df2,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Dec 08, 2025 - 01:51:12
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Sample.Size & p\_c & alpha\_hat & bias.alpha & MSE.alpha & lambda\_hat & bias.lambda & MSE.lambda \\ 
+\hline \\[-1.8ex] 
+$50$ & $0.200$ & $2.266$ & $0.045$ & $0.129$ & $1.990$ & $$-$0.006$ & $0.010$ \\ 
+$50$ & $0.300$ & $4.256$ & $0.060$ & $0.193$ & $1.943$ & $0.004$ & $0.013$ \\ 
+$50$ & $0.400$ & $3.615$ & $0.140$ & $0.462$ & $1.839$ & $$-$0.004$ & $0.019$ \\ 
+$100$ & $0.200$ & $3.260$ & $0.023$ & $0.056$ & $1.875$ & $0.001$ & $0.005$ \\ 
+$100$ & $0.300$ & $3.659$ & $0.014$ & $0.113$ & $1.932$ & $0.005$ & $0.008$ \\ 
+$100$ & $0.400$ & $2.875$ & $0.074$ & $0.154$ & $2.104$ & $0.007$ & $0.007$ \\ 
+$150$ & $0.200$ & $2.995$ & $$-$0.043$ & $0.062$ & $2.012$ & $0.0001$ & $0.003$ \\ 
+$150$ & $0.300$ & $2.794$ & $0.048$ & $0.070$ & $2.031$ & $0.004$ & $0.004$ \\ 
+$150$ & $0.400$ & $3.006$ & $0.056$ & $0.095$ & $1.978$ & $0.011$ & $0.004$ \\ 
+$200$ & $0.200$ & $2.897$ & $0.039$ & $0.050$ & $2.052$ & $0.0002$ & $0.003$ \\ 
+$200$ & $0.300$ & $2.970$ & $0.031$ & $0.050$ & $1.982$ & $0.001$ & $0.005$ \\ 
+$200$ & $0.400$ & $2.842$ & $0.034$ & $0.058$ & $2.059$ & $$-$0.004$ & $0.004$ \\ 
+$250$ & $0.200$ & $3.044$ & $$-$0.004$ & $0.031$ & $2.030$ & $0.001$ & $0.002$ \\ 
+$250$ & $0.300$ & $2.991$ & $0.006$ & $0.032$ & $1.982$ & $0.0005$ & $0.003$ \\ 
+$250$ & $0.400$ & $2.548$ & $0.002$ & $0.044$ & $2.162$ & $0.0002$ & $0.003$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\scalebox{2.0}{\twemoji{keycap: 3}} \hspace{0.1cm} MLE of $\alpha$ and $\lambda$ with Type II Right Censoring \\[0.5em]
+
+Let us have a sample of size $n$ under Type II Right censoring scheme from Weibull$(\alpha, \lambda)$ with density \(f(t)\) and survival \(S(t)\). $t_{(1)}, t_{(2)}, \ldots, t_{(r)}$ be $r$ complete observations and rest $n-r$ are censored observations at $t_{(r)}$.\\[0.5em]
+
+The likelihood function is given by
+
+\begin{align*}
+L(\alpha,\lambda)
+&= \dfrac{n!}{(n-r)!}
+\left[\prod_{i=1}^{r} f(t_{(i)})\right]\,[S(t_{(r)})]^{\,n-r} \\[0.8em]
+&= \dfrac{n!}{(n-r)!}
+\prod_{i=1}^{r}
+\left[
+\dfrac{\alpha}{\lambda}
+\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha-1}
+\exp\!\left(-\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}\right)
+\right]\,
+\left[
+\exp\!\left(-\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}\right)
+\right]^{\,n-r} \\[0.8em]
+&= \dfrac{n!}{(n-r)!}\,
+\alpha^{r}\lambda^{-\alpha r}
+\left(\prod_{i=1}^{r} t_{(i)}^{\alpha-1}\right)
+\exp\!\left[
+-\sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+-(n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right].
+\end{align*}
+
+The log-likelihood function is given by
+
+\begin{align*}
+\ell(\alpha,\lambda)
+&= \log\!\left(\frac{n!}{(n-r)!}\right)
++ r\log \alpha
+- \alpha r \log \lambda
++ (\alpha - 1)\sum_{i=1}^{r} \log t_{(i)} - \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}.
+\end{align*}
+
+Now,
+\begin{equation}
+\dfrac{\partial}{\partial \alpha}\ell(\alpha,\lambda)
+= \dfrac{r}{\alpha}
+- r \log \lambda
++ \sum_{i=1}^{r} \log t_{(i)}
+- \sum_{i=1}^{r}
+\left( \dfrac{t_{(i)}}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_{(i)}}{\lambda} \right)
+- (n-r)\left( \dfrac{t_{(r)}}{\lambda} \right)^{\alpha}
+\log\!\left( \dfrac{t_{(r)}}{\lambda} \right)
+= u(\alpha,\lambda), \text{ say.}
+\end{equation}
+
+and
+
+\begin{align*}
+\dfrac{\partial}{\partial \lambda} \ell(\alpha,\lambda)
+&= \dfrac{\partial}{\partial \lambda}
+\left[
+- \alpha r \log \lambda
+- \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
+- (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right] \\[6pt]
+&= - \dfrac{\alpha r}{\lambda}
+- \sum_{i=1}^{r} t_{(i)}^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right)
+- (n-r) t_{(r)}^{\alpha} \left( -\alpha \lambda^{-\alpha-1} \right) \\[6pt]
+&= - \dfrac{\alpha r}{\lambda}
++ \alpha \sum_{i=1}^{r} t_{(i)}^{\alpha} \lambda^{-\alpha-1}
++ \alpha (n-r) t_{(r)}^{\alpha} \lambda^{-\alpha-1} \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[
+- r
++ \sum_{i=1}^{r} t_{(i)}^{\alpha} \lambda^{-\alpha}
++ (n-r) t_{(r)}^{\alpha} \lambda^{-\alpha}
+\right] \\[6pt]
+&= \dfrac{\alpha}{\lambda}
+\left[
+- r
++ \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha}
++ (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha}
+\right]
+= v(\alpha,\lambda), \text{ say.}
+\end{align*}
+
+
+Setting $v(\alpha, \lambda) = 0$ we get,
+
+\begin{align*}
+\dfrac{\alpha}{\lambda}\left[- r + \sum\limits_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} \right] &= 0 \\[0.5em]
+\Rightarrow - r + \sum\limits_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} + (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} &= 0 \\[0.5em]
+\Rightarrow - r + \dfrac{1}{\lambda^{\alpha}}\left[ \sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right] &= 0 \\[0.5em]
+\Rightarrow \dfrac{1}{\lambda^{\alpha}} \left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right] &= r \\[0.5em]
+\Rightarrow \lambda^{\alpha} &= \dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}
+\right]
+\end{align*}
+
+\begin{equation}
+\therefore \,\, \widehat{\lambda} = \left\{\dfrac{1}{r}\left[\sum\limits_{i=1}^{r} t_{(i)}^{\alpha} + (n-r) t_{(r)}^{\alpha}\right]\right\}^{\dfrac{1}{\alpha}}.
+\end{equation}
+
+Setting $u(\alpha, \lambda) = 0$ does not yield any closed form solution. So for getting the ML estimate of $\alpha$, we resort to numerical methods (here Newton-Raphson method). \\[1em]
+
+Now,
+\begin{equation}
+u_{\alpha}(\alpha,\lambda) = \dfrac{\partial}{\partial \alpha}u(\alpha,\lambda) = -\,\dfrac{r}{\alpha^{2}} - \sum_{i=1}^{r}\left(\dfrac{t_{(i)}}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_{(i)}}{\lambda}\right)\right]^{2} - (n-r)\left(\dfrac{t_{(r)}}{\lambda}\right)^{\alpha} \left[\log\!\left(\dfrac{t_{(r)}}{\lambda}\right)\right]^{2}.
+\end{equation}
+
+At each iteration, with the present value of $\alpha$ we calculate $\lambda$ by using $(8)$; then we use the obtained value of $\lambda$ in $(7)$ and $(9)$ to improve the estimate of $\alpha$ by Newton-Raphson method. \\[0.5em]
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{true_alpha} \hlkwb{<-} \hlnum{3}\hldef{; true_lambda} \hlkwb{<-} \hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample_size} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{50}\hldef{,} \hlnum{100}\hldef{,} \hlnum{150}\hldef{,} \hlnum{200}\hldef{,} \hlnum{250}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimate_lambda} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{failures}\hldef{,} \hlkwc{n}\hldef{,} \hlkwc{alpha}\hldef{) \{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{t_r} \hlkwb{<-} \hldef{failures[r]}
+
+  \hldef{a} \hlkwb{<-} \hlkwd{sum}\hldef{(failures}\hlopt{^}\hldef{alpha)}
+
+  \hldef{b} \hlkwb{<-} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hldef{t_r}\hlopt{^}\hldef{alpha}
+
+  \hlkwd{return}\hldef{( ((a} \hlopt{+} \hldef{b)} \hlopt{/} \hldef{r)}\hlopt{^}\hldef{(}\hlnum{1} \hlopt{/} \hldef{alpha) )}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{,} \hlkwc{lambda}\hldef{,} \hlkwc{failures}\hldef{,} \hlkwc{n}\hldef{) \{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{t_r} \hlkwb{<-} \hldef{failures[r]}
+
+  \hldef{a} \hlkwb{<-} \hldef{r} \hlopt{/} \hldef{alpha}
+
+  \hldef{b} \hlkwb{<-} \hlopt{-} \hldef{r} \hlopt{*} \hlkwd{log}\hldef{(lambda)} \hlopt{+} \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(failures))}
+
+  \hldef{c} \hlkwb{<-} \hlkwd{sum}\hldef{((failures} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hlkwd{log}\hldef{(failures} \hlopt{/} \hldef{lambda))}
+
+  \hldef{d} \hlkwb{<-} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hldef{(t_r} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hlkwd{log}\hldef{(t_r} \hlopt{/} \hldef{lambda)}
+
+  \hlkwd{return}\hldef{(a} \hlopt{+} \hldef{b} \hlopt{-} \hldef{c} \hlopt{-} \hldef{d)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u_alpha} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{alpha}\hldef{,} \hlkwc{lambda}\hldef{,} \hlkwc{failures}\hldef{,} \hlkwc{n}\hldef{) \{}
+
+  \hldef{r} \hlkwb{<-} \hlkwd{length}\hldef{(failures)}
+
+  \hldef{t_r} \hlkwb{<-} \hldef{failures[r]}
+
+  \hldef{a} \hlkwb{<-} \hlopt{-} \hldef{r} \hlopt{/} \hldef{alpha}\hlopt{^}\hlnum{2}
+
+  \hldef{b} \hlkwb{<-} \hlkwd{sum}\hldef{((failures} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hldef{(}\hlkwd{log}\hldef{(failures} \hlopt{/} \hldef{lambda))}\hlopt{^}\hlnum{2}\hldef{)}
+
+  \hldef{c} \hlkwb{<-} \hldef{(n} \hlopt{-} \hldef{r)} \hlopt{*} \hldef{(t_r} \hlopt{/} \hldef{lambda)}\hlopt{^}\hldef{alpha} \hlopt{*} \hldef{(}\hlkwd{log}\hldef{(t_r} \hlopt{/} \hldef{lambda))}\hlopt{^}\hlnum{2}
+
+  \hlkwd{return}\hldef{(a} \hlopt{-} \hldef{b} \hlopt{-} \hldef{c)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{estimate_alpha} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{failures}\hldef{,} \hlkwc{n}\hldef{,} \hlkwc{initial}\hldef{,} \hlkwc{epsilon} \hldef{=} \hlnum{0.0001}\hldef{,} \hlkwc{iterations} \hldef{=} \hlnum{100}\hldef{) \{}
+
+  \hldef{alphas} \hlkwb{<-} \hlkwd{c}\hldef{(initial)}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{iterations) \{}
+
+    \hldef{lambda} \hlkwb{<-} \hlkwd{estimate_lambda}\hldef{(failures, n, alphas[i} \hlopt{-} \hlnum{1}\hldef{])}
+
+    \hldef{score} \hlkwb{<-} \hlkwd{u}\hldef{(alphas[i} \hlopt{-} \hlnum{1}\hldef{], lambda, failures, n)}
+    \hldef{score_der} \hlkwb{<-} \hlkwd{u_alpha}\hldef{(alphas[i} \hlopt{-} \hlnum{1}\hldef{], lambda, failures, n)}
+
+    \hldef{alphas[i]} \hlkwb{<-} \hldef{alphas[i} \hlopt{-} \hlnum{1}\hldef{]} \hlopt{-} \hldef{score} \hlopt{/} \hldef{score_der}
+
+    \hlkwa{if} \hldef{(}\hlkwd{abs}\hldef{(alphas[i]} \hlopt{-} \hldef{alphas[i} \hlopt{-} \hlnum{1}\hldef{])} \hlopt{<} \hldef{epsilon)} \hlkwa{break}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(alphas[}\hlkwd{length}\hldef{(alphas)])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{alpha_hat} \hlkwb{=} \hldef{lambda_hat} \hlkwb{=} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{prop_censored} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.2}\hldef{,} \hlnum{0.3}\hldef{,} \hlnum{0.4}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_size))\{}
+
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(prop_censored))\{}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{rweibull}\hldef{(sample_size[i],} \hlkwc{shape} \hldef{= true_alpha,} \hlkwc{scale} \hldef{= true_lambda)}
+
+    \hldef{r} \hlkwb{<-} \hlkwd{floor}\hldef{( (}\hlnum{1} \hlopt{-} \hldef{prop_censored[j])} \hlopt{*} \hldef{sample_size[i])}
+
+    \hldef{x_ord} \hlkwb{<-} \hlkwd{sort}\hldef{(x)}
+
+    \hldef{failures} \hlkwb{<-} \hldef{x_ord[}\hlnum{1}\hlopt{:}\hldef{r]}
+
+    \hldef{new_alpha} \hlkwb{<-} \hlkwd{estimate_alpha}\hldef{(failures, sample_size[i],} \hlnum{1}\hldef{)}
+
+    \hldef{alpha_hat} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_hat, new_alpha)}
+
+    \hldef{lambda_hat} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_hat,}
+                         \hlkwd{estimate_lambda}\hldef{(failures, sample_size[i], new_alpha))}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Now we shall empirically calculate bias and MSE of the estimates for different sample sizes.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{bias_and_MSE} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{size}\hldef{,} \hlkwc{prop_censored}\hldef{)\{}
+
+  \hldef{alpha_estimates} \hlkwb{=} \hldef{lambda_estimates} \hlkwb{=} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hldef{)\{}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{rweibull}\hldef{(size,} \hlkwc{shape} \hldef{= true_alpha,} \hlkwc{scale} \hldef{= true_lambda)}
+
+    \hldef{r} \hlkwb{<-} \hlkwd{floor}\hldef{( (}\hlnum{1} \hlopt{-} \hldef{prop_censored)} \hlopt{*} \hldef{size)}
+
+    \hldef{x_ord} \hlkwb{<-} \hlkwd{sort}\hldef{(x)}
+
+    \hldef{failures} \hlkwb{<-} \hldef{x_ord[}\hlnum{1}\hlopt{:}\hldef{r]}
+
+    \hldef{new_alpha} \hlkwb{<-} \hlkwd{estimate_alpha}\hldef{(failures, size,} \hlnum{1}\hldef{)}
+
+    \hldef{alpha_estimates} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_estimates, new_alpha)}
+
+    \hldef{lambda_estimates} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_estimates,}
+                         \hlkwd{estimate_lambda}\hldef{(failures, size, new_alpha))}
+  \hldef{\}}
+
+  \hldef{alpha_bias} \hlkwb{<-} \hlkwd{mean}\hldef{(alpha_estimates)} \hlopt{-} \hldef{true_alpha}
+
+  \hldef{lambda_bias} \hlkwb{<-} \hlkwd{mean}\hldef{(lambda_estimates)} \hlopt{-} \hldef{true_lambda}
+
+  \hldef{alpha_MSE} \hlkwb{<-} \hlkwd{mean}\hldef{( (alpha_estimates} \hlopt{-} \hldef{true_alpha)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hldef{lambda_MSE} \hlkwb{<-} \hlkwd{mean}\hldef{( (lambda_estimates} \hlopt{-} \hldef{true_lambda)}\hlopt{^}\hlnum{2} \hldef{)}
+
+  \hlkwd{return}\hldef{(}\hlkwd{c}\hldef{(alpha_bias, lambda_bias, alpha_MSE, lambda_MSE))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{alpha_bias} \hlkwb{=} \hldef{lambda_bias} \hlkwb{=} \hldef{alpha_MSE} \hlkwb{=} \hldef{lambda_MSE} \hlkwb{=} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_size)) \{}
+
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(prop_censored))\{}
+
+    \hldef{temp} \hlkwb{<-} \hlkwd{bias_and_MSE}\hldef{(sample_size[i], prop_censored[j])}
+
+    \hldef{alpha_bias} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_bias, temp[}\hlnum{1}\hldef{])}
+
+    \hldef{lambda_bias} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_bias, temp[}\hlnum{2}\hldef{])}
+
+    \hldef{alpha_MSE} \hlkwb{<-} \hlkwd{append}\hldef{(alpha_MSE, temp[}\hlnum{3}\hldef{])}
+
+    \hldef{lambda_MSE} \hlkwb{<-} \hlkwd{append}\hldef{(lambda_MSE, temp[}\hlnum{4}\hldef{])}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df3} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{Sample.Size} \hldef{=} \hlkwd{rep}\hldef{(sample_size,} \hlkwd{rep}\hldef{(}\hlnum{3}\hldef{,} \hlkwd{length}\hldef{(sample_size))),}
+                  \hlkwc{p_c} \hldef{=} \hlkwd{rep}\hldef{(prop_censored,} \hlkwd{length}\hldef{(sample_size)),}
+                  \hlkwc{alpha_hat} \hldef{= alpha_hat,}
+                  \hlkwc{bias.alpha} \hldef{= alpha_bias,}
+                  \hlkwc{MSE.alpha} \hldef{= alpha_MSE,}
+                  \hlkwc{lambda_hat} \hldef{= lambda_hat,}
+                  \hlkwc{bias.lambda} \hldef{= lambda_bias,}
+                  \hlkwc{MSE.lambda} \hldef{= lambda_MSE)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df3,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Dec 08, 2025 - 01:51:14
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Sample.Size & p\_c & alpha\_hat & bias.alpha & MSE.alpha & lambda\_hat & bias.lambda & MSE.lambda \\ 
+\hline \\[-1.8ex] 
+$50$ & $0.200$ & $2.294$ & $0.099$ & $0.163$ & $1.980$ & $$-$0.016$ & $0.009$ \\ 
+$50$ & $0.300$ & $4.351$ & $0.131$ & $0.216$ & $1.935$ & $$-$0.013$ & $0.011$ \\ 
+$50$ & $0.400$ & $4.065$ & $0.194$ & $0.470$ & $1.777$ & $$-$0.021$ & $0.015$ \\ 
+$100$ & $0.200$ & $3.295$ & $0.041$ & $0.059$ & $1.870$ & $$-$0.002$ & $0.005$ \\ 
+$100$ & $0.300$ & $3.690$ & $0.053$ & $0.121$ & $1.928$ & $$-$0.004$ & $0.007$ \\ 
+$100$ & $0.400$ & $2.924$ & $0.106$ & $0.158$ & $2.087$ & $$-$0.002$ & $0.007$ \\ 
+$150$ & $0.200$ & $2.978$ & $$-$0.030$ & $0.060$ & $2.016$ & $$-$0.003$ & $0.003$ \\ 
+$150$ & $0.300$ & $2.811$ & $0.065$ & $0.067$ & $2.026$ & $$-$0.0001$ & $0.004$ \\ 
+$150$ & $0.400$ & $3.004$ & $0.078$ & $0.096$ & $1.979$ & $0.004$ & $0.004$ \\ 
+$200$ & $0.200$ & $2.939$ & $0.051$ & $0.054$ & $2.042$ & $$-$0.002$ & $0.003$ \\ 
+$200$ & $0.300$ & $2.947$ & $0.044$ & $0.046$ & $1.988$ & $$-$0.003$ & $0.004$ \\ 
+$200$ & $0.400$ & $2.759$ & $0.059$ & $0.062$ & $2.089$ & $$-$0.011$ & $0.004$ \\ 
+$250$ & $0.200$ & $3.062$ & $0.007$ & $0.031$ & $2.026$ & $$-$0.001$ & $0.002$ \\ 
+$250$ & $0.300$ & $3.018$ & $0.018$ & $0.032$ & $1.976$ & $$-$0.002$ & $0.003$ \\ 
+$250$ & $0.400$ & $2.651$ & $0.014$ & $0.049$ & $2.116$ & $$-$0.003$ & $0.003$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
 
 
 
