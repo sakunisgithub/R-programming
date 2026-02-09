@@ -1,0 +1,283 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 01}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Use Monte Carlo Integration to approximate the following integrals
+\begin{tasks}(2)
+\task $\displaystyle{\int \limits_0^1 e^{e^x} dx}$,
+\task $\displaystyle{\int \limits_{-2}^{2} e^{x + x^2} dx}$
+\end{tasks}
+
+and check how the estimates converge to the true value as the sample size increases.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Suppose we have to compute
+
+\begin{equation}
+I = \int \limits_a^b f(x) dx.
+\end{equation}
+
+We rewrite
+
+\begin{equation}
+I = (b-a) E[f(X)]
+\end{equation}
+
+where $X \sim U(a, b)$. \\[0.2em]
+
+To approximate $I$, we generate random numbers $X_1, X_2, \ldots, X_n$ from $U(a, b)$ and calculate
+
+\begin{align}
+I \approx (b-a) \cdot \dfrac{1}{n} \sum \limits_{i=1}^{n} f(X_i).
+\end{align}
+
+By law of large numbers, $\dfrac{1}{n} \sum \limits_{i=1}^{n} f(X_i) \rightarrow E[f(X)]$ as $n \rightarrow \infty$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Monte.Carlo.Integration} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{integrand}\hldef{,} \hlkwc{lower.limit}\hldef{,} \hlkwc{upper.limit}\hldef{,} \hlkwc{sample.size}\hldef{)\{}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlkwc{n} \hldef{= sample.size,} \hlkwc{min} \hldef{= lower.limit,} \hlkwc{max} \hldef{= upper.limit)}
+
+  \hldef{I} \hlkwb{<-} \hldef{(upper.limit} \hlopt{-} \hldef{lower.limit)} \hlopt{*} \hlkwd{mean}\hldef{(}\hlkwd{integrand}\hldef{(x))}
+
+  \hlkwd{return}\hldef{(I)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} $\displaystyle{\int \limits_0^1 e^{e^x} dx}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{func_1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlkwd{exp}\hldef{(x))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample_sizes} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{100}\hldef{,} \hlnum{500}\hldef{,} \hlnum{700}\hldef{,} \hlnum{1000}\hldef{,} \hlnum{3000}\hldef{,} \hlnum{5000}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{results.1} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(size} \hlkwa{in} \hldef{sample_sizes) \{}
+  \hldef{results.1} \hlkwb{<-} \hlkwd{append}\hldef{(results.1,}
+                      \hlkwd{Monte.Carlo.Integration}\hldef{(}\hlkwc{integrand} \hldef{= func_1,} \hlkwc{sample.size} \hldef{= size,}
+                                              \hlkwc{lower.limit} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{upper.limit} \hldef{=} \hlnum{1}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes,}
+                  \hlkwc{approximate.integral.value} \hldef{= results.1)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df1,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{label} \hldef{=} \hlsng{"Table 1"}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Feb 09, 2026 - 21:32:13
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & approximate.integral.value \\ 
+\hline \\[-1.8ex] 
+$100$ & $6.006$ \\ 
+$500$ & $6.015$ \\ 
+$700$ & $6.322$ \\ 
+$1,000$ & $6.410$ \\ 
+$3,000$ & $6.246$ \\ 
+$5,000$ & $6.316$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} $\displaystyle{\int \limits_{-2}^{2} e^{x + x^2} dx}$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{func_2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(x} \hlopt{+} \hldef{x}\hlopt{^}\hlnum{2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{results.2} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(size} \hlkwa{in} \hldef{sample_sizes) \{}
+  \hldef{results.2} \hlkwb{<-} \hlkwd{append}\hldef{(results.2,}
+                      \hlkwd{Monte.Carlo.Integration}\hldef{(}\hlkwc{integrand} \hldef{= func_2,} \hlkwc{sample.size} \hldef{= size,}
+                                              \hlkwc{lower.limit} \hldef{=} \hlopt{-}\hlnum{2}\hldef{,} \hlkwc{upper.limit} \hldef{=} \hlnum{2}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes,}
+                  \hlkwc{approximate.integral.value} \hldef{= results.2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df2,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{label} \hldef{=} \hlsng{"Table 2"}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Feb 09, 2026 - 21:32:13
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 2} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & approximate.integral.value \\ 
+\hline \\[-1.8ex] 
+$100$ & $107.312$ \\ 
+$500$ & $103.273$ \\ 
+$700$ & $93.557$ \\ 
+$1,000$ & $98.880$ \\ 
+$3,000$ & $95.832$ \\ 
+$5,000$ & $95.987$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the approximates gradually converge to the true integral value. \par}
+
+\end{document}

@@ -1,0 +1,155 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 01}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Use Monte Carlo Integration to approximate the following integrals
+\begin{tasks}(2)
+\task $\displaystyle{\int \limits_0^1 e^{e^x} dx}$,
+\task $\displaystyle{\int \limits_{-2}^{2} e^{x + x^2} dx}$
+\end{tasks}
+
+and check how the estimates converge to the true value as the sample size increases.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Suppose we have to compute
+
+\begin{equation}
+I = \int \limits_a^b f(x) dx.
+\end{equation}
+
+We rewrite
+
+\begin{equation}
+I = (b-a) E[f(X)]
+\end{equation}
+
+where $X \sim U(a, b)$. \\[0.2em]
+
+To approximate $I$, we generate random numbers $X_1, X_2, \ldots, X_n$ from $U(a, b)$ and calculate
+
+\begin{align}
+I \approx (b-a) \cdot \dfrac{1}{n} \sum \limits_{i=1}^{n} f(X_i).
+\end{align}
+
+By law of large numbers, $\dfrac{1}{n} \sum \limits_{i=1}^{n} f(X_i) \rightarrow E[f(X)]$ as $n \rightarrow \infty$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+set.seed(22)
+@
+
+<<>>=
+Monte.Carlo.Integration <- function(integrand, lower.limit, upper.limit, sample.size){
+  
+  x <- runif(n = sample.size, min = lower.limit, max = upper.limit)
+  
+  I <- (upper.limit - lower.limit) * mean(integrand(x))
+  
+  return(I)
+}
+@
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} $\displaystyle{\int \limits_0^1 e^{e^x} dx}$
+
+<<>>=
+func_1 <- function(x) exp(exp(x))
+@
+
+<<>>=
+sample_sizes <- c(100, 500, 700, 1000, 3000, 5000)
+@
+
+<<>>=
+results.1 <- c()
+
+for (size in sample_sizes) {
+  results.1 <- append(results.1, 
+                      Monte.Carlo.Integration(integrand = func_1, sample.size = size,
+                                              lower.limit = 0, upper.limit = 1))
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample_sizes,
+                  approximate.integral.value = results.1)
+@
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis'>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, label = "Table 1")
+@
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} $\displaystyle{\int \limits_{-2}^{2} e^{x + x^2} dx}$
+
+<<>>=
+func_2 <- function(x) exp(x + x^2)
+@
+
+<<>>=
+results.2 <- c()
+
+for (size in sample_sizes) {
+  results.2 <- append(results.2,
+                      Monte.Carlo.Integration(integrand = func_2, sample.size = size,
+                                              lower.limit = -2, upper.limit = 2))
+}
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample_sizes,
+                  approximate.integral.value = results.2)
+@
+
+<<results='asis'>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, label = "Table 2")
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the approximates gradually converge to the true integral value. \par}
+
+\end{document}
