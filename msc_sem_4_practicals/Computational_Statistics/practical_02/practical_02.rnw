@@ -1,0 +1,165 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 02}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Use Monte Carlo Integration to approximate the following integrals
+\begin{tasks}(2)
+\task $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} \, dx}$,
+\task $\displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx}$
+\end{tasks}
+
+and check how the estimates converge to the true value as the sample size increases.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Suppose we have to compute
+
+\begin{equation}
+I = \int \limits_{-\infty}^{\infty} f(x) dx \hspace{0.2cm} \text{or} \hspace{0.2cm} I = \int \limits_{a}^{\infty} f(x) dx
+\end{equation}
+
+We rewrite
+
+\begin{equation}
+I = \int f(x) dx = \int \dfrac{f(x)}{p(x)} p(x) dx = E_X \left[ \dfrac{f(x)}{p(x)} \right]
+\end{equation}
+
+where $p(x)$ is a \textbf{suitable} probability density and $X \sim p$. \\[0.2em]
+
+To approximate $I$, we generate random numbers $X_1, X_2, \ldots, X_n$ from $p(x)$ and calculate
+
+\begin{align}
+I \approx \dfrac{1}{n} \sum \limits_{i=1}^{n} \dfrac{f(X_i)}{p(X_i)}.
+\end{align}
+
+By law of large numbers, $\dfrac{1}{n} \sum \limits_{i=1}^{n} \dfrac{f(X_i)}{p(X_i)} \rightarrow E_X \left[ \dfrac{f(x)}{p(x)} \right]$ as $n \rightarrow \infty$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+set.seed(22)
+@
+
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} dx}$ \\[0.2em]
+
+Here $f(x) = e^{-x^2}$. We take $p(x) = \dfrac{1}{\sqrt{2\pi}} \, \exp\left\{-\dfrac{x^2}{2}\right\}$. Then $\dfrac{f(x)}{p(x)} = \sqrt{2\pi} \cdot \exp\left\{-\dfrac{x^2}{2} \right\}.$
+
+<<>>=
+MCI.1 <- function(sample.size){
+  
+  x <- rnorm(sample.size)
+  
+  return(mean(exp(-x^2) / dnorm(x)))
+}
+@
+
+<<>>=
+sample_sizes <- c(100, 500, 700, 1000, 3000, 5000, 7000, 9000, 10000)
+@
+
+<<>>=
+results.1 <- c()
+@
+
+<<>>=
+for (i in 1:length(sample_sizes)) {
+  results.1[i] <- MCI.1(sample.size = sample_sizes[i])
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample_sizes,
+                  approximate.integral.value = results.1)
+@
+
+<<message=FALSE, warning=FALSE, echo=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis'>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, label = "Table 1")
+@
+
+Note that, $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} dx} = \sqrt{\pi} \approx 1.7725$.
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} $\displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx}$ \\[0.2em]
+
+Let $X, Y \overset{iid}{\sim} \text{Exp}(1)$. Then $P(Y \leq X) = \displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx} = 0.5$ as $X$ and $Y$ are independent.
+
+<<>>=
+MCI.2 <- function(sample.size){
+  
+  x <- rexp(sample.size); y <- rexp(sample.size)
+  
+  return(mean(y <= x))
+}
+@
+
+<<>>=
+results.2 <- c()
+@
+
+<<>>=
+for (i in 1:length(sample_sizes)) {
+  results.2[i] <- MCI.2(sample.size = sample_sizes[i])
+}
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample_sizes,
+                  approximate.integral.value = results.2)
+@
+
+<<message=FALSE, warning=FALSE, echo=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis'>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, label = "Table 2")
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the approximates gradually converge to the true integral value. \par}
+
+\end{document}

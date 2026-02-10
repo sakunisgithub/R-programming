@@ -1,0 +1,301 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 02}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Use Monte Carlo Integration to approximate the following integrals
+\begin{tasks}(2)
+\task $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} \, dx}$,
+\task $\displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx}$
+\end{tasks}
+
+and check how the estimates converge to the true value as the sample size increases.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Suppose we have to compute
+
+\begin{equation}
+I = \int \limits_{-\infty}^{\infty} f(x) dx \hspace{0.2cm} \text{or} \hspace{0.2cm} I = \int \limits_{a}^{\infty} f(x) dx
+\end{equation}
+
+We rewrite
+
+\begin{equation}
+I = \int f(x) dx = \int \dfrac{f(x)}{p(x)} p(x) dx = E_X \left[ \dfrac{f(x)}{p(x)} \right]
+\end{equation}
+
+where $p(x)$ is a \textbf{suitable} probability density and $X \sim p$. \\[0.2em]
+
+To approximate $I$, we generate random numbers $X_1, X_2, \ldots, X_n$ from $p(x)$ and calculate
+
+\begin{align}
+I \approx \dfrac{1}{n} \sum \limits_{i=1}^{n} \dfrac{f(X_i)}{p(X_i)}.
+\end{align}
+
+By law of large numbers, $\dfrac{1}{n} \sum \limits_{i=1}^{n} \dfrac{f(X_i)}{p(X_i)} \rightarrow E_X \left[ \dfrac{f(x)}{p(x)} \right]$ as $n \rightarrow \infty$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 1}} \hspace{0.1cm} $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} dx}$ \\[0.2em]
+
+Here $f(x) = e^{-x^2}$. We take $p(x) = \dfrac{1}{\sqrt{2\pi}} \, \exp\left\{-\dfrac{x^2}{2}\right\}$. Then $\dfrac{f(x)}{p(x)} = \sqrt{2\pi} \cdot \exp\left\{-\dfrac{x^2}{2} \right\}.$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{MCI.1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{sample.size}\hldef{)\{}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{rnorm}\hldef{(sample.size)}
+
+  \hlkwd{return}\hldef{(}\hlkwd{mean}\hldef{(}\hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hldef{)} \hlopt{/} \hlkwd{dnorm}\hldef{(x)))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample_sizes} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{100}\hldef{,} \hlnum{500}\hldef{,} \hlnum{700}\hldef{,} \hlnum{1000}\hldef{,} \hlnum{3000}\hldef{,} \hlnum{5000}\hldef{,} \hlnum{7000}\hldef{,} \hlnum{9000}\hldef{,} \hlnum{10000}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{results.1} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_sizes)) \{}
+  \hldef{results.1[i]} \hlkwb{<-} \hlkwd{MCI.1}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes[i])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes,}
+                  \hlkwc{approximate.integral.value} \hldef{= results.1)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df1,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{label} \hldef{=} \hlsng{"Table 1"}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Feb 10, 2026 - 22:51:58
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & approximate.integral.value \\ 
+\hline \\[-1.8ex] 
+$100$ & $1.805$ \\ 
+$500$ & $1.768$ \\ 
+$700$ & $1.735$ \\ 
+$1,000$ & $1.802$ \\ 
+$3,000$ & $1.764$ \\ 
+$5,000$ & $1.758$ \\ 
+$7,000$ & $1.772$ \\ 
+$9,000$ & $1.767$ \\ 
+$10,000$ & $1.776$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+Note that, $\displaystyle{\int \limits_{-\infty}^{\infty} e^{-x^2} dx} = \sqrt{\pi} \approx 1.7725$.
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.1cm} $\displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx}$ \\[0.2em]
+
+Let $X, Y \overset{iid}{\sim} \text{Exp}(1)$. Then $P(Y \leq X) = \displaystyle{\int \limits_{0}^{\infty} \int \limits_{0}^{x} e^{-(x + y)} \, dy \, dx} = 0.5$ as $X$ and $Y$ are independent.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{MCI.2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{sample.size}\hldef{)\{}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{rexp}\hldef{(sample.size); y} \hlkwb{<-} \hlkwd{rexp}\hldef{(sample.size)}
+
+  \hlkwd{return}\hldef{(}\hlkwd{mean}\hldef{(y} \hlopt{<=} \hldef{x))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{results.2} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample_sizes)) \{}
+  \hldef{results.2[i]} \hlkwb{<-} \hlkwd{MCI.2}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes[i])}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample_sizes,}
+                  \hlkwc{approximate.integral.value} \hldef{= results.2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df2,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{label} \hldef{=} \hlsng{"Table 2"}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Feb 10, 2026 - 22:51:58
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 2} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & approximate.integral.value \\ 
+\hline \\[-1.8ex] 
+$100$ & $0.440$ \\ 
+$500$ & $0.550$ \\ 
+$700$ & $0.467$ \\ 
+$1,000$ & $0.494$ \\ 
+$3,000$ & $0.497$ \\ 
+$5,000$ & $0.504$ \\ 
+$7,000$ & $0.502$ \\ 
+$9,000$ & $0.507$ \\ 
+$10,000$ & $0.498$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont As sample size increases, the approximates gradually converge to the true integral value. \par}
+
+\end{document}
