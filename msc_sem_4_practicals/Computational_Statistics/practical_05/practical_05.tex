@@ -1,0 +1,240 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 05}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Use rejection sampling technique to generate random sample from a distribution with PDF
+\begin{equation*}
+f(x) = 20 \cdot x (1-x)^3 \cdot I_{(0, 1)}(x)
+\end{equation*}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Algorithm}}
+
+Suppose we have to generate random sample from $p(x)$, we call it our \textbf{target distribution}. We choose a \textbf{proposal distribution} $q(x)$, say.
+
+\begin{enumerate}[I.]
+\item Generate $x_i \sim q(x)$ $\forall$ $i = 1(1)n$.
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Accept $x_i$ if $$u_i \leq \dfrac{p(x_i)}{M \cdot q(x_i)}$$ where $M > 0$ is a suitable constant so that $p(x) \leq M \cdot q(x)$ is satisfied.
+\end{enumerate}
+
+Accepted samples follow the target distribution $p(x)$. \\[0.2em]
+
+Here, we are given that $p(x) = 20 \cdot x (1-x)^3$. We take $q(x) = 1 \cdot I_{(0, 1)}(x)$ \textit{i.e.} $U(0, 1)$ distribution. \\[0.2em]
+
+To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x) \leq M$. Notice, $p(x)$ is the PDF of a $\beta_1(2, 4)$ distribution which has mode $$\dfrac{2-1}{2+4-2} = \dfrac{1}{4}.$$ So $p(0.25) \approx 2.11$ is a suitable choice for $M$.
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{2000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\hldef{x} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{p} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{20} \hlopt{*} \hldef{x} \hlopt{*} \hldef{(}\hlnum{1}\hlopt{-}\hldef{x)}\hlopt{^}\hlnum{3}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{M} \hlkwb{<-} \hlnum{2.11}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{good} \hlkwb{<-} \hldef{u} \hlopt{<=} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{M}
+\hldef{accepted} \hlkwb{<-} \hldef{x[good]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{count_accepted} \hlkwb{<-} \hlkwd{length}\hldef{(accepted)} \hlcom{# or sum(good)}
+\hldef{count_accepted}
+\end{alltt}
+\begin{verbatim}
+## [1] 929
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Thus we have a sample of size $929$ from $p(x)$. \\[0.3em]
+
+The \textbf{acceptance rate} was $0.4645$ whereas the \textbf{theoretical acceptance rate} is $0.4739336$.
+
+\newpage
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{u} \hldef{= u,} \hlkwc{result} \hldef{=} \hlkwd{ifelse}\hldef{(good,} \hlsng{"accepted"}\hldef{,} \hlsng{"rejected"}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Let us have a histogram of the generated sample.
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df} \hlopt{%>%}
+  \hlkwd{filter}\hldef{(result} \hlopt{==} \hlsng{"accepted"}\hldef{)} \hlopt{%>%}
+    \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x))} \hlopt{+}
+    \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{10}\hldef{,}
+                   \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"#27EEF5"}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= p,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{"X"}\hldef{,} \hlkwc{y} \hldef{=} \hlsng{"Density"}\hldef{,}
+       \hlkwc{title} \hldef{=} \hlsng{"Historgram of Generated Random Sample"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\end{knitrout}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
+
+\newpage
+
+Let us have a simple visualization of the rejection sampling technique.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{p_scaled} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{M}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= u,} \hlkwc{shape} \hldef{= result))} \hlopt{+}
+  \hlkwd{geom_point}\hldef{()} \hlopt{+}
+  \hlkwd{scale_shape_manual}\hldef{(}\hlkwc{values} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"accepted"} \hldef{=} \hlnum{16}\hldef{,}
+                                \hlsng{"rejected"} \hldef{=} \hlnum{1}\hldef{))} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= p_scaled,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{inherit.aes} \hldef{=} \hlnum{FALSE}\hldef{)} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{legend.title} \hldef{=} \hlkwd{element_blank}\hldef{())}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the scaled target density are accepted and rest are rejected.
+
+\end{document}
