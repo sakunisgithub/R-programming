@@ -1,0 +1,240 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 03}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
+
+\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/3$. Let $X$ denote the number of correct answers of the student. 
+\begin{enumerate}[(i)]
+\item Assuming independence of questions, model $X$ using an appropriate probability distribution. 
+\item Write down its probability mass function, compute the probability that the student answers exactly $6$ questions correctly.
+\item Find the expected number of correct answers.
+\item Simulate observations of $X$ using the inverse transform method to compare empirical and theoretical probabilities.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{3}$. \\[0.2em]
+
+We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right).$$
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The Probability Mass Function of $X$ is given by 
+\begin{align*}
+P[X = x] = \binom{20}{x} \left(\dfrac{1}{3}\right)^x \left(\dfrac{2}{3}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
+\end{align*}
+
+Thus, the probability that the student answers exactly $6$ questions correctly will be
+\begin{align*}
+P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{20-6} \\[0.4em]
+&= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{14} \\[0.4em]
+&\approx 0.182.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right)$, $E[X] = 20 \cdot \dfrac{1}{3} \approx 6.7$. So expected number of correct answers of the student is $6$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
+\begin{enumerate}[I.]
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Map $x_i = k$ whenever $F(k-1) < u_i \leq F(k)$ $\forall$ $i = 1(1)n$ where $F(\cdot)$ is the CDF of $X$. \\[0.2em] We are actually doing $$X = min\{k : F(k) \geq U\}.$$
+\end{enumerate}
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+set.seed(22)
+@
+
+<<>>=
+n <- 10000
+@
+
+<<>>=
+u <- runif(n)
+@
+
+<<>>=
+CDF_F <- pbinom(q = 0:20, size = 20, prob = 1/3)
+@
+
+<<>>=
+x <- findInterval(u, CDF_F, left.open = TRUE)
+@
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(x) %>%
+  ggplot(aes(x = x)) +
+  geom_bar(fill = "#FB8C06", color = "black", linewidth = 1) +
+  scale_x_continuous(limits = c(-0.5,20), breaks = 0:20) +
+  labs(x = expression(x[i]), y = "Frequency",
+       title = "Barplot of Generated Sample")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+
+\newpage
+
+The empirical probabilities are obtained as
+$$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
+
+<<>>=
+emp_prob <- table(factor(x, levels = 0:20)) / n
+emp_prob <- as.numeric(emp_prob)
+@
+
+<<>>=
+theo_prob <- dbinom(x = 0:20, size = 20, prob = 1/3)
+@
+
+<<>>=
+df <- data.frame(x = 0:20, 
+                 empirical.probability = emp_prob,
+                 theoretical.probability = theo_prob)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<echo=FALSE, results='asis'>>=
+stargazer(df, summary = FALSE, rownames = FALSE, digits = 5, label = "Table 1")
+@
+
+<<>>=
+df_melted <- df %>%
+                pivot_longer(cols = c("empirical.probability", "theoretical.probability"),
+                             names_to = "probability_type",
+                             values_to = "probability")
+@
+
+\newpage
+
+Let us have a grouped barplot from comparison of empirical and theoretical probabilities.
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(ggpattern)
+@
+
+<<>>=
+df_melted %>%
+  ggplot(aes(x = x, y = probability, pattern = probability_type)) +
+  geom_col_pattern(position = "dodge", 
+                   pattern_spacing = 0.01, 
+                   fill = "white", color = "black") +
+  scale_pattern_manual(values = c("stripe", "none")) +
+  scale_x_continuous(limits = c(-0.5, 20.5), breaks = 0:20) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 2}}
+
+\hspace{1cm} A fair die is rolled $100$ times and let $X$ denote the number appearing on the top face in each roll. Generate the $100$ outcomes using a suitable random number method, compute the frequency of each face $(1–6)$, and compare the observed relative frequencies with the theoretical probability $1/6$ for a fair die.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+In the said set-up, $X$ is said to have a Discrete Uniform distribution with support $\{1, 2, 3, 4, 5, 6\}$. The Probability Mass Function of $X$ is given by
+$$P[X = x] = \dfrac{1}{6}; \,\, x = 1(1)6.$$
+
+We shall use Inverse Transform method to generate sample from $X$. Recall that, the CDF of $X$ at $\{1, 2, 3, 4, 5, 6\}$ is 
+$$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<>>=
+n <- 10000; u <- runif(n); CDF_F <- (1:6) / 6
+@
+
+<<>>=
+x <- findInterval(u, CDF_F, left.open = TRUE) + 1
+@
+
+<<>>=
+df1 <- data.frame(x = 1:6, count = as.numeric(table(factor(x, levels = 1:6))))
+@
+
+<<results='asis'>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, label = "Table 2")
+@
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+<<>>=
+df1 %>%
+  ggplot(aes(x = x, y = count)) +
+  geom_col(fill = "#F81A7F", col = "black", linewidth = 1) +
+  scale_x_continuous(breaks = 1:6) +
+  geom_text(aes(label = count), vjust = -1, size = 4) +
+  labs(title = "Barplot of the Generated Sample")
+@
+
+\newpage
+
+Here we have a plot to compare the observed relative frequencies and theoretical probability of $\dfrac{1}{6}$.
+
+<<>>=
+df1 %>%
+  ggplot(aes(x = x, y = count / n)) +
+  geom_col(fill = "#E1D216", col = "black", linewidth = 1) +
+  scale_x_continuous(breaks = 1:6) +
+  geom_hline(yintercept = 1/6, col = "red", linewidth = 1) +
+  labs(y = "Observed Relative Frequency",
+       title = expression("Observed Relative Frequency vs Theoretical Probability of" ~ 1/6))
+@
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
+
+\end{document}

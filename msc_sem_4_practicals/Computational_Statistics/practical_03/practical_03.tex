@@ -1,0 +1,405 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 03}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
+
+\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/3$. Let $X$ denote the number of correct answers of the student. 
+\begin{enumerate}[(i)]
+\item Assuming independence of questions, model $X$ using an appropriate probability distribution. 
+\item Write down its probability mass function, compute the probability that the student answers exactly $6$ questions correctly.
+\item Find the expected number of correct answers.
+\item Simulate observations of $X$ using the inverse transform method to compare empirical and theoretical probabilities.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{3}$. \\[0.2em]
+
+We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right).$$
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The Probability Mass Function of $X$ is given by 
+\begin{align*}
+P[X = x] = \binom{20}{x} \left(\dfrac{1}{3}\right)^x \left(\dfrac{2}{3}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
+\end{align*}
+
+Thus, the probability that the student answers exactly $6$ questions correctly will be
+\begin{align*}
+P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{20-6} \\[0.4em]
+&= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{14} \\[0.4em]
+&\approx 0.182.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right)$, $E[X] = 20 \cdot \dfrac{1}{3} \approx 6.7$. So expected number of correct answers of the student is $6$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
+\begin{enumerate}[I.]
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Map $x_i = k$ whenever $F(k-1) < u_i \leq F(k)$ $\forall$ $i = 1(1)n$ where $F(\cdot)$ is the CDF of $X$. \\[0.2em] We are actually doing $$X = min\{k : F(k) \geq U\}.$$
+\end{enumerate}
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{10000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{CDF_F} \hlkwb{<-} \hlkwd{pbinom}\hldef{(}\hlkwc{q} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{findInterval}\hldef{(u, CDF_F,} \hlkwc{left.open} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data.frame}\hldef{(x)} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x))} \hlopt{+}
+  \hlkwd{geom_bar}\hldef{(}\hlkwc{fill} \hldef{=} \hlsng{"#FB8C06"}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hldef{(}\hlkwc{limits} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{0.5}\hldef{,}\hlnum{20}\hldef{),} \hlkwc{breaks} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{expression}\hldef{(x[i]),} \hlkwc{y} \hldef{=} \hlsng{"Frequency"}\hldef{,}
+       \hlkwc{title} \hldef{=} \hlsng{"Barplot of Generated Sample"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+
+\newpage
+
+The empirical probabilities are obtained as
+$$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{emp_prob} \hlkwb{<-} \hlkwd{table}\hldef{(}\hlkwd{factor}\hldef{(x,} \hlkwc{levels} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{))} \hlopt{/} \hldef{n}
+\hldef{emp_prob} \hlkwb{<-} \hlkwd{as.numeric}\hldef{(emp_prob)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theo_prob} \hlkwb{<-} \hlkwd{dbinom}\hldef{(}\hlkwc{x} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,}
+                 \hlkwc{empirical.probability} \hldef{= emp_prob,}
+                 \hlkwc{theoretical.probability} \hldef{= theo_prob)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Feb 17, 2026 - 07:02:21
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} ccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+x & empirical.probability & theoretical.probability \\ 
+\hline \\[-1.8ex] 
+$0$ & $0.00060$ & $0.00030$ \\ 
+$1$ & $0.00250$ & $0.00301$ \\ 
+$2$ & $0.01300$ & $0.01428$ \\ 
+$3$ & $0.04500$ & $0.04285$ \\ 
+$4$ & $0.09110$ & $0.09106$ \\ 
+$5$ & $0.14250$ & $0.14570$ \\ 
+$6$ & $0.18190$ & $0.18213$ \\ 
+$7$ & $0.18550$ & $0.18213$ \\ 
+$8$ & $0.15300$ & $0.14798$ \\ 
+$9$ & $0.09540$ & $0.09865$ \\ 
+$10$ & $0.05360$ & $0.05426$ \\ 
+$11$ & $0.02340$ & $0.02466$ \\ 
+$12$ & $0.00880$ & $0.00925$ \\ 
+$13$ & $0.00250$ & $0.00285$ \\ 
+$14$ & $0.00120$ & $0.00071$ \\ 
+$15$ & $0$ & $0.00014$ \\ 
+$16$ & $0$ & $0.00002$ \\ 
+$17$ & $0$ & $0.000003$ \\ 
+$18$ & $0$ & $0.0000002$ \\ 
+$19$ & $0$ & $0$ \\ 
+$20$ & $0$ & $0$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df_melted} \hlkwb{<-} \hldef{df} \hlopt{%>%}
+                \hlkwd{pivot_longer}\hldef{(}\hlkwc{cols} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"empirical.probability"}\hldef{,} \hlsng{"theoretical.probability"}\hldef{),}
+                             \hlkwc{names_to} \hldef{=} \hlsng{"probability_type"}\hldef{,}
+                             \hlkwc{values_to} \hldef{=} \hlsng{"probability"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\newpage
+
+Let us have a grouped barplot from comparison of empirical and theoretical probabilities.
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df_melted} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= probability,} \hlkwc{pattern} \hldef{= probability_type))} \hlopt{+}
+  \hlkwd{geom_col_pattern}\hldef{(}\hlkwc{position} \hldef{=} \hlsng{"dodge"}\hldef{,}
+                   \hlkwc{pattern_spacing} \hldef{=} \hlnum{0.01}\hldef{,}
+                   \hlkwc{fill} \hldef{=} \hlsng{"white"}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{)} \hlopt{+}
+  \hlkwd{scale_pattern_manual}\hldef{(}\hlkwc{values} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"stripe"}\hldef{,} \hlsng{"none"}\hldef{))} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hldef{(}\hlkwc{limits} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{0.5}\hldef{,} \hlnum{20.5}\hldef{),} \hlkwc{breaks} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{)} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{legend.position} \hldef{=} \hlsng{"top"}\hldef{,}
+        \hlkwc{legend.title} \hldef{=} \hlkwd{element_blank}\hldef{())}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
+\end{knitrout}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 2}}
+
+\hspace{1cm} A fair die is rolled $100$ times and let $X$ denote the number appearing on the top face in each roll. Generate the $100$ outcomes using a suitable random number method, compute the frequency of each face $(1–6)$, and compare the observed relative frequencies with the theoretical probability $1/6$ for a fair die.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+In the said set-up, $X$ is said to have a Discrete Uniform distribution with support $\{1, 2, 3, 4, 5, 6\}$. The Probability Mass Function of $X$ is given by
+$$P[X = x] = \dfrac{1}{6}; \,\, x = 1(1)6.$$
+
+We shall use Inverse Transform method to generate sample from $X$. Recall that, the CDF of $X$ at $\{1, 2, 3, 4, 5, 6\}$ is 
+$$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{10000}\hldef{; u} \hlkwb{<-} \hlkwd{runif}\hldef{(n); CDF_F} \hlkwb{<-} \hldef{(}\hlnum{1}\hlopt{:}\hlnum{6}\hldef{)} \hlopt{/} \hlnum{6}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{findInterval}\hldef{(u, CDF_F,} \hlkwc{left.open} \hldef{=} \hlnum{TRUE}\hldef{)} \hlopt{+} \hlnum{1}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{,} \hlkwc{count} \hldef{=} \hlkwd{as.numeric}\hldef{(}\hlkwd{table}\hldef{(}\hlkwd{factor}\hldef{(x,} \hlkwc{levels} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{))))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+\hlkwd{stargazer}\hldef{(df1,} \hlkwc{summary} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{rownames} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{label} \hldef{=} \hlsng{"Table 2"}\hldef{)}
+\end{alltt}
+\end{kframe}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Feb 17, 2026 - 07:02:28
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{Table 2} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+x & count \\ 
+\hline \\[-1.8ex] 
+$1$ & $1,676$ \\ 
+$2$ & $1,656$ \\ 
+$3$ & $1,642$ \\ 
+$4$ & $1,655$ \\ 
+$5$ & $1,654$ \\ 
+$6$ & $1,717$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= count))} \hlopt{+}
+  \hlkwd{geom_col}\hldef{(}\hlkwc{fill} \hldef{=} \hlsng{"#F81A7F"}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hldef{(}\hlkwc{breaks} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{)} \hlopt{+}
+  \hlkwd{geom_text}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{label} \hldef{= count),} \hlkwc{vjust} \hldef{=} \hlopt{-}\hlnum{1}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{4}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{title} \hldef{=} \hlsng{"Barplot of the Generated Sample"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
+\end{knitrout}
+
+\newpage
+
+Here we have a plot to compare the observed relative frequencies and theoretical probability of $\dfrac{1}{6}$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= count} \hlopt{/} \hldef{n))} \hlopt{+}
+  \hlkwd{geom_col}\hldef{(}\hlkwc{fill} \hldef{=} \hlsng{"#E1D216"}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hldef{(}\hlkwc{breaks} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{)} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{6}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{y} \hldef{=} \hlsng{"Observed Relative Frequency"}\hldef{,}
+       \hlkwc{title} \hldef{=} \hlkwd{expression}\hldef{(}\hlsng{"Observed Relative Frequency vs Theoretical Probability of"} \hlopt{~} \hlnum{1}\hlopt{/}\hlnum{6}\hldef{))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+\end{knitrout}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
+
+\end{document}
