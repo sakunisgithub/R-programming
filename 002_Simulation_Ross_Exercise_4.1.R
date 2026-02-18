@@ -4,7 +4,7 @@ n <- 10000
 
 u <- runif(n)
 
-x <- findInterval(u, cumsum(p))
+x <- findInterval(u, cumsum(p)) + 1
 
 df <- data.frame(x = 1:4,
                  theoretical.probability = p,
