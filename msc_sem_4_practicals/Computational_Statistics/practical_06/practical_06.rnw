@@ -1,0 +1,159 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 06}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Use rejection sampling technique to generate random sample from Gamma distribution with shape $= \dfrac{3}{2}$ and scale $= 1$ \textit{i.e.}
+\begin{equation*}
+f(x) = \dfrac{1}{\Gamma(3/2)} x^{\frac{1}{2}}e^{-x} \cdot I_{(0, \infty)}(x)
+\end{equation*}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Algorithm}}
+
+Suppose we have to generate random sample from $p(x)$, we call it our \textbf{target distribution}. We choose a \textbf{proposal distribution} $q(x)$, say.
+
+\begin{enumerate}[I.]
+\item Generate $x_i \sim q(x)$ $\forall$ $i = 1(1)n$.
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Accept $x_i$ if $$u_i \leq \dfrac{p(x_i)}{M \cdot q(x_i)}$$ where $M > 0$ is a suitable constant so that $p(x) \leq M \cdot q(x)$ is satisfied.
+\end{enumerate}
+
+Accepted samples follow the target distribution $p(x)$. \\[0.2em]
+
+Here, we are given that $p(x) = \dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}$. We take $q(x) = \dfrac{1}{2} e^{-\frac{x}{2}} \cdot I_{(0, \infty)}(x)$ \textit{i.e.} $\text{Exp}(\text{rate } = 1/2)$ distribution. \\[0.2em]
+
+To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow \dfrac{p(x)}{q(x)} \leq M$. \\[0.2em]
+
+Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{1}{2} e^{-\frac{x}{2}}} = \dfrac{4}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/2} = h(x)$, say. \\[0.2em]
+
+Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \dfrac{1}{2} \ln x - \dfrac{x}{2}$.
+
+\begin{align*}
+\dfrac{d}{dx} \ln h(x) &= 0 \\[0.3em]
+\Rightarrow \dfrac{1}{2x} - \dfrac{1}{2} &= 0 \\[0.3em]
+\Rightarrow x &= 1
+\end{align*}
+
+So $h(1) \approx 1.369$ is a suitable choice for $M$.
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+set.seed(22)
+@
+
+<<>>=
+n <- 2000
+@
+
+<<>>=
+u <- runif(n)
+x <- rexp(n, rate = 1/2)
+@
+
+<<>>=
+p <- function(x) (2 / sqrt(pi)) * x^(1/2) * exp(-x)
+@
+
+<<>>=
+q <- function(x) (1/2) * exp(-x/2)
+@
+
+<<>>=
+M <- 1.369
+@
+
+<<>>=
+good <- u <= p(x) / (M * q(x))
+accepted <- x[good]
+@
+
+<<>>=
+count_accepted <- length(accepted) # or sum(good)
+count_accepted
+@
+
+Thus we have a sample of size $\Sexpr{count_accepted}$ from $p(x)$. \\[0.3em]
+
+The \textbf{acceptance rate} was $\Sexpr{count_accepted / n}$ whereas the \textbf{theoretical acceptance rate} is $\Sexpr{1/M}$.
+
+\newpage
+
+<<>>=
+df <- data.frame(x = x, u = u, result = ifelse(good, "accepted", "rejected"))
+@
+
+Let us have a histogram of the generated sample.
+
+<<message=FALSE, warning=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+df %>%
+  filter(result == "accepted") %>%
+    ggplot(aes(x = x)) +
+    geom_histogram(aes(y = after_stat(density)), bins = 10, 
+                   linewidth = 1, color = "black", fill = "#27EEF5") +
+  stat_function(fun = p, linewidth = 1) +
+  labs(x = "X", y = "Density",
+       title = "Historgram of Generated Random Sample")
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
+
+\newpage
+
+Let us have a simple visualization of the rejection sampling technique.
+
+<<>>=
+h_scaled <- function(x) p(x) / (M * q(x))
+@
+
+<<>>=
+df %>%
+  ggplot(aes(x = x, y = u, shape = result)) +
+  geom_point() +
+  scale_shape_manual(values = c("accepted" = 16,
+                                "rejected" = 1)) +
+  stat_function(fun = h_scaled, linewidth = 1.25, inherit.aes = FALSE) +
+  theme(legend.title = element_blank())
+@
+
+\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the curve are accepted and rest are rejected.
+
+\end{document}
