@@ -1,0 +1,95 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 04}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
+
+\hspace{1cm} A hospital emergency helpline receives calls at an average rate of $3$ calls per hour. The calls occur randomly and independently over time. Let $X$ denote the number of calls received in a randomly selected hour. 
+
+\begin{enumerate}[(i)]
+
+\item Assuming a suitable probability model, identify the distribution of $X$ and write its probability mass function. 
+
+\item Calculate the probability that exactly $4$ calls are received in an hour.
+
+\item Determine the mean and variance of the distribution.
+
+\item Generate simulated values of $X$ using the inverse transform method. 
+
+\item Compare the simulated results with the theoretical probabilities and estimate the model parameter from the simulated data.
+
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a 
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<>>=
+set.seed(22)
+@
+
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 2}}
+
+\hspace{1cm} A marketing executive makes repeated phone calls to potential customers to sell a product. The probability that any individual call results in a successful sale is $0.3$, and each call is independent of the others. Let $X$ denote the number of calls required to achieve the first successful sale.
+
+\begin{enumerate}[(i)]
+
+\item Model $X$ using an appropriate probability distribution, write its probability mass function.
+
+\item Compute the probability that the first success occurs on the $5$th call.
+
+\item Determine the expected number of calls required for the first success. 
+
+\item Using the inverse transform method, simulate multiple observations of $X$ and estimate the success probability from the simulated data.
+
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+
+
+\end{document}

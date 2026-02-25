@@ -1,0 +1,147 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 04}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
+
+\hspace{1cm} A hospital emergency helpline receives calls at an average rate of $3$ calls per hour. The calls occur randomly and independently over time. Let $X$ denote the number of calls received in a randomly selected hour. 
+
+\begin{enumerate}[(i)]
+
+\item Assuming a suitable probability model, identify the distribution of $X$ and write its probability mass function. 
+
+\item Calculate the probability that exactly $4$ calls are received in an hour.
+
+\item Determine the mean and variance of the distribution.
+
+\item Generate simulated values of $X$ using the inverse transform method. 
+
+\item Compare the simulated results with the theoretical probabilities and estimate the model parameter from the simulated data.
+
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a 
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 2}}
+
+\hspace{1cm} A marketing executive makes repeated phone calls to potential customers to sell a product. The probability that any individual call results in a successful sale is $0.3$, and each call is independent of the others. Let $X$ denote the number of calls required to achieve the first successful sale.
+
+\begin{enumerate}[(i)]
+
+\item Model $X$ using an appropriate probability distribution, write its probability mass function.
+
+\item Compute the probability that the first success occurs on the $5$th call.
+
+\item Determine the expected number of calls required for the first success. 
+
+\item Using the inverse transform method, simulate multiple observations of $X$ and estimate the success probability from the simulated data.
+
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+
+
+
+\end{document}
