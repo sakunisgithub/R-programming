@@ -52,7 +52,33 @@
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
 
 \begin{itemize}
-\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a 
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Poisson distribution with parameter $\lambda = 3$. We write
+
+\begin{align*}
+X \sim \text{Poisson}(\lambda = 3).
+\end{align*}
+
+The Probability Mass Function of $X$ is given by
+
+\begin{align*}
+P[X = x] = \dfrac{e^{-3} \cdot 3^x}{x !}; \,\, x = 0, 1, 2, \ldots.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The probability that exactly $4$ calls will be received in an hour is
+
+\begin{align*}
+P[X = 4] &= \dfrac{e^{-3} \cdot 3^4}{4 !} = \Sexpr{round(dpois(x = 4, lambda = 3), 3)}.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} $$E[X] = 3, \qquad var[X] = 3.$$
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
+\begin{enumerate}[I.]
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Map $x_i = k$ whenever $F(k-1) < u_i \leq F(k)$ $\forall$ $i = 1(1)n$ where $F(\cdot)$ is the CDF of $X$. \\[0.35em] We are actually doing $$X = min\{k : F(k) \geq U\}.$$
+\end{enumerate}
 \end{itemize}
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
@@ -61,6 +87,100 @@
 set.seed(22)
 @
 
+
+<<>>=
+n <- 10000
+@
+
+<<>>=
+u <- runif(n)
+@
+
+<<>>=
+CDF_F <- ppois(q = 0:13, lambda = 3)
+@
+
+<<>>=
+x <- findInterval(u, CDF_F, left.open = TRUE)
+@
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(x) %>%
+  ggplot(aes(x = x)) +
+  geom_bar(fill = "#FB8C06", color = "black", linewidth = 1) +
+  scale_x_continuous(limits = c(-0.5,13), breaks = 0:13) +
+  labs(x = expression(x[i]), y = "Frequency",
+       title = "Barplot of Generated Sample")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 0 and 9. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+
+\newpage
+
+The empirical probabilities are obtained as
+$$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0, 1, 2, \ldots.$$
+
+<<>>=
+emp_prob <- table(factor(x, levels = 0:13)) / n
+emp_prob <- as.numeric(emp_prob)
+@
+
+<<>>=
+theo_prob <- dpois(x = 0:13, lambda = 3)
+@
+
+<<>>=
+df <- data.frame(x = 0:13, 
+                 empirical.probability = emp_prob,
+                 theoretical.probability = theo_prob)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<echo=FALSE, results='asis'>>=
+stargazer(df, summary = FALSE, rownames = FALSE, digits = 5, label = "Table 1", title = "Theoretical and Empirical Probabilities")
+@
+
+<<>>=
+df_melted <- df %>%
+                pivot_longer(cols = c("empirical.probability", "theoretical.probability"),
+                             names_to = "probability_type",
+                             values_to = "probability")
+@
+
+\newpage
+
+Let us have a grouped barplot from comparison of empirical and theoretical probabilities.
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(ggpattern)
+@
+
+<<>>=
+df_melted %>%
+  ggplot(aes(x = x, y = probability, pattern = probability_type)) +
+  geom_col_pattern(position = "dodge", 
+                   pattern_spacing = 0.01, 
+                   fill = "white", color = "black") +
+  scale_pattern_manual(values = c("stripe", "none")) +
+  scale_x_continuous(limits = c(-0.5, 13.5), breaks = 0:13) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
 
 \newpage
 
@@ -82,7 +202,38 @@ set.seed(22)
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
 
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Geometric distribution with probability of success $p = 0.3$ on support $\mathbb{N} = \{1, 2, 3, \ldots\}$. We write
 
+\begin{align*}
+X \sim \text{Geometric}(p = 0.3).
+\end{align*}
+
+The Probability Mass Function of $X$ is given by
+
+\begin{align*}
+P[X = x] = (0.3) \cdot (0.7)^{x-1}; \,\, x = 1, 2, 3, \ldots.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The probability that the first success occurs on the $5$th call is
+
+\begin{align*}
+P[X = 5] &= (0.3) \cdot (0.7)^{5-1} \\[0.3em]
+&= (0.3) \cdot (0.7)^4 \\[0.3em]
+&= \Sexpr{round(dgeom(x = 4, prob = 0.3), 4)}.
+\end{align*}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} The expected number of calls for the first success will be $E[X] = \dfrac{1}{p} = \dfrac{1}{0.3} \approx 4$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
+\begin{enumerate}[I.]
+\item Generate $u_i \sim U(0, 1)$ $\forall$ $i = 1(1)n$.
+\item Map $x_i = k$ whenever $F(k-1) < u_i \leq F(k)$ $\forall$ $i = 1(1)n$ where $F(\cdot)$ is the CDF of $X$. \\[0.35em] We are actually doing $$X = min\{k : F(k) \geq U\}.$$
+\end{enumerate}
+
+\end{itemize}
+
+\newpage
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
 
@@ -90,6 +241,48 @@ set.seed(22)
 rm(list = ls())
 @
 
+<<>>=
+set.seed(22)
+@
 
+
+<<>>=
+n <- 10000
+@
+
+<<>>=
+u <- runif(n)
+@
+
+<<>>=
+CDF_F <- pgeom(q = 0:20, prob = 0.3)
+@
+
+<<>>=
+x <- findInterval(u, CDF_F, left.open = TRUE) + 1
+@
+
+\newpage
+
+Let us have a barplot of the generated sample.
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(x) %>%
+  ggplot(aes(x = x)) +
+  geom_bar(fill = "#FB8C06", color = "black", linewidth = 1) +
+  scale_x_continuous(limits = c(0.5, 22.5), breaks = 1:22.5) +
+  labs(x = expression(x[i]), y = "Frequency",
+       title = "Barplot of Generated Sample")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 0 and 14. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+
+\vspace{0.3cm}
+
+From the simulated data, the estimated success probability is $\hat{p} = \dfrac{1}{\overline{X}} = \Sexpr{1/mean(x)}$.
 
 \end{document}
