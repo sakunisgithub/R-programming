@@ -1,0 +1,138 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 08}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} At a large hospital, the time (in hours) until a patient experiences recovery after receiving a new treatment is assumed to follow a Weibull distribution with shape parameter $5$ and scale parameter $2$.
+
+\begin{enumerate}[(i)]
+\item Using the inverse transform method, generate $10000$ random observations representing patient recovery times.
+
+\item Compute and report the sample mean and sample variance of the simulated recovery times.
+
+\item Plot a histogram of the simulated recovery times on a probability scale and overlay the corresponding theoretical Weibull probability density curve on the histogram.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} The Probability Distribution Function of a Weibull random variable with shape parameter $5$ and scale parameter $2$ is as follows.
+
+\begin{align*}
+f(x) &= \dfrac{5}{2} \left(\dfrac{x}{2}\right)^{4} \exp\!\left[ -\left(\dfrac{x}{2}\right)^{5} \right], \qquad x \ge 0
+\end{align*}
+
+The corresponding Cumulative Distribution Function is
+\begin{align*}
+F(x) &= 1 - \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right], \qquad 0 < x < \infty.
+\end{align*}
+
+Now we calculate $F^{-1}(x)$.
+
+\begin{align*}
+1 - \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right] &= y \\[0.2em]
+\Rightarrow \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right] &= 1 - y \\[0.2em]
+\Rightarrow \left( \dfrac{x}{2} \right)^5 &= - \ln (1 - y) \\[0.2em]
+\Rightarrow \dfrac{x}{2} &= \left[- \ln (1 - y) \right]^{\frac{1}{5}} \\[0.2em]
+\Rightarrow x &= 2 \cdot \left[- \ln (1 - y) \right]^{\frac{1}{5}} .
+\end{align*}
+
+$\therefore$ $F^{-1}(x) = 2 \cdot \left[- \ln (1 - x) \right]^{\frac{1}{5}}$. \\[0.3em]
+
+For inverse transform method, we 
+
+\begin{enumerate}[I.]
+\item Generate random numbers $u_1, u_2, \ldots, u_n \sim U(0, 1)$.
+\item Assign $x_i := F^{-1}(u_i) \,\, \forall i = 1(1)n$.
+\end{enumerate}
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+set.seed(22)
+@
+
+<<>>=
+n <- 10000
+@
+
+<<>>=
+u <- runif(n)
+@
+
+<<>>=
+F_inv <- function(x) 2 * (-log(1 - x))^(1/5)
+@
+
+<<>>=
+x <- F_inv(u)
+@
+
+\vspace{1cm}
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.2cm} Given $X \sim \text{Weibull}(5, 2)$. So
+\begin{align*}
+E[X] = 2 \cdot \Gamma \left( 1 + \dfrac{1}{5} \right) \approx 1.84  \qquad \text{and} \qquad var[X] = 2^2 \left[ \Gamma \left( 1 + \dfrac{2}{5} \right) - \Gamma^2 \left( 1 + \dfrac{1}{5} \right) \right] \approx 0.177.
+\end{align*}
+
+The empirical mean and variance are as follows.
+
+<<>>=
+mean(x); var(x)
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical mean and variance agree with theoretical ones due to large enough sample size. \par}
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 3}}
+
+<<message=FALSE, warning=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(x) %>%
+  ggplot(aes(x = x)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 20, 
+                 fill = "#2FF511", color = "black", linewidth = 1) +
+  stat_function(fun = dweibull, args = list(shape = 5, scale = 2),
+                linewidth = 1.25, color = "red") +
+  labs(title = "Histogram of Generated Sample")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
+
+\end{document}

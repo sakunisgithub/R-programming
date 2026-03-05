@@ -1,0 +1,213 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 08}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} At a large hospital, the time (in hours) until a patient experiences recovery after receiving a new treatment is assumed to follow a Weibull distribution with shape parameter $5$ and scale parameter $2$.
+
+\begin{enumerate}[(i)]
+\item Using the inverse transform method, generate $10000$ random observations representing patient recovery times.
+
+\item Compute and report the sample mean and sample variance of the simulated recovery times.
+
+\item Plot a histogram of the simulated recovery times on a probability scale and overlay the corresponding theoretical Weibull probability density curve on the histogram.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} The Probability Distribution Function of a Weibull random variable with shape parameter $5$ and scale parameter $2$ is as follows.
+
+\begin{align*}
+f(x) &= \dfrac{5}{2} \left(\dfrac{x}{2}\right)^{4} \exp\!\left[ -\left(\dfrac{x}{2}\right)^{5} \right], \qquad x \ge 0
+\end{align*}
+
+The corresponding Cumulative Distribution Function is
+\begin{align*}
+F(x) &= 1 - \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right], \qquad 0 < x < \infty.
+\end{align*}
+
+Now we calculate $F^{-1}(x)$.
+
+\begin{align*}
+1 - \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right] &= y \\[0.2em]
+\Rightarrow \exp\!\left[- \left( \dfrac{x}{2} \right)^5 \right] &= 1 - y \\[0.2em]
+\Rightarrow \left( \dfrac{x}{2} \right)^5 &= - \ln (1 - y) \\[0.2em]
+\Rightarrow \dfrac{x}{2} &= \left[- \ln (1 - y) \right]^{\frac{1}{5}} \\[0.2em]
+\Rightarrow x &= 2 \cdot \left[- \ln (1 - y) \right]^{\frac{1}{5}} .
+\end{align*}
+
+$\therefore$ $F^{-1}(x) = 2 \cdot \left[- \ln (1 - x) \right]^{\frac{1}{5}}$. \\[0.3em]
+
+For inverse transform method, we 
+
+\begin{enumerate}[I.]
+\item Generate random numbers $u_1, u_2, \ldots, u_n \sim U(0, 1)$.
+\item Assign $x_i := F^{-1}(u_i) \,\, \forall i = 1(1)n$.
+\end{enumerate}
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{10000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{F_inv} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{2} \hlopt{*} \hldef{(}\hlopt{-}\hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hldef{x))}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hlnum{5}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{F_inv}\hldef{(u)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\vspace{1cm}
+
+\scalebox{2.0}{\twemoji{keycap: 2}} \hspace{0.2cm} Given $X \sim \text{Weibull}(5, 2)$. So
+\begin{align*}
+E[X] = 2 \cdot \Gamma \left( 1 + \dfrac{1}{5} \right) \approx 1.84  \qquad \text{and} \qquad var[X] = 2^2 \left[ \Gamma \left( 1 + \dfrac{2}{5} \right) - \Gamma^2 \left( 1 + \dfrac{1}{5} \right) \right] \approx 0.177.
+\end{align*}
+
+The empirical mean and variance are as follows.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{mean}\hldef{(x);} \hlkwd{var}\hldef{(x)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.834324
+## [1] 0.1752897
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical mean and variance agree with theoretical ones due to large enough sample size. \par}
+
+\newpage
+
+\scalebox{2.0}{\twemoji{keycap: 3}}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data.frame}\hldef{(x)} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x))} \hlopt{+}
+  \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{20}\hldef{,}
+                 \hlkwc{fill} \hldef{=} \hlsng{"#2FF511"}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= dweibull,} \hlkwc{args} \hldef{=} \hlkwd{list}\hldef{(}\hlkwc{shape} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{scale} \hldef{=} \hlnum{2}\hldef{),}
+                \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"red"}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{title} \hldef{=} \hlsng{"Histogram of Generated Sample"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
+
+\end{document}
