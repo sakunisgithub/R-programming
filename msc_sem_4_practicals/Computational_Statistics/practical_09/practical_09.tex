@@ -1,0 +1,270 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 09}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate a random sample from $N(0, 1)$ by the rejection method.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Note that, if $Z \sim N(0, 1)$, $|Z|$ has the probability density function as follows.
+
+\begin{align}\label{PDF_of_mod_Z}
+f(x) &= \dfrac{2}{\sqrt{2\pi}} e^{-x^2 / 2}, \,\, 0 < x < \infty.
+\end{align}
+
+We start by generating from the preceding density function by using the rejection method with $g$ being the exponential density function with mean $1$, that is
+
+\begin{align*}
+g(x) &= e^{-x}, \,\, 0 < x < \infty.
+\end{align*}
+
+Now, 
+\begin{align*}
+\dfrac{f(x)}{g(x)} &= \sqrt{\dfrac{2}{\pi}} e^{x - x^2 / 2}
+\end{align*}
+
+and the maximum value of $\dfrac{f(x)}{g(x)}$ occurs at the value of $x$ that maximizes $x - \dfrac{x^2}{2}$.
+
+\begin{align*}
+\dfrac{d}{dx} \left(x - \dfrac{x^2}{2}\right) &= 0 \\[0.2em]
+\Rightarrow 1 - x &= 0 \\[0.2em]
+\Rightarrow x &= 1.
+\end{align*}
+
+So we take
+
+$$c = \text{Max} \dfrac{f(x)}{g(x)} = \dfrac{f(1)}{g(1)} = \sqrt{\dfrac{2e}{\pi}}.$$
+
+Then
+
+\begin{align*}
+\dfrac{f(x)}{c \cdot g(x)} &= \exp \! \left\{ x - \dfrac{x^2}{2} - \dfrac{1}{2} \right\} \\[0.2em]
+&= \exp \! \left\{ - \dfrac{(x-1)^2}{2} \right\}.
+\end{align*}
+
+\newpage
+
+Thus we can generate the absolute value of a standard normal random variable as follows:
+
+\begin{enumerate}[I.]
+\item Generate $Y$, an exponential random variable with rate $1$.
+\item Generate a uniform random number $U$.
+\item If $U \leq \exp \! \left\{ - \dfrac{(Y-1)^2}{2} \right\}$, set $X = Y$, otherwise return to step I.
+\end{enumerate}
+
+Once we have simulated a random variable $X$ having density function as in (\ref{PDF_of_mod_Z}) \textemdash\ and such a random variable is thus distributed as the absolute value of a standard normal \textemdash\ we can then obtain a standard normal $Z$ by letting $Z$ be equally likely to be either $X$ or $-X$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{10}\hlopt{^}\hlnum{5}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{y} \hlkwb{<-} \hlkwd{rexp}\hldef{(n,} \hlkwc{rate} \hldef{=} \hlnum{1}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u1} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{good} \hlkwb{<-} \hldef{u1} \hlopt{<=} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{(y} \hlopt{-} \hlnum{1}\hldef{)}\hlopt{^}\hlnum{2} \hlopt{/} \hlnum{2}\hldef{)}
+\hldef{accepted} \hlkwb{<-} \hldef{y[good]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u2} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{z} \hlkwb{<-} \hlkwd{ifelse}\hldef{(u2} \hlopt{<=} \hlnum{1}\hlopt{/}\hlnum{2}\hldef{, accepted,} \hlopt{-}\hldef{accepted)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Thus we have a sample of size 76339 from $N(0, 1)$. \\[1em]
+
+The \textbf{empirical acceptance rate} was $0.76339$ whereas the \textbf{theoretical acceptance rate} is $0.7601735$. \\[0.2em]
+
+Let us have a visualization of the rejection technique.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f_abs_Z} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{2} \hlopt{*} \hlkwd{dnorm}\hldef{(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{g1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{sqrt}\hldef{((}\hlnum{2} \hlopt{*} \hlkwd{exp}\hldef{(}\hlnum{1}\hldef{))} \hlopt{/} \hldef{pi)} \hlopt{*} \hlkwd{dexp}\hldef{(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{X} \hlkwb{<-} \hlkwd{rexp}\hldef{(}\hlnum{1000}\hldef{); Y} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlnum{1000}\hldef{,} \hlkwc{min} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{max} \hldef{=} \hlkwd{g1}\hldef{(X))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{good} \hlkwb{<-} \hldef{Y} \hlopt{<=} \hlkwd{f_abs_Z}\hldef{(X); accepted} \hlkwb{<-} \hldef{X[good]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\newpage
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{))} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= f_abs_Z,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{theme_classic}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= dexp,} \hlkwc{col} \hldef{=} \hlsng{"blue"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= g1,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(X, Y),} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= X,} \hlkwc{y} \hldef{= Y),} \hlkwc{shape} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= X[good],} \hlkwc{y} \hldef{= Y[good]),} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),}
+             \hlkwc{col} \hldef{=} \hlsng{"green"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
+\end{knitrout}
+
+\newpage
+
+Let us have a histogram of the generated sample.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data.frame}\hldef{(z)} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= z))} \hlopt{+}
+  \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{20}\hldef{,}
+                 \hlkwc{fill} \hldef{=} \hlsng{"#27F53C"}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= dnorm,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{title} \hldef{=} \hlsng{"Histogram of Generated Sample"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-14-1} 
+\end{knitrout}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The PDF of a standard normal variate is well fit for the histogram of generated sample. \par}
+
+\end{document}

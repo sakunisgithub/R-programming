@@ -1,0 +1,174 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+
+
+\title{MSMS 408 : Practical 09}
+\author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate a random sample from $N(0, 1)$ by the rejection method.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Note that, if $Z \sim N(0, 1)$, $|Z|$ has the probability density function as follows.
+
+\begin{align}\label{PDF_of_mod_Z}
+f(x) &= \dfrac{2}{\sqrt{2\pi}} e^{-x^2 / 2}, \,\, 0 < x < \infty.
+\end{align}
+
+We start by generating from the preceding density function by using the rejection method with $g$ being the exponential density function with mean $1$, that is
+
+\begin{align*}
+g(x) &= e^{-x}, \,\, 0 < x < \infty.
+\end{align*}
+
+Now, 
+\begin{align*}
+\dfrac{f(x)}{g(x)} &= \sqrt{\dfrac{2}{\pi}} e^{x - x^2 / 2}
+\end{align*}
+
+and the maximum value of $\dfrac{f(x)}{g(x)}$ occurs at the value of $x$ that maximizes $x - \dfrac{x^2}{2}$.
+
+\begin{align*}
+\dfrac{d}{dx} \left(x - \dfrac{x^2}{2}\right) &= 0 \\[0.2em]
+\Rightarrow 1 - x &= 0 \\[0.2em]
+\Rightarrow x &= 1.
+\end{align*}
+
+So we take
+
+$$c = \text{Max} \dfrac{f(x)}{g(x)} = \dfrac{f(1)}{g(1)} = \sqrt{\dfrac{2e}{\pi}}.$$
+
+Then
+
+\begin{align*}
+\dfrac{f(x)}{c \cdot g(x)} &= \exp \! \left\{ x - \dfrac{x^2}{2} - \dfrac{1}{2} \right\} \\[0.2em]
+&= \exp \! \left\{ - \dfrac{(x-1)^2}{2} \right\}.
+\end{align*}
+
+\newpage
+
+Thus we can generate the absolute value of a standard normal random variable as follows:
+
+\begin{enumerate}[I.]
+\item Generate $Y$, an exponential random variable with rate $1$.
+\item Generate a uniform random number $U$.
+\item If $U \leq \exp \! \left\{ - \dfrac{(Y-1)^2}{2} \right\}$, set $X = Y$, otherwise return to step I.
+\end{enumerate}
+
+Once we have simulated a random variable $X$ having density function as in (\ref{PDF_of_mod_Z}) \textemdash\ and such a random variable is thus distributed as the absolute value of a standard normal \textemdash\ we can then obtain a standard normal $Z$ by letting $Z$ be equally likely to be either $X$ or $-X$.
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+set.seed(22)
+@
+
+<<>>=
+n <- 10^5
+@
+
+<<>>=
+y <- rexp(n, rate = 1)
+@
+
+<<>>=
+u1 <- runif(n)
+@
+
+<<>>=
+good <- u1 <= exp(-(y - 1)^2 / 2)
+accepted <- y[good]
+@
+
+<<>>=
+u2 <- runif(n)
+@
+
+<<>>=
+z <- ifelse(u2 <= 1/2, accepted, -accepted)
+@
+
+Thus we have a sample of size \Sexpr{length(accepted)} from $N(0, 1)$. \\[1em]
+
+The \textbf{empirical acceptance rate} was $\Sexpr{length(accepted) / n}$ whereas the \textbf{theoretical acceptance rate} is $\Sexpr{1/(sqrt((2 / pi) * exp(1)))}$. \\[0.2em]
+
+Let us have a visualization of the rejection technique.
+
+<<>>=
+f_abs_Z <- function(x) 2 * dnorm(x)
+@
+
+<<>>=
+g1 <- function(x) sqrt((2 * exp(1)) / pi) * dexp(x)
+@
+
+<<>>=
+X <- rexp(1000); Y <- runif(1000, min = 0, max = g1(X))
+@
+
+<<>>=
+good <- Y <= f_abs_Z(X); accepted <- X[good]
+@
+
+<<message=FALSE, warning=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+\newpage
+
+<<>>=
+data.frame(x = c(0, 1)) %>%
+  ggplot() +
+  stat_function(fun = f_abs_Z, linewidth = 1.25) +
+  theme_classic() +
+  stat_function(fun = dexp, col = "blue", linewidth = 1.25) +
+  stat_function(fun = g1, col = "red", linewidth = 1.25) +
+  geom_point(data = data.frame(X, Y), aes(x = X, y = Y), shape = 1) +
+  geom_point(data = data.frame(x = X[good], y = Y[good]), aes(x = x, y = y),
+             col = "green")
+@
+
+\newpage
+
+Let us have a histogram of the generated sample.
+
+<<>>=
+data.frame(z) %>%
+  ggplot(aes(x = z)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 20,
+                 fill = "#27F53C", color = "black", linewidth = 1) +
+  stat_function(fun = dnorm, linewidth = 1.25) +
+  labs(title = "Histogram of Generated Sample")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The PDF of a standard normal variate is well fit for the histogram of generated sample. \par}
+
+\end{document}
