@@ -1,0 +1,172 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 03}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider a random sample $\{0.6, 1.2, 0.9, 1.8, 0.5, 1.1, 0.7, 1.6, 0.8, 1.3, 0.4, 1.0, 0.9, 1.5, 0.6\}$ drawn from an Exponential distribution with parameter $\lambda$. Assume that the prior distribution of $\lambda$ follows a Gamma distribution with mean $1.5$ and variance $0.75$.
+
+\begin{enumerate}[(i)]
+\item Write the prior density and the likelihood function and derive the posterior distribution of $\lambda$.
+
+\item Compute the posterior mean and posterior variance of $\lambda$.
+
+\item Obtain the Bayes estimate of $\lambda$ under the squared error loss function and absolute error loss function.
+
+\item Generate a sample of size $20000$ from the posterior distribution and plot the prior and posterior densities along with a histogram of the generated posterior sample.
+
+\item Provide a $95\%$ Bayesian credible interval for $\lambda$ based on simulated posterior values.
+
+\item Perform a posterior predictive simulation to estimate the probability that a future observation exceeds $2$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} Let the gamma distribution has shape $ = \alpha$ and rate $= \beta$. Then, 
+
+\begin{center}
+mean $ = \dfrac{\alpha}{\beta}$ and variance $ = \dfrac{\alpha}{\beta^2}$.
+\end{center}
+
+So $\dfrac{\text{mean}}{\text{variance}} = \beta \Rightarrow \beta = \dfrac{1.5}{0.75} = 2$, consequently $\alpha = \beta \times 1.5 = 3$.\\[0.3em]
+
+So, $\lambda \sim \text{Gamma}(3, 2)$.
+
+The prior distribution is 
+
+$$\lambda \sim g(\lambda) \propto e^{-\beta \lambda} {\lambda}^{\alpha - 1}.$$
+
+The likelihood of $\lambda$ is
+
+$$L(\lambda) \propto {\lambda^n} {e^{-\lambda \sum \limits_{i = 1}^{n} x_i}}.$$
+
+\newpage
+
+$\therefore$ The posterior distribution of $\lambda$ will be
+
+$$g(\lambda | \mathbf{x}) \propto e^{-\beta \lambda - \lambda \sum \limits_{i = 1}^{n} x_i} {\lambda}^{\alpha + n - 1}.$$
+
+Recall that, Gamma is a conjugate prior for Exponential parameter. So we identify the posterior distribution of $\lambda$ as
+
+$$\lambda | \mathbf{x} \sim \text{Gamma}\left( \alpha + n, \beta + \sum \limits_{i = 1}^{n} x_i \right).$$
+
+<<>>=
+alpha <- 3; beta <- 2
+@
+
+<<>>=
+x <- c(0.6, 1.2, 0.9, 1.8, 0.5, 1.1, 0.7, 1.6, 0.8, 1.3, 0.4, 1.0, 0.9, 1.5, 0.6)
+@
+
+From the given, $\lambda | \mathbf{x} \sim \text{Gamma}(\Sexpr{alpha + length(x)}, \Sexpr{sum(x) + beta})$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The posterior mean and variance are
+
+$$E[\lambda | \mathbf{x}] = \dfrac{\alpha + n}{\beta + \sum \limits_{i = 1}^{n} x_i} = 1.065, \qquad \text{Var}[\lambda | \mathbf{x}] = \dfrac{\alpha + n}{ \left( \beta + \sum \limits_{i = 1}^{n} x_i \right)^2} = 0.063.$$
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} Under squared error loss function, Bayes estimate of $\lambda$ is the posterior mean $1.065$.\\[0.3em]
+
+Under absolute error loss function, Bayes estimate of $\lambda$ is the posterior median $\Sexpr{round(qgamma(0.5, shape = 18, rate = 16.9) ,2)}$.
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+set.seed(22)
+@
+
+<<warning=FALSE, message=FALSE, echo=FALSE>>=
+library(tidyverse)
+@
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+\end{itemize}
+
+<<>>=
+n <- 2 * 10^5
+@
+
+<<>>=
+lambda_posterior <- rgamma(n, shape = 18, rate = 16.9)
+@
+
+<<>>=
+data.frame(lambda_posterior) %>%
+  ggplot(aes(x = lambda_posterior)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 20,
+                 fill = "#F54927", color = "black", linewidth = 1) +
+  stat_function(fun = dgamma, args = list(shape = 3, rate = 2), xlim = c(0, 3.5),
+                linewidth = 1.25, linetype = "dashed") +
+  stat_function(fun = dgamma, args = list(shape = 18, rate = 16.9),
+                linewidth = 1.25) +
+  labs(x = expression(lambda),
+       title = "Histogram of Simulated Sample from Posterior Distribution")
+@
+
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 5}}] $95\%$ Bayesian credible interval based on simulated posterior sample is given by $$(q_{0.025}, q_{0.975})$$ where $q_{\alpha}$ is the $\alpha-$fractile of the simulated sample.
+
+<<>>=
+quantile(lambda_posterior, c(0.025, 0.975))
+@
+\end{itemize}
+
+\newpage
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 5}}] \hspace{0.3cm} We have to find $$P(X_{\text{new}} > 2 \mid \text{data}).$$
+
+<<>>=
+l <- rgamma(n, shape = 18, rate = 16.9)
+
+x_new <- rexp(n, rate = l)
+
+mean(x_new > 2)
+@
+
+From simulation, the posterior predictive probability that a future observation exceeds $2$ is $\Sexpr{round(mean(x_new > 2), 2)}$.
+
+\end{itemize}
+\end{document}
