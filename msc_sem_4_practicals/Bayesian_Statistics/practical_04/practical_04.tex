@@ -1,0 +1,263 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 04}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider a random sample $\{X_1, X_2, \ldots, X_8\}$ drawn from a independently Normal distribution with unknown mean $\mu$ and known variance $\sigma^2 = 4$. However, due to a reporting threshold, only observations satisfying $X_i > c$ (left-truncated at a known constant $c$) are recorded. Suppose the observed truncated sample is $\{5.2, 6.1, 4.8, 5.5, 6.3, 5.9, 4.7, 5.8\}$ where $c = 4.5$. Assume that the prior distribution of $\mu$ is Normal with mean $5$ and variance $1$.
+
+\begin{enumerate}[(i)]
+\item Formulate the likelihood function for the truncated Normal distribution and derive the posterior distribution of $\mu$ (up to proportionality). Comment on whether it belongs to a standard conjugate family.
+
+\item Approximate the posterior distribution numerically, compute the posterior mean, and hence obtain the Bayes estimator of $\mu$ under the squared error loss function.
+
+\item Generate posterior samples to construct a $95\%$ Bayesian credible interval.
+
+\item Perform a posterior predictive simulation to estimate the probability that a future observation exceeds $7$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} The prior distribution is 
+
+$$\mu \sim \pi(\mu) = \phi(\mu \mid 5, 1) = \dfrac{1}{\sqrt{2\pi}} \exp \left( - \dfrac{(\mu - 5)^2}{2} \right).$$
+
+The likelihood of $\mu$ is
+
+$$L(\mu) = \prod\limits_{i=1}^{n} \dfrac{\phi(x_i \mid \mu, 4)}{1 - \Phi(4.5 \mid \mu, 4)},$$
+
+or equivalently,
+
+$$L(\mu) = \left[ \prod\limits_{i=1}^{n} \phi(x_i \mid \mu, 4) \right] \left( 1 - \Phi(4.5 \mid \mu, 4) \right)^{-n}.$$
+
+\newpage
+
+$\therefore$ The posterior distribution of $\lambda$ will be
+
+$$\pi(\mu | \mathbf{x}) \propto L(\mu) \times \pi(\mu)$$
+
+\textit{i.e.}
+
+$$\pi(\mu \mid x) \propto \left[ \prod\limits_{i=1}^{n} \phi(x_i \mid \mu, 4) \right] \times \left[ 1 - \Phi(4.5 \mid \mu, 4) \right]^{-n} \times \phi(\mu \mid 5, 1).$$
+
+Even though, a Normal prior is conjugate for a Normal likelihood, here the truncation term $\left[ 1 - \Phi(4.5 \mid \mu, 4) \right]^{-n}$ does not allow the posterior to belong to the Normal family. Moreover, the posterior cannot be normalized analytically as the integral in the denominator does not have any closed-form expression. So we opt for numerical methods. Here we are concerned with only one parameter $\mu$, so Grid approximation would do fine.
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{5.2}\hldef{,} \hlnum{6.1}\hldef{,} \hlnum{4.8}\hldef{,} \hlnum{5.5}\hldef{,} \hlnum{6.3}\hldef{,} \hlnum{5.9}\hldef{,} \hlnum{4.7}\hldef{,} \hlnum{5.8}\hldef{); n} \hlkwb{<-} \hlkwd{length}\hldef{(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{mu_grid} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{3}\hldef{,} \hlnum{7}\hldef{,} \hlkwc{length.out} \hldef{=} \hlnum{5000}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log_posterior} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{mu}\hldef{) \{}
+  \hldef{log_prior} \hlkwb{<-} \hlkwd{dnorm}\hldef{(mu,} \hlkwc{mean} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{sd} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{log} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+  \hldef{log_lik} \hlkwb{<-} \hlkwd{sum}\hldef{(}\hlkwd{dnorm}\hldef{(x,} \hlkwc{mean} \hldef{= mu,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{log} \hldef{=} \hlnum{TRUE}\hldef{))} \hlopt{-}
+             \hldef{n} \hlopt{*} \hlkwd{log}\hldef{(}\hlnum{1} \hlopt{-} \hlkwd{pnorm}\hldef{(}\hlnum{4.5}\hldef{,} \hlkwc{mean} \hldef{= mu,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{))}
+
+  \hlkwd{return}\hldef{(log_prior} \hlopt{+} \hldef{log_lik)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log_post_vals} \hlkwb{<-} \hlkwd{sapply}\hldef{(mu_grid, log_posterior)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log_post_vals} \hlkwb{<-} \hldef{log_post_vals} \hlopt{-} \hlkwd{max}\hldef{(log_post_vals)}
+\hldef{post_vals} \hlkwb{<-} \hlkwd{exp}\hldef{(log_post_vals)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{post_vals} \hlkwb{<-} \hldef{post_vals} \hlopt{/} \hlkwd{sum}\hldef{(post_vals)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sum}\hldef{(post_vals} \hlopt{*} \hldef{mu_grid)}
+\end{alltt}
+\begin{verbatim}
+## [1] 4.228437
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Under squared error loss function, Bayes estimate of $\mu$ is the posterior mean $4.228$.
+
+\end{itemize}
+
+\newpage
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.3cm} $95\%$ Bayesian credible interval based on simulated posterior sample is given by $$(q_{0.025}, q_{0.975})$$ where $q_{\alpha}$ is the $\alpha-$fractile of the simulated sample.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{samples} \hlkwb{<-} \hlkwd{sample}\hldef{(mu_grid,} \hlkwc{size} \hldef{=} \hlnum{10000}\hldef{,} \hlkwc{replace} \hldef{=} \hlnum{TRUE}\hldef{,} \hlkwc{prob} \hldef{= post_vals)}
+
+\hlkwd{quantile}\hldef{(samples,} \hlkwd{c}\hldef{(}\hlnum{0.025}\hldef{,} \hlnum{0.975}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##     2.5%    97.5% 
+## 3.107221 5.602140
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{itemize}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.3cm} We have to find $$P(X_{\text{new}} > 7 \mid \text{data}).$$
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{posterior_samples} \hlkwb{<-} \hlkwd{sample}\hldef{(mu_grid,} \hlkwc{size} \hldef{=} \hlnum{10000}\hldef{,} \hlkwc{replace} \hldef{=} \hlnum{TRUE}\hldef{,} \hlkwc{prob} \hldef{= post_vals)}
+
+\hldef{x_new} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{10000}\hldef{,} \hlkwc{mean} \hldef{= posterior_samples,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{)}
+
+\hlkwd{mean}\hldef{(x_new} \hlopt{>} \hlnum{7}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.0994
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+From simulation, the posterior predictive probability that a future observation exceeds $7$ is $0.0994$.
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Truncation does not allow the resulting posterior to belong to the conjugate prior family. Moreover, the posterior could not be normalized analytically. So we had to resort to numerical methods to obtain Bayes estimate and credible interval for the parameter. \par}
+
+\end{document}

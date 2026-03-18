@@ -1,0 +1,169 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 04}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider a random sample $\{X_1, X_2, \ldots, X_8\}$ drawn from a independently Normal distribution with unknown mean $\mu$ and known variance $\sigma^2 = 4$. However, due to a reporting threshold, only observations satisfying $X_i > c$ (left-truncated at a known constant $c$) are recorded. Suppose the observed truncated sample is $\{5.2, 6.1, 4.8, 5.5, 6.3, 5.9, 4.7, 5.8\}$ where $c = 4.5$. Assume that the prior distribution of $\mu$ is Normal with mean $5$ and variance $1$.
+
+\begin{enumerate}[(i)]
+\item Formulate the likelihood function for the truncated Normal distribution and derive the posterior distribution of $\mu$ (up to proportionality). Comment on whether it belongs to a standard conjugate family.
+
+\item Approximate the posterior distribution numerically, compute the posterior mean, and hence obtain the Bayes estimator of $\mu$ under the squared error loss function.
+
+\item Generate posterior samples to construct a $95\%$ Bayesian credible interval.
+
+\item Perform a posterior predictive simulation to estimate the probability that a future observation exceeds $7$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} The prior distribution is 
+
+$$\mu \sim \pi(\mu) = \phi(\mu \mid 5, 1) = \dfrac{1}{\sqrt{2\pi}} \exp \left( - \dfrac{(\mu - 5)^2}{2} \right).$$
+
+The likelihood of $\mu$ is
+
+$$L(\mu) = \prod\limits_{i=1}^{n} \dfrac{\phi(x_i \mid \mu, 4)}{1 - \Phi(4.5 \mid \mu, 4)},$$
+
+or equivalently,
+
+$$L(\mu) = \left[ \prod\limits_{i=1}^{n} \phi(x_i \mid \mu, 4) \right] \left( 1 - \Phi(4.5 \mid \mu, 4) \right)^{-n}.$$
+
+\newpage
+
+$\therefore$ The posterior distribution of $\lambda$ will be
+
+$$\pi(\mu | \mathbf{x}) \propto L(\mu) \times \pi(\mu)$$
+
+\textit{i.e.}
+
+$$\pi(\mu \mid x) \propto \left[ \prod\limits_{i=1}^{n} \phi(x_i \mid \mu, 4) \right] \times \left[ 1 - \Phi(4.5 \mid \mu, 4) \right]^{-n} \times \phi(\mu \mid 5, 1).$$
+
+Even though, a Normal prior is conjugate for a Normal likelihood, here the truncation term $\left[ 1 - \Phi(4.5 \mid \mu, 4) \right]^{-n}$ does not allow the posterior to belong to the Normal family. Moreover, the posterior cannot be normalized analytically as the integral in the denominator does not have any closed-form expression. So we opt for numerical methods. Here we are concerned with only one parameter $\mu$, so Grid approximation would do fine.
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm}
+
+<<echo=FALSE>>=
+set.seed(22)
+@
+
+<<>>=
+x <- c(5.2, 6.1, 4.8, 5.5, 6.3, 5.9, 4.7, 5.8); n <- length(x)
+@
+
+<<>>=
+mu_grid <- seq(3, 7, length.out = 5000)
+@
+
+<<>>=
+log_posterior <- function(mu) {
+  log_prior <- dnorm(mu, mean = 5, sd = 1, log = TRUE)
+  
+  log_lik <- sum(dnorm(x, mean = mu, sd = 2, log = TRUE)) -
+             n * log(1 - pnorm(4.5, mean = mu, sd = 2))
+  
+  return(log_prior + log_lik)
+}
+@
+
+<<>>=
+log_post_vals <- sapply(mu_grid, log_posterior)
+@
+
+<<>>=
+log_post_vals <- log_post_vals - max(log_post_vals)
+post_vals <- exp(log_post_vals)
+@
+
+<<>>=
+post_vals <- post_vals / sum(post_vals)
+@
+
+<<>>=
+sum(post_vals * mu_grid)
+@
+
+Under squared error loss function, Bayes estimate of $\mu$ is the posterior mean $\Sexpr{round(sum(post_vals * mu_grid), 3)}$.
+
+\end{itemize}
+
+\newpage
+
+\begin{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.3cm} $95\%$ Bayesian credible interval based on simulated posterior sample is given by $$(q_{0.025}, q_{0.975})$$ where $q_{\alpha}$ is the $\alpha-$fractile of the simulated sample.
+
+<<>>=
+samples <- sample(mu_grid, size = 10000, replace = TRUE, prob = post_vals)
+
+quantile(samples, c(0.025, 0.975))
+@
+
+\end{itemize}
+
+\begin{itemize}
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.3cm} We have to find $$P(X_{\text{new}} > 7 \mid \text{data}).$$
+
+<<>>=
+posterior_samples <- sample(mu_grid, size = 10000, replace = TRUE, prob = post_vals)
+
+x_new <- rnorm(10000, mean = posterior_samples, sd = 2)
+
+mean(x_new > 7)
+@
+
+From simulation, the posterior predictive probability that a future observation exceeds $7$ is $\Sexpr{round(mean(x_new > 7), 4)}$.
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Truncation does not allow the resulting posterior to belong to the conjugate prior family. Moreover, the posterior could not be normalized analytically. So we had to resort to numerical methods to obtain Bayes estimate and credible interval for the parameter. \par}
+
+\end{document}
