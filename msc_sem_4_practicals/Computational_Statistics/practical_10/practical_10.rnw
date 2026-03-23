@@ -1,0 +1,156 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 10}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider the data-set representing lifetimes (in hours) of a system component $$X = \{12, 15, 18, 21, 24, 30, 35, 40\}$$ and let $\theta = \dfrac{\mu}{\sigma}$ where $\mu$ and $\sigma$ denote the population mean and population standard deviation respectively.
+
+\begin{enumerate}[(i)]
+\item Treating this sample as an empirical distribution, apply the non-parametric bootstrap method to generate $B = 2000$ bootstrap samples and compute the bootstrap estimates $\widehat{\theta^*} = \dfrac{\bar{X^*}}{S^*}$.
+
+\item Using these replicates, provide bootstrap estimates of bias and standard error of $\widehat{\theta}$.
+
+\item Construct $95\%$ confidence interval for $\theta$.
+
+\item Comment on the shape of the bootstrap distribution.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{enumerate}[Step I.]
+\item Obtain sample $x_1, x_2, \ldots, x_n$. Based on this sample, let $\hat{\theta} = \dfrac{\bar{x}}{s}$ be an estimator of $\theta$.
+
+\item Draw bootstrap sample of size $n$ with-replacement from $\{x_1, x_2, \ldots, x_n\}$.
+
+\item Compute the estimate $\widehat{\theta_{j}^{*}}$ for the drawn bootstrap sample.
+
+\item Repeat steps II and III both $B$ times to obtain $$\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}.$$
+\end{enumerate}
+
+$\{\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}\}$ can be treated as a sample from the sampling distribution of $\hat{\theta}$ and can be used for further inferences \textit{e.g.} estimating the variability of an estimator. \\[0.3em]
+
+$\bullet$ \textbf{Bootstrap estimate of Bias \& standard error} of $\hat{\theta}$ are given by $$\text{Bias}_{\text{boot}} = \dfrac{1}{B} \sum \limits_{b = 1}^{B} \widehat{\theta_{b}^{*}} - \hat{\theta} \qquad \& \qquad \text{SE}_{\text{boot}} = \sqrt{\dfrac{1}{B-1} \sum \limits_{b = 1}^{B} \left[\widehat{\theta_{b}^{*}} - \overline{\theta^*}\right]^2}$$
+
+\begin{align*}
+\text{where } \hat{\theta} &: \text{ estimate of } \theta \text{ from the original sample}, \\[0.2em]
+\widehat{\theta_{b}^{*}} &: \text{ estimate of } \theta \text{ from } b\text{-th bootstrap sample}, \\[0.2em]
+\overline{\theta^*} &: \text{ average of the bootstrap estimates}, \\[0.2em]
+B &: \text{number of bootstrap samples drawn}.
+\end{align*}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<>>=
+set.seed(14)
+@
+
+<<>>=
+x <- c(12, 15, 18, 21, 24, 30, 35, 40)
+
+theta_hat <- mean(x) / sd(x); theta_hat
+@
+
+<<>>=
+n <- length(x); B <- 2000
+@
+
+<<>>=
+bootstrap.theta_hat <- c()
+
+for(i in 1:B){
+  bootstrap.sample <- sample(x, size = n, replace = TRUE)
+  
+  bootstrap.theta_hat[i] <- mean(bootstrap.sample) / sd(bootstrap.sample)
+}
+
+head(bootstrap.theta_hat)
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+bootstrap.bias <- mean(bootstrap.theta_hat) - theta_hat; bootstrap.bias
+@
+
+<<>>=
+bootstrap.sd <- sd(bootstrap.theta_hat); bootstrap.sd
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+quantile(bootstrap.theta_hat, c(0.025, 0.975)) # alpha = 0.05
+@
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(bootstrap.theta_hat) %>%
+  ggplot(aes(x = bootstrap.theta_hat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 15,
+                 fill = "#F5F227", color = "black", linewidth = 1) +
+  labs(x = expression(hat(theta)),
+       title = "Approximate Sampling Distribution based on Bootstrap Samples")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The bootstrap samples have a positively skewed distribution. \par}
+
+\end{enumerate}
+
+
+
+\end{document}
