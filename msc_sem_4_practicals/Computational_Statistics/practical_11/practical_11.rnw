@@ -1,0 +1,167 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 11}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider the data-set representing repair times of machines (in hours) $$X = \{2.1, 1.5, 3.2, 0.8, 1.9, 2.7, 1.1, 0.9\}.$$ Assume that the data come from an Exponential distribution with parameter $\theta$.
+
+\begin{enumerate}[(i)]
+\item Use the sample to provide a maximum likelihood estimate of $\theta$.
+
+\item Employ the parametric bootstrap method to generate $B = 1000$ bootstrap samples from the exponential distribution with the estimated parameter plugged in and compute the bootstrap estimates $\widehat{\theta^*}$.
+
+\item Using these bootstrap estimates, estimates the bias, standard error and variance of $\widehat{\theta}$.
+
+\item Construct $95\%$ confidence interval for $\theta$.
+
+\item Comment on the shape of the bootstrap distribution.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+The maximum likelihood estimate of $\theta$ is $$\widehat{\theta_{\text{MLE}}} = \dfrac{1}{\bar{x}}.$$
+
+For bootstrapping, we proceed as follows :
+
+\begin{enumerate}[Step I.]
+\item Suppose we have $x_1, x_2, \ldots, x_n \sim f(x, \theta)$ where functional form of $f$ is known but $\theta$ is unknown.
+
+\item Obtain an estimate of $\theta$ as $\hat{\theta} = \dfrac{1}{\bar{x}}$.
+
+\item Plug in $\hat{\theta}$ in place of $\theta$ and generate a sample of size $n$ as $x_1^*, x_2^*, \ldots, x_n^* \sim F(x, \hat{\theta})$.
+
+\item Based on bootstrapped sample $\{x_1^*, x_2^*, \ldots, x_n^*\}$, calculate $\widehat{\theta_{j}^{*}}$.
+
+\item Repeat steps III and IV both $B$ times to get $$\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}.$$
+\end{enumerate}
+
+$\{\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}\}$ can be thought as sample from the sampling distribution of $\hat{\theta}$ and can be used to obtain bootstrap estimate of bias, standard error, variance, confidence interval. \\[0.3em]
+
+$\bullet$ \textbf{Bootstrap estimate of Bias, standard error \& variance} of $\hat{\theta}$ are given by $$\text{Bias}_{\text{boot}} = \dfrac{1}{B} \sum \limits_{b = 1}^{B} \widehat{\theta_{b}^{*}} - \hat{\theta} \qquad \& \qquad \text{SE}_{\text{boot}} = \sqrt{\dfrac{1}{B-1} \sum \limits_{b = 1}^{B} \left[\widehat{\theta_{b}^{*}} - \overline{\theta^*}\right]^2} \qquad \& \qquad \text{var}_{\text{boot}} = \dfrac{1}{B-1} \sum \limits_{b = 1}^{B} \left[\widehat{\theta_{b}^{*}} - \overline{\theta^*}\right]^2$$
+
+\begin{align*}
+\text{where } \hat{\theta} &: \text{ estimate of } \theta \text{ from the original sample}, \\[0.2em]
+\widehat{\theta_{b}^{*}} &: \text{ estimate of } \theta \text{ from } b\text{-th bootstrap sample}, \\[0.2em]
+\overline{\theta^*} &: \text{ average of the bootstrap estimates}, \\[0.2em]
+B &: \text{number of bootstrap samples drawn}.
+\end{align*}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<>>=
+set.seed(14)
+@
+
+<<>>=
+x <- c(2.1, 1.5, 3.2, 0.8, 1.9, 2.7, 1.1, 0.9)
+
+theta_hat <- 1 / mean(x); theta_hat
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+n <- length(x); B <- 2000
+@
+
+<<>>=
+bootstrap.theta_hat <- c()
+
+for(i in 1:B){
+  bootstrap.sample <- rexp(n, rate = theta_hat)
+  
+  bootstrap.theta_hat[i] <- 1 / mean(bootstrap.sample)
+}
+
+head(bootstrap.theta_hat)
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+bootstrap.bias <- mean(bootstrap.theta_hat) - theta_hat; bootstrap.bias
+@
+
+<<>>=
+bootstrap.sd <- sd(bootstrap.theta_hat); bootstrap.sd
+@
+
+<<>>=
+bootstrap.var <- var(bootstrap.theta_hat); bootstrap.var
+@
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+<<>>=
+quantile(bootstrap.theta_hat, c(0.025, 0.975)) # alpha = 0.05
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 5}}]
+
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(bootstrap.theta_hat) %>%
+  ggplot(aes(x = bootstrap.theta_hat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 15,
+                 fill = "#275EF5", color = "black", linewidth = 1) +
+  labs(x = expression(hat(theta)),
+       title = "Approximate Sampling Distribution based on Bootstrap Samples")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The bootstrap samples have a positively skewed distribution. \par}
+
+\end{enumerate}
+
+
+
+\end{document}
