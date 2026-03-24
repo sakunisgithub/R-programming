@@ -1,0 +1,198 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{Bootstrapping Technique}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas}}
+\date{}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Introduction}}
+
+Bootstrapping is a resampling technique used to approximate the sampling distribution of a statistic when the true distribution is unknown or hard to derive analytically. Instead of generating new samples from population, we take repeated with-replacement samples from the observed sample. This creates many new samples, called \textbf{bootstrap samples} that mimic resampling from the population.
+
+\begin{enumerate}[Step I.]
+\item Obtain sample $x_1, x_2, \ldots, x_n$. Based on this sample, let $\hat{\theta}$ be an estimator of population parameter $\theta$.
+
+\item Draw bootstrap sample of size $n$ with-replacement from $\{x_1, x_2, \ldots, x_n\}$.
+
+\item Compute the estimate $\widehat{\theta_{j}^{*}}$ for the drawn bootstrap sample.
+
+\item Repeat steps II and III both $B$ times to obtain $$\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}.$$
+\end{enumerate}
+
+$\{\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}\}$ can be treated as a sample from the sampling distribution of $\hat{\theta}$ and can be used for further inferences \textit{e.g.} estimating the variability of an estimator. \\[0.3em]
+
+$\bullet$ \textbf{Bootstrap estimate of Bias, Standard Error \& MSE} of $\hat{\theta}$ are given by $$\text{Bias}_{\text{boot}} = \dfrac{1}{B} \sum \limits_{b = 1}^{B} \widehat{\theta_{b}^{*}} - \hat{\theta} \qquad \& \qquad \text{SE}_{\text{boot}} = \sqrt{\dfrac{1}{B-1} \sum \limits_{b = 1}^{B} \left[\widehat{\theta_{b}^{*}} - \overline{\theta^*}\right]^2} \qquad \& \qquad \text{MSE}_{\text{boot}} = \dfrac{1}{B} \sum \limits_{b = 1}^{B} \left[\widehat{\theta_{b}^{*}} - \hat{\theta}\right]^2$$
+
+\begin{align*}
+\text{where } \hat{\theta} &: \text{ estimate of } \theta \text{ from the original sample}, \\[0.2em]
+\widehat{\theta_{b}^{*}} &: \text{ estimate of } \theta \text{ from } b\text{-th bootstrap sample}, \\[0.2em]
+\overline{\theta^*} &: \text{ average of the bootstrap estimates}, \\[0.2em]
+B &: \text{number of bootstrap samples drawn}.
+\end{align*}
+
+Let us have an R demo.
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+<<>>=
+n <- 100; B <- 1000; theta <- 2
+
+x <- rexp(n, rate = theta)
+
+theta_hat <- 1 / mean(x); theta_hat
+@
+
+<<>>=
+bootstrap.theta_hat <- c()
+
+for (i in 1:B) {
+  bootstrap.sample <- sample(x, size = n, replace = TRUE)
+  
+  bootstrap.theta_hat[i] <- 1 / mean(bootstrap.sample)
+}
+
+head(bootstrap.theta_hat)
+@
+
+
+<<echo=FALSE, message=FALSE, warning=FALSE>>=
+library(tidyverse)
+@
+
+<<echo=FALSE>>=
+data.frame(bootstrap.theta_hat) %>%
+  ggplot(aes(x = bootstrap.theta_hat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 15,
+                 fill = "#B727F5", color = "black", linewidth = 1) +
+  geom_density(linewidth = 1) +
+  labs(x = expression(hat(theta)),
+       title = "Approximate Sampling Distribution based on Bootstrap Samples")
+@
+
+<<>>=
+bootstrap.bias <- mean(bootstrap.theta_hat) - theta_hat; bootstrap.bias
+@
+
+<<>>=
+bootstrap.MSE <- mean((bootstrap.theta_hat - theta_hat)^2); bootstrap.MSE
+@
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Bootstrap Confidence Interval}}
+
+Using bootstrap samples, we can also construct confidence interval for $\theta$.\\[0.2em]
+
+Recall that bootstrap estimates $\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}$ approximate the sampling distribution of $\hat{\theta}$. 
+
+\begin{enumerate}[Step I.]
+\item Arrange bootstrap estimates in ascending order as $$\widehat{\theta}^{*}_{\!(1)} \leq  \widehat{\theta}^{*}_{\!(2)} \leq \ldots \leq \widehat{\theta}^{*}_{\!(B)}.$$
+
+\item $100(1 - \alpha)\%$ confidence interval is given by $$\left( \widehat{\theta}^{*}_{\!(\alpha B / 2)}, \widehat{\theta}^{*}_{\!((1 - \alpha / 2) B)} \right).$$
+\end{enumerate}
+
+<<>>=
+quantile(bootstrap.theta_hat, c(0.025, 0.975)) # alpha = 0.05
+@
+
+
+So far what we have discussed is \textbf{non-parametric bootstrapping} where population distribution was not known. Another scenario called \textbf{parametric bootstrapping} is where the population distribution family is known, but the member is unknown. There we proceed as follows.
+
+\begin{enumerate}[Step I.]
+\item Suppose we have $x_1, x_2, \ldots, x_n \sim F(x, \theta)$ where functional form of $F$ is known but $\theta$ is unknown.
+
+\item Obtain an estimate of $\theta$ as $\hat{\theta}$.
+
+\item Plug in $\hat{\theta}$ in place of $\theta$ and generate a sample of size $n$ as $x_1^*, x_2^*, \ldots, x_n^* \sim F(x, \hat{\theta})$.
+
+\item Based on bootstrapped sample $\{x_1^*, x_2^*, \ldots, x_n^*\}$, calculate $\widehat{\theta_{j}^{*}}$.
+
+\item Repeat steps III and IV both $B$ times to get $$\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}.$$
+\end{enumerate}
+
+$\{\widehat{\theta_{1}^{*}}, \widehat{\theta_{2}^{*}}, \ldots, \widehat{\theta_{B}^{*}}\}$ can be thought as sample from the sampling distribution of $\hat{\theta}$ and can be used to obtain bootstrap estimate of bias, MSE, confidence interval as discussed previously. \\[0.3em]
+
+Let us have an R demo of the above.
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<>>=
+set.seed(14)
+@
+
+<<>>=
+n <- 100; B <- 1000; theta <- 5
+
+x <- rnorm(n, mean = theta, sd = 1)
+
+theta_hat <- mean(x); theta_hat
+@
+
+<<>>=
+bootstrap.theta_hat <- c()
+
+for(i in 1:B){
+  bootstrap.sample <- rnorm(n, mean = theta_hat, sd = 1)
+  
+  bootstrap.theta_hat[i] <- mean(bootstrap.sample)
+}
+
+head(bootstrap.theta_hat)
+@
+
+<<echo=FALSE>>=
+data.frame(bootstrap.theta_hat) %>%
+  ggplot(aes(x = bootstrap.theta_hat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 15,
+                 fill = "#3CF527", color = "black", linewidth = 1) +
+  stat_function(fun = dnorm, args = list(mean = theta_hat, sd = 0.1), 
+                linewidth = 1.25, color = "blue") +
+  labs(x = expression(hat(theta)),
+       title = "Approximate Sampling Distribution based on Bootstrap Samples")
+@
+
+\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The density in blue is of $f(x, \hat{\theta})$, it is obtained by plugging in $\hat{\theta}$ in place of $\theta$ in $f$; of course the distribution of the bootstrap estimators fits this density well.}
+
+\end{document}
