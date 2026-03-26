@@ -96,7 +96,7 @@
 Bootstrapping is a resampling technique used to approximate the sampling distribution of a statistic when the true distribution is unknown or hard to derive analytically. Instead of generating new samples from population, we take repeated with-replacement samples from the observed sample. This creates many new samples, called \textbf{bootstrap samples} that mimic resampling from the population.
 
 \begin{enumerate}[Step I.]
-\item Obtain sample $x_1, x_2, \ldots, x_n$. Based on this sample, let $\hat{\theta}$ be an estimator of population parameter $\theta$.
+\item Obtain sample $x_1, x_2, \ldots, x_n$. Based on this sample, let $\hat{\theta}$ be an estimator of population parameter $\theta$. Treat this sample as empirical population.
 
 \item Draw bootstrap sample of size $n$ with-replacement from $\{x_1, x_2, \ldots, x_n\}$.
 
