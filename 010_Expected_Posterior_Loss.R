@@ -9,7 +9,7 @@ a$value + b$value
 # a_2
 a <- integrate(f = function(x) (90 - x) * dnorm(x, mean = 110.38, sd = sqrt(69.23)), lower = -Inf, upper = 90)
 
-b <- integrate(f = function(x) 2 * (x - 110) * dnorm(x, mean = 110.38, sd = sqrt(69.23)), lower = 110, upper = Inf)
+b <- integrate(f = function(x) (x - 110) * dnorm(x, mean = 110.38, sd = sqrt(69.23)), lower = 110, upper = Inf)
 
 a$value + b$value
 
