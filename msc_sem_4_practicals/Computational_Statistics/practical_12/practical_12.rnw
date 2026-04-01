@@ -1,0 +1,173 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 12}
+\author{{\fontsize{22}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Consider the data-set representing lifetimes (in hours) of a system component $$X = \{12, 15, 18, 21, 24, 30, 35, 40\}$$ and let $\theta = \dfrac{\mu}{\sigma}$ where $\mu$ and $\sigma$ denote the population mean and population standard deviation respectively.
+
+\begin{enumerate}[(i)]
+\item Treating this sample as an empirical distribution, apply the jackknife method to compute estimates $\widehat{\theta}_{(i)} = \dfrac{\bar{X}_{(i)}}{S_{(i)}}$.
+
+\item Using these leave-one-out estimates, provide jackknife estimate of bias and standard error of $\widehat{\theta}$.
+
+\item Construct a $95\%$ confidence interval for $\theta$.
+
+\item Provide a visualization of the jackknife estimates.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+\item Remove $i$-th observation $X_i$ and compute the estimate based on remaining $n-1$ observations as $$\widehat{\theta}_{(i)} = \dfrac{\bar{X}_{(i)}}{S_{(i)}}.$$
+
+\item Repeat the above for $i = 1(1)n$ to get $n$ jackknife estimates $$\widehat{\theta}_{(1)}, \widehat{\theta}_{(2)}, \ldots, \widehat{\theta}_{(n)}.$$
+\end{itemize}
+
+$\bullet$ \textbf{Jackknife estimate of Bias \& standard error} of $\hat{\theta}$ are given by $$\text{Bias}_{\text{jack}} = (n - 1) \cdot \left( \dfrac{1}{n} \sum \limits_{i = 1}^{n} \widehat{\theta}_{(i)} - \hat{\theta} \right) \qquad \& \qquad \text{se}_{\text{jack}} = \sqrt{\dfrac{n-1}{n} \sum \limits_{i = 1}^{n} \left[\widehat{\theta}_{(i)} - \dfrac{1}{n} \sum \limits_{i = 1}^{n} \widehat{\theta}_{(i)}\right]^2}$$
+
+\begin{align*}
+\text{where } \hat{\theta} &: \text{ estimate of } \theta \text{ from the original sample}, \\[0.2em]
+\widehat{\theta}_{(i)} &: \text{ estimate of } \theta \text{ from } i\text{-th jackknife sample}, \\[0.2em]
+n &: \text{size of original sample}.
+\end{align*}
+
+\newpage
+
+$\bullet$ \textbf{Bias-reduced Jackknife estimate} of $\hat{\theta}$ is given by 
+\begin{align*}
+\widehat{\theta}_{\text{jack}} = \widehat{\theta} - \text{Bias}_{\text{jack}} &= \widehat{\theta} -  (n - 1) \cdot \left( \dfrac{1}{n} \sum \limits_{i = 1}^{n} \widehat{\theta}_{(i)} - \hat{\theta} \right) \\[0.5em]
+&= n \widehat{\theta} - (n - 1) \cdot \dfrac{1}{n} \sum \limits_{i = 1}^{n} \widehat{\theta}_{(i)} \\[1em]
+&= n \widehat{\theta} - (n - 1) \widehat{\theta}_{(\cdot)}
+\end{align*}
+
+\begin{align*}
+\text{where } \widehat{\theta}_{(\cdot)} &: \text{average of } n \text{ jackknife estimates.}
+\end{align*}
+
+$\bullet$ Assuming approximate normality, $100(1 - \alpha)\%$ confidence interval for $\theta$ is given by
+
+$$\left( \widehat{\theta}_{\text{jack}} - \tau_{\alpha / 2} \cdot \text{se}_{\text{jack}}, \widehat{\theta}_{\text{jack}} + \tau_{\alpha / 2} \cdot \text{se}_{\text{jack}} \right).$$
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<>>=
+x <- c(12, 15, 18, 21, 24, 30, 35, 40)
+
+theta_hat <- mean(x) / sd(x); theta_hat
+@
+
+<<>>=
+n <- length(x)
+@
+
+<<>>=
+jackknife.estimates <- c()
+
+for (i in 1:n) {
+  jackknife.sample <- x[-i]
+  
+  jackknife.estimates[i] <- mean(jackknife.sample) / sd(jackknife.sample)
+}
+
+jackknife.estimates
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+jackknife.bias <- (n - 1) * (mean(jackknife.estimates) - theta_hat)
+
+jackknife.bias
+@
+
+<<>>=
+jackknife.se <- sd(jackknife.estimates) * ( (n - 1) / sqrt(n) )
+
+jackknife.se
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+theta_hat.jackknife <- n * theta_hat - (n - 1) * mean(jackknife.estimates)
+
+theta_hat.jackknife
+@
+
+<<>>=
+theta_hat.jackknife + qnorm(c(0.025, 0.975)) * jackknife.se
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} Here is a visualization of the Jackknife estimates.
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<echo=FALSE>>=
+data.frame(jackknife.estimates) %>%
+  ggplot(aes(x = 1:n, y = jackknife.estimates)) +
+  geom_point(size = 2, col = "red", shape = 4, stroke = 2) +
+  geom_hline(yintercept = theta_hat, linewidth = 1, col = "blue") +
+  geom_segment(aes(x = 1:n, y = theta_hat,
+                   xend = 1:n, yend = jackknife.estimates), 
+               linewidth = 1) +
+  labs(x = "Observation i", y = "Jackknife Estimate")
+@
+
+\smallpencil \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont The horizontal line corresponds to $\widehat{\theta}$ based on all the observations, the crosses are jackknife estimates and their deviations from $\widehat{\theta}$ are shown in vertical lines. Observations 1, 5, 6, 8 have much influence on $\widehat{\theta}$.}
+
+\end{enumerate}
+
+
+
+\end{document}
