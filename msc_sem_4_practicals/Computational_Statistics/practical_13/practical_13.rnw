@@ -1,0 +1,288 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 13}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate random numbers from $\beta_1(2, 3)$ using $U(0, 1)$ random numbers. For samples of size $20, 50, 80, 100$, 
+
+\begin{enumerate}[(i)]
+\item Using the simulated numbers, estimate the mean of the distribution via the standard Monte Carlo method.
+
+\item Improve the estimate by applying the antithetic variables technique.
+
+\item Estimate the variance of both the estimators.
+
+\item Compare the results and comment on the effectiveness of the antithetic variables method in reducing variance.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+We have to estimate
+
+$$\theta = E[X] = \dfrac{2}{5} = 0.4, \qquad X \sim \beta_1(2, 3).$$
+
+To generate random numbers from $\beta_1$ distribution, we recall
+
+$$X \sim U(0, 1) \Rightarrow - \ln X \sim \; \text{Exp}(1).$$
+
+Also, $$\sum \limits_{i = 1}^{n} - \ln X_i \sim \; \text{Gamma}(\text{shape} = n, \text{scale} = 1) \qquad \text{and}$$
+
+$$\dfrac{S_1}{S_1 + S_2} \sim \beta_1(m, n)$$
+where $S_1$ and $S_2$ are independent Gamma distributions with shape parameters $m$ and $n$ respectively. \\[0.5em]
+
+If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
+
+Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{2n} \sum \limits_{i = 1}^{n} [X_i + X_i']$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables.
+
+\newpage
+
+Here
+
+$$X_i = h(\utilde{u}), \qquad \& \qquad X_i' = h(\mathbf{1} - \utilde{u})$$
+
+with
+
+$$\utilde{u} = (u_1, u_2, \ldots, u_5), \qquad \text{and}$$
+
+$$h(u_1, u_2, \ldots, u_5) = \dfrac{\sum \limits_{i = 1}^{2} - \ln u_i}{\sum \limits_{i = 1}^{2} - \ln u_i + \sum \limits_{i = 3}^{5} - \ln u_i}.$$
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+<<>>=
+h <- function(u, m, n){
+  u1 <- u[1:m]
+  u2 <- u[(m + 1) : (m + n)]
+    
+  x1 <- -sum(log(u1))
+  x2 <- -sum(log(u2))
+    
+  x <- x1 / (x1 + x2)
+}
+@
+
+<<>>=
+my.rbeta <- function(n, shape1, shape2, uniform.sample){
+  
+  s <- c()
+  
+  for (i in 1:n) {
+    s[i] <- h(uniform.sample[i,], shape1, shape2)
+  }
+  
+  return(s)
+}
+@
+
+<<>>=
+sample.sizes <- c(20, 50, 80, 100)
+@
+
+<<>>=
+theta.hat.monte.carlo <- c()
+
+for (i in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+  
+  theta.hat.monte.carlo[i] <- mean(my.rbeta(size, 2, 3, u))
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample.sizes,
+                  theta.hat = theta.hat.monte.carlo)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, 
+          label = "Table 1", title = "Monte Carlo Estimates",
+          digits = 6)
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+theta.hat.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+  
+  x <- my.rbeta(size, 2, 3, u)
+  x_dash <- my.rbeta(size, 2, 3, 1-u)
+  
+  theta.hat.antithetic[i] <- mean(c(x, x_dash))
+}
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample.sizes,
+                  theta.hat = theta.hat.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, 
+          label = "Table 2",
+          title = "Estimates from Antithetic Variable Technique",
+          digits = 6)
+@
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.monte.carlo <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.monte.carlo <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+  
+    theta.hat.monte.carlo[i] <- mean(my.rbeta(size, 2, 3, u))
+  }
+  
+  var.monte.carlo[j] <- var(theta.hat.monte.carlo)
+}
+@
+
+<<>>=
+df3 <- data.frame(sample.size = sample.sizes,
+                  variance = var.monte.carlo)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df3, summary = FALSE, rownames = FALSE, 
+          label = "Table 3", title = "Variance Monte Carlo Estimates",
+          digits = 6)
+@
+
+<<>>=
+var.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+  
+    x <- my.rbeta(size, 2, 3, u)
+    x_dash <- my.rbeta(size, 2, 3, 1-u)
+  
+    theta.hat.antithetic[i] <- mean(c(x, x_dash))
+  }
+  
+  var.antithetic[j] <- var(theta.hat.antithetic)
+}
+@
+
+<<>>=
+df4 <- data.frame(sample.size = sample.sizes,
+                  variance = var.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df4, summary = FALSE, rownames = FALSE, 
+          label = "Table 4", 
+          title = "Variance Estimates from Antithetic Variable Technique",
+          digits = 6)
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+<<>>=
+relative.gain <- ((var.monte.carlo - var.antithetic) / var.monte.carlo) * 100
+@
+
+<<>>=
+df5 <- data.frame(sample.size = sample.sizes, gain = relative.gain)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df5, summary = FALSE, rownames = FALSE, 
+          label = "Table 5", 
+          title = "Percentage Variance Reduction")
+@
+
+\smallpencil \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
+
+\end{enumerate}
+
+
+
+\end{document}

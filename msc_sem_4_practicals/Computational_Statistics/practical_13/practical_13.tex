@@ -1,0 +1,456 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 13}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\hspace{1cm} Generate random numbers from $\beta_1(2, 3)$ using $U(0, 1)$ random numbers. For samples of size $20, 50, 80, 100$, 
+
+\begin{enumerate}[(i)]
+\item Using the simulated numbers, estimate the mean of the distribution via the standard Monte Carlo method.
+
+\item Improve the estimate by applying the antithetic variables technique.
+
+\item Estimate the variance of both the estimators.
+
+\item Compare the results and comment on the effectiveness of the antithetic variables method in reducing variance.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+We have to estimate
+
+$$\theta = E[X] = \dfrac{2}{5} = 0.4, \qquad X \sim \beta_1(2, 3).$$
+
+To generate random numbers from $\beta_1$ distribution, we recall
+
+$$X \sim U(0, 1) \Rightarrow - \ln X \sim \; \text{Exp}(1).$$
+
+Also, $$\sum \limits_{i = 1}^{n} - \ln X_i \sim \; \text{Gamma}(\text{shape} = n, \text{scale} = 1) \qquad \text{and}$$
+
+$$\dfrac{S_1}{S_1 + S_2} \sim \beta_1(m, n)$$
+where $S_1$ and $S_2$ are independent Gamma distributions with shape parameters $m$ and $n$ respectively. \\[0.5em]
+
+If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
+
+Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{2n} \sum \limits_{i = 1}^{n} [X_i + X_i']$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables.
+
+\newpage
+
+Here
+
+$$X_i = h(\utilde{u}), \qquad \& \qquad X_i' = h(\mathbf{1} - \utilde{u})$$
+
+with
+
+$$\utilde{u} = (u_1, u_2, \ldots, u_5), \qquad \text{and}$$
+
+$$h(u_1, u_2, \ldots, u_5) = \dfrac{\sum \limits_{i = 1}^{2} - \ln u_i}{\sum \limits_{i = 1}^{2} - \ln u_i + \sum \limits_{i = 3}^{5} - \ln u_i}.$$
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{h} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{u}\hldef{,} \hlkwc{m}\hldef{,} \hlkwc{n}\hldef{)\{}
+  \hldef{u1} \hlkwb{<-} \hldef{u[}\hlnum{1}\hlopt{:}\hldef{m]}
+  \hldef{u2} \hlkwb{<-} \hldef{u[(m} \hlopt{+} \hlnum{1}\hldef{)} \hlopt{:} \hldef{(m} \hlopt{+} \hldef{n)]}
+
+  \hldef{x1} \hlkwb{<-} \hlopt{-}\hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(u1))}
+  \hldef{x2} \hlkwb{<-} \hlopt{-}\hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(u2))}
+
+  \hldef{x} \hlkwb{<-} \hldef{x1} \hlopt{/} \hldef{(x1} \hlopt{+} \hldef{x2)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{my.rbeta} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{n}\hldef{,} \hlkwc{shape1}\hldef{,} \hlkwc{shape2}\hldef{,} \hlkwc{uniform.sample}\hldef{)\{}
+
+  \hldef{s} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n) \{}
+    \hldef{s[i]} \hlkwb{<-} \hlkwd{h}\hldef{(uniform.sample[i,], shape1, shape2)}
+  \hldef{\}}
+
+  \hlkwd{return}\hldef{(s)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample.sizes} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{20}\hldef{,} \hlnum{50}\hldef{,} \hlnum{80}\hldef{,} \hlnum{100}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta.hat.monte.carlo} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+
+  \hldef{theta.hat.monte.carlo[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{theta.hat} \hldef{= theta.hat.monte.carlo)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Apr 06, 2026 - 17:31:14
+\begin{table}[!htbp] \centering 
+  \caption{Monte Carlo Estimates} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & theta.hat \\ 
+\hline \\[-1.8ex] 
+$20$ & $0.282318$ \\ 
+$50$ & $0.405708$ \\ 
+$80$ & $0.384456$ \\ 
+$100$ & $0.409716$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta.hat.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
+  \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
+
+  \hldef{theta.hat.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(x, x_dash))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{theta.hat} \hldef{= theta.hat.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Apr 06, 2026 - 17:31:14
+\begin{table}[!htbp] \centering 
+  \caption{Estimates from Antithetic Variable Technique} 
+  \label{Table 2} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & theta.hat \\ 
+\hline \\[-1.8ex] 
+$20$ & $0.396833$ \\ 
+$50$ & $0.383445$ \\ 
+$80$ & $0.406599$ \\ 
+$100$ & $0.400797$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{B} \hlkwb{<-} \hlnum{1000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.monte.carlo} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{theta.hat.monte.carlo} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+
+    \hldef{theta.hat.monte.carlo[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u))}
+  \hldef{\}}
+
+  \hldef{var.monte.carlo[j]} \hlkwb{<-} \hlkwd{var}\hldef{(theta.hat.monte.carlo)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df3} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variance} \hldef{= var.monte.carlo)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Apr 06, 2026 - 17:31:16
+\begin{table}[!htbp] \centering 
+  \caption{Variance Monte Carlo Estimates} 
+  \label{Table 3} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variance \\ 
+\hline \\[-1.8ex] 
+$20$ & $0.002002$ \\ 
+$50$ & $0.000779$ \\ 
+$80$ & $0.000503$ \\ 
+$100$ & $0.000397$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{theta.hat.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
+    \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
+
+    \hldef{theta.hat.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(x, x_dash))}
+  \hldef{\}}
+
+  \hldef{var.antithetic[j]} \hlkwb{<-} \hlkwd{var}\hldef{(theta.hat.antithetic)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df4} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variance} \hldef{= var.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Apr 06, 2026 - 17:31:19
+\begin{table}[!htbp] \centering 
+  \caption{Variance Estimates from Antithetic Variable Technique} 
+  \label{Table 4} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variance \\ 
+\hline \\[-1.8ex] 
+$20$ & $0.000233$ \\ 
+$50$ & $0.000087$ \\ 
+$80$ & $0.000050$ \\ 
+$100$ & $0.000040$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{relative.gain} \hlkwb{<-} \hldef{((var.monte.carlo} \hlopt{-} \hldef{var.antithetic)} \hlopt{/} \hldef{var.monte.carlo)} \hlopt{*} \hlnum{100}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df5} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,} \hlkwc{gain} \hldef{= relative.gain)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mon, Apr 06, 2026 - 17:31:19
+\begin{table}[!htbp] \centering 
+  \caption{Percentage Variance Reduction} 
+  \label{Table 5} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & gain \\ 
+\hline \\[-1.8ex] 
+$20$ & $88.377$ \\ 
+$50$ & $88.850$ \\ 
+$80$ & $90.017$ \\ 
+$100$ & $89.851$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\smallpencil \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
+
+\end{enumerate}
+
+
+
+\end{document}
