@@ -62,7 +62,7 @@ We have to estimate
 
 $$\theta = E[X] = \dfrac{2}{5} = 0.4, \qquad X \sim \beta_1(2, 3).$$
 
-To generate random numbers from $\beta_1$ distribution, we recall
+$\bullet$ To generate random numbers from $\beta_1$ distribution, we recall
 
 $$X \sim U(0, 1) \Rightarrow - \ln X \sim \; \text{Exp}(1).$$
 
@@ -71,11 +71,11 @@ Also, $$\sum \limits_{i = 1}^{n} - \ln X_i \sim \; \text{Gamma}(\text{shape} = n
 $$\dfrac{S_1}{S_1 + S_2} \sim \beta_1(m, n)$$
 where $S_1$ and $S_2$ are independent Gamma distributions with shape parameters $m$ and $n$ respectively. \\[0.5em]
 
-If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
+$\bullet$ If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
 
-Estimate of $\theta$ by using antithetic variable will be
+$\bullet$ Estimate of $\theta$ by using antithetic variable will be
 
-$$\widehat{\theta} = \dfrac{1}{2n} \sum \limits_{i = 1}^{n} [X_i + X_i']$$
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [X_i + X_i']$$
 
 where $X_i$ and $X_i'$ are negatively correlated random variables.
 
@@ -170,10 +170,10 @@ theta.hat.antithetic <- c()
 for (i in 1:length(sample.sizes)) {
   size <- sample.sizes[i]
   
-  u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+  u <- matrix(runif((size / 2) * (2 + 3)), nrow = size / 2, ncol = (2 + 3))
   
-  x <- my.rbeta(size, 2, 3, u)
-  x_dash <- my.rbeta(size, 2, 3, 1-u)
+  x <- my.rbeta(size / 2, 2, 3, u)
+  x_dash <- my.rbeta(size / 2, 2, 3, 1-u)
   
   theta.hat.antithetic[i] <- mean(c(x, x_dash))
 }
@@ -239,10 +239,10 @@ for (j in 1:length(sample.sizes)) {
   theta.hat.antithetic <- c()
   
   for (i in 1:B) {
-    u <- matrix(runif(size * (2 + 3)), nrow = size, ncol = (2 + 3))
+    u <- matrix(runif((size / 2) * (2 + 3)), nrow = size / 2, ncol = (2 + 3))
   
-    x <- my.rbeta(size, 2, 3, u)
-    x_dash <- my.rbeta(size, 2, 3, 1-u)
+    x <- my.rbeta(size / 2, 2, 3, u)
+    x_dash <- my.rbeta(size / 2, 2, 3, 1-u)
   
     theta.hat.antithetic[i] <- mean(c(x, x_dash))
   }
@@ -282,7 +282,6 @@ stargazer(df5, summary = FALSE, rownames = FALSE,
 \smallpencil \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
 
 \end{enumerate}
-
 
 
 \end{document}

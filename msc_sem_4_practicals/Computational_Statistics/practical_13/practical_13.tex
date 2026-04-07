@@ -112,7 +112,7 @@ We have to estimate
 
 $$\theta = E[X] = \dfrac{2}{5} = 0.4, \qquad X \sim \beta_1(2, 3).$$
 
-To generate random numbers from $\beta_1$ distribution, we recall
+$\bullet$ To generate random numbers from $\beta_1$ distribution, we recall
 
 $$X \sim U(0, 1) \Rightarrow - \ln X \sim \; \text{Exp}(1).$$
 
@@ -121,11 +121,11 @@ Also, $$\sum \limits_{i = 1}^{n} - \ln X_i \sim \; \text{Gamma}(\text{shape} = n
 $$\dfrac{S_1}{S_1 + S_2} \sim \beta_1(m, n)$$
 where $S_1$ and $S_2$ are independent Gamma distributions with shape parameters $m$ and $n$ respectively. \\[0.5em]
 
-If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
+$\bullet$ If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
 
-Estimate of $\theta$ by using antithetic variable will be
+$\bullet$ Estimate of $\theta$ by using antithetic variable will be
 
-$$\widehat{\theta} = \dfrac{1}{2n} \sum \limits_{i = 1}^{n} [X_i + X_i']$$
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [X_i + X_i']$$
 
 where $X_i$ and $X_i'$ are negatively correlated random variables.
 
@@ -222,7 +222,7 @@ $$h(u_1, u_2, \ldots, u_5) = \dfrac{\sum \limits_{i = 1}^{2} - \ln u_i}{\sum \li
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, Apr 06, 2026 - 17:31:14
+% Date and time: Tue, Apr 07, 2026 - 22:37:06
 \begin{table}[!htbp] \centering 
   \caption{Monte Carlo Estimates} 
   \label{Table 1} 
@@ -250,10 +250,10 @@ $100$ & $0.409716$ \\
 \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
   \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
 
-  \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+  \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{((size} \hlopt{/} \hlnum{2}\hldef{)} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size} \hlopt{/} \hlnum{2}\hldef{,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
 
-  \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
-  \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
+  \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size} \hlopt{/} \hlnum{2}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
+  \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size} \hlopt{/} \hlnum{2}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
 
   \hldef{theta.hat.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(x, x_dash))}
 \hldef{\}}
@@ -272,7 +272,7 @@ $100$ & $0.409716$ \\
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, Apr 06, 2026 - 17:31:14
+% Date and time: Tue, Apr 07, 2026 - 22:37:06
 \begin{table}[!htbp] \centering 
   \caption{Estimates from Antithetic Variable Technique} 
   \label{Table 2} 
@@ -281,10 +281,10 @@ $100$ & $0.409716$ \\
 \hline \\[-1.8ex] 
 sample.size & theta.hat \\ 
 \hline \\[-1.8ex] 
-$20$ & $0.396833$ \\ 
-$50$ & $0.383445$ \\ 
-$80$ & $0.406599$ \\ 
-$100$ & $0.400797$ \\ 
+$20$ & $0.399689$ \\ 
+$50$ & $0.391278$ \\ 
+$80$ & $0.398930$ \\ 
+$100$ & $0.397107$ \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
@@ -336,7 +336,7 @@ $100$ & $0.400797$ \\
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, Apr 06, 2026 - 17:31:16
+% Date and time: Tue, Apr 07, 2026 - 22:37:08
 \begin{table}[!htbp] \centering 
   \caption{Variance Monte Carlo Estimates} 
   \label{Table 3} 
@@ -345,10 +345,10 @@ $100$ & $0.400797$ \\
 \hline \\[-1.8ex] 
 sample.size & variance \\ 
 \hline \\[-1.8ex] 
-$20$ & $0.002002$ \\ 
-$50$ & $0.000779$ \\ 
-$80$ & $0.000503$ \\ 
-$100$ & $0.000397$ \\ 
+$20$ & $0.001721$ \\ 
+$50$ & $0.000795$ \\ 
+$80$ & $0.000489$ \\ 
+$100$ & $0.000377$ \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
@@ -366,10 +366,10 @@ $100$ & $0.000397$ \\
   \hldef{theta.hat.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
 
   \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
-    \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{(size} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
+    \hldef{u} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{runif}\hldef{((size} \hlopt{/} \hlnum{2}\hldef{)} \hlopt{*} \hldef{(}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{)),} \hlkwc{nrow} \hldef{= size} \hlopt{/} \hlnum{2}\hldef{,} \hlkwc{ncol} \hldef{= (}\hlnum{2} \hlopt{+} \hlnum{3}\hldef{))}
 
-    \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
-    \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
+    \hldef{x} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size} \hlopt{/} \hlnum{2}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{, u)}
+    \hldef{x_dash} \hlkwb{<-} \hlkwd{my.rbeta}\hldef{(size} \hlopt{/} \hlnum{2}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hlopt{-}\hldef{u)}
 
     \hldef{theta.hat.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(x, x_dash))}
   \hldef{\}}
@@ -391,7 +391,7 @@ $100$ & $0.000397$ \\
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, Apr 06, 2026 - 17:31:19
+% Date and time: Tue, Apr 07, 2026 - 22:37:10
 \begin{table}[!htbp] \centering 
   \caption{Variance Estimates from Antithetic Variable Technique} 
   \label{Table 4} 
@@ -400,10 +400,10 @@ $100$ & $0.000397$ \\
 \hline \\[-1.8ex] 
 sample.size & variance \\ 
 \hline \\[-1.8ex] 
-$20$ & $0.000233$ \\ 
-$50$ & $0.000087$ \\ 
-$80$ & $0.000050$ \\ 
-$100$ & $0.000040$ \\ 
+$20$ & $0.000436$ \\ 
+$50$ & $0.000173$ \\ 
+$80$ & $0.000113$ \\ 
+$100$ & $0.000083$ \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
@@ -429,7 +429,7 @@ $100$ & $0.000040$ \\
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, Apr 06, 2026 - 17:31:19
+% Date and time: Tue, Apr 07, 2026 - 22:37:10
 \begin{table}[!htbp] \centering 
   \caption{Percentage Variance Reduction} 
   \label{Table 5} 
@@ -438,10 +438,10 @@ $100$ & $0.000040$ \\
 \hline \\[-1.8ex] 
 sample.size & gain \\ 
 \hline \\[-1.8ex] 
-$20$ & $88.377$ \\ 
-$50$ & $88.850$ \\ 
-$80$ & $90.017$ \\ 
-$100$ & $89.851$ \\ 
+$20$ & $74.692$ \\ 
+$50$ & $78.175$ \\ 
+$80$ & $76.923$ \\ 
+$100$ & $77.987$ \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
