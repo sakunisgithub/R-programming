@@ -1,0 +1,438 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 14}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Given the functions
+\begin{tasks}(3)
+\task $\displaystyle{f(x) = (x - 1)^2}$,
+\task $\displaystyle{f(x) = e^{-x}}$,
+\task $\displaystyle{f(x) = x^2}$
+\end{tasks}
+
+each defined on $[0, 2]$
+
+
+\begin{enumerate}[(i)]
+\item examine their monotonicity using first derivatives.
+
+\item For the monotonic functions, estimate $E[f(X)]$ using the Monte Carlo method.
+
+\item For the monotonic functions, estimate $E[f(X)]$ using the Antithetic variable technique.
+
+\item Compute and compare the variances of both the estimates for sample sizes $30, 80, 100, 150$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] 
+
+\begin{enumerate}
+\item $f(x) = (x - 1)^2 \Rightarrow f'(x) = 2(x - 1)$. $f(x)$ is decreasing when $x \in [0, 1)$ and $f(x)$ is increasing when $x \in (1, 2]$. So $f(x)$ is not monotonic in $[0, 2]$.
+
+\vspace{1em}
+
+\item $f(x) = e^{-x} \Rightarrow f'(x) = - e^{-x} < 0 \; \forall x \in [0, 2]$. So $f(x)$ is monotonically decreasing in $[0, 2]$.
+
+\vspace{1em}
+
+\item $f(x) = x^2 \Rightarrow f'(x) = 2x \geq 0 \; \forall x \in [0, 2]$. So $f(x)$ is monotonically increasing in $[0, 2]$.
+\end{enumerate}
+
+\vspace{1em}
+
+$\bullet$ If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[f(X)]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} f(x_i).$$
+
+$\bullet$ Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [f(X_i) + f(X_i')]$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables. \\[0.5em]
+
+Here $h(u) = 2u$.
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+<<>>=
+h <- function(u) 2 * u
+@
+
+<<>>=
+sample.sizes <- c(30, 80, 100, 150)
+@
+
+<<>>=
+f1 <- function(x) exp(-x)
+@
+
+<<>>=
+f1.est.mc <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- runif(size)
+  
+  x <- h(u)
+  
+  f1.est.mc[i] <- mean(f1(x))
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample.sizes,
+                  estimate = f1.est.mc)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, 
+          label = "Table 1", 
+          title = "Monte Carlo estimate of E[f1(X)]",
+          digits = 6)
+@
+
+The true value is $E[e^{-X}] = \displaystyle{\int \limits_{0}^{2} e^{-x} \cdot \dfrac{1}{2} dx} = \dfrac{1}{2} (1 - e^{-2}) = \Sexpr{(1 - exp(-2)) / 2}$.
+
+<<>>=
+f2 <- function(x) x^2
+@
+
+<<>>=
+f2.est.mc <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- runif(size)
+  
+  x <- h(u)
+  
+  f2.est.mc[i] <- mean(f2(x))
+}
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample.sizes,
+                  estimate = f2.est.mc)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, 
+          label = "Table 2", 
+          title = "Monte Carlo estimate of E[f2(X)]",
+          digits = 6)
+@
+
+The true value is $E[X^{2}] = \displaystyle{\int \limits_{0}^{2} x^{2} \cdot \dfrac{1}{2} dx} = \dfrac{4}{3} = \Sexpr{4 / 3}$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+f1.est.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- runif(size/2)
+  
+  x <- h(u)
+  x_dash <- h(1 - u)
+  
+  f1.est.antithetic[i] <- mean(c(f1(x), f1(x_dash)))
+}
+@
+
+<<>>=
+df3 <- data.frame(sample.size = sample.sizes,
+                  estimate = f1.est.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df3, summary = FALSE, rownames = FALSE, 
+          label = "Table 3", 
+          title = "Estimate of E[f1(X)] from Antithetic Variable Technique",
+          digits = 6)
+@
+
+<<>>=
+f2 <- function(x) x^2
+@
+
+<<>>=
+f2.est.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- runif(size/2)
+  
+  x <- h(u)
+  x_dash <- h(1 - u)
+  
+  f2.est.antithetic[i] <- mean(c(f2(x), f2(x_dash)))
+}
+@
+
+<<>>=
+df4 <- data.frame(sample.size = sample.sizes,
+                  estimate = f2.est.antithetic)
+@
+
+
+<<results='asis', echo=FALSE>>=
+stargazer(df4, summary = FALSE, rownames = FALSE, 
+          label = "Table 4", 
+          title = "Estimate of E[f2(X)] from Antithetic Variable Technique",
+          digits = 6)
+@
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.f1.mc <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  f1.est.mc <- c()
+  
+  for (i in 1:B) {
+    u <- runif(size)
+
+    x <- h(u)
+  
+    f1.est.mc[i] <- mean(f1(x))
+  }
+  
+  var.f1.mc[j] <- var(f1.est.mc)
+}
+@
+
+<<>>=
+df5 <- data.frame(sample.size = sample.sizes,
+                  variances = var.f1.mc)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df5, summary = FALSE, rownames = FALSE, 
+          label = "Table 5", 
+          title = "Variance of estimate of E[f1(X)] from Monte Carlo Method",
+          digits = 6)
+@
+
+\newpage
+
+<<>>=
+var.f1.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  f1.est.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- runif(size/2)
+
+    x <- h(u)
+    x_dash <- h(1 - u)
+  
+    f1.est.antithetic[i] <- mean(c(f1(x), f1(x_dash)))
+  }
+  
+  var.f1.antithetic[j] <- var(f1.est.antithetic)
+}
+@
+
+<<>>=
+df6 <- data.frame(sample.size = sample.sizes,
+                  variances = var.f1.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df6, summary = FALSE, rownames = FALSE, 
+          label = "Table 6", 
+          title = "Variance of estimate of E[f1(X)] from Antithetic Variable Technique",
+          digits = 6)
+@
+
+<<>>=
+relative.gain.f1 <- ((var.f1.mc - var.f1.antithetic) / var.f1.mc) * 100
+@
+
+<<>>=
+df7 <- data.frame(sample.size = sample.sizes, gain = relative.gain.f1)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df7, summary = FALSE, rownames = FALSE, 
+          label = "Table 7", 
+          title = "Percentage Variance Reduction in estimation of E[f1(X)]")
+@
+
+\newpage
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont We achieve significant reduction in variance of the estimates by using antithetic variable technique. \par}
+
+<<>>=
+var.f2.mc <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  f2.est.mc <- c()
+  
+  for (i in 1:B) {
+    u <- runif(size)
+
+    x <- h(u)
+
+    f2.est.mc[i] <- mean(f2(x))
+  }
+  
+  var.f2.mc[j] <- var(f2.est.mc)
+}
+@
+
+<<>>=
+df8 <- data.frame(sample.size = sample.sizes,
+                  variances = var.f2.mc)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df8, summary = FALSE, rownames = FALSE, 
+          label = "Table 8", 
+          title = "Variance of estimate of E[f2(X)] from Antithetic Variable Method",
+          digits = 6)
+@
+
+\newpage
+
+<<>>=
+var.f2.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  f2.est.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- runif(size/2)
+
+    x <- h(u)
+    x_dash <- h(1 - u)
+  
+    f2.est.antithetic[i] <- mean(c(f2(x), f2(x_dash)))
+  }
+  
+  var.f2.antithetic[j] <- var(f2.est.antithetic)
+}
+@
+
+<<>>=
+df9 <- data.frame(sample.size = sample.sizes,
+                  variances = var.f2.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df9, summary = FALSE, rownames = FALSE, 
+          label = "Table 9", 
+          title = "Variance of estimate of E[f2(X)] from Antithetic Variable Technique",
+          digits = 6)
+@
+
+<<>>=
+relative.gain.f2 <- ((var.f2.mc - var.f2.antithetic) / var.f2.mc) * 100
+@
+
+<<>>=
+df10 <- data.frame(sample.size = sample.sizes, gain = relative.gain.f2)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df10, summary = FALSE, rownames = FALSE, 
+          label = "Table 10", 
+          title = "Percentage Variance Reduction in estimation of E[f2(X)]")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont We achieve significant reduction in variance of the estimates by using antithetic variable technique. \par}
+
+\end{enumerate}
+
+
+
+\end{document}

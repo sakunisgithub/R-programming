@@ -1,0 +1,718 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 14}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\settasks{label = (\roman*),
+          label-width = 4ex,
+          item-indent = 8em}
+
+\hspace{1cm} Given the functions
+\begin{tasks}(3)
+\task $\displaystyle{f(x) = (x - 1)^2}$,
+\task $\displaystyle{f(x) = e^{-x}}$,
+\task $\displaystyle{f(x) = x^2}$
+\end{tasks}
+
+each defined on $[0, 2]$
+
+
+\begin{enumerate}[(i)]
+\item examine their monotonicity using first derivatives.
+
+\item For the monotonic functions, estimate $E[f(X)]$ using the Monte Carlo method.
+
+\item For the monotonic functions, estimate $E[f(X)]$ using the Antithetic variable technique.
+
+\item Compute and compare the variances of both the estimates for sample sizes $30, 80, 100, 150$.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] 
+
+\begin{enumerate}
+\item $f(x) = (x - 1)^2 \Rightarrow f'(x) = 2(x - 1)$. $f(x)$ is decreasing when $x \in [0, 1)$ and $f(x)$ is increasing when $x \in (1, 2]$. So $f(x)$ is not monotonic in $[0, 2]$.
+
+\vspace{1em}
+
+\item $f(x) = e^{-x} \Rightarrow f'(x) = - e^{-x} < 0 \; \forall x \in [0, 2]$. So $f(x)$ is monotonically decreasing in $[0, 2]$.
+
+\vspace{1em}
+
+\item $f(x) = x^2 \Rightarrow f'(x) = 2x \geq 0 \; \forall x \in [0, 2]$. So $f(x)$ is monotonically increasing in $[0, 2]$.
+\end{enumerate}
+
+\vspace{1em}
+
+$\bullet$ If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[f(X)]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} f(x_i).$$
+
+$\bullet$ Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [f(X_i) + f(X_i')]$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables. \\[0.5em]
+
+Here $h(u) = 2u$.
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{h} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{u}\hldef{)} \hlnum{2} \hlopt{*} \hldef{u}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{sample.sizes} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{30}\hldef{,} \hlnum{80}\hldef{,} \hlnum{100}\hldef{,} \hlnum{150}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1.est.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size)}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+
+  \hldef{f1.est.mc[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{f1}\hldef{(x))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{estimate} \hldef{= f1.est.mc)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:25
+\begin{table}[!htbp] \centering 
+  \caption{Monte Carlo estimate of E[f1(X)]} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & estimate \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.343139$ \\ 
+$80$ & $0.453867$ \\ 
+$100$ & $0.427947$ \\ 
+$150$ & $0.438943$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+The true value is $E[e^{-X}] = \displaystyle{\int \limits_{0}^{2} e^{-x} \cdot \dfrac{1}{2} dx} = \dfrac{1}{2} (1 - e^{-2}) = 0.4323324$.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) x}\hlopt{^}\hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f2.est.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size)}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+
+  \hldef{f2.est.mc[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{f2}\hldef{(x))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{estimate} \hldef{= f2.est.mc)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Monte Carlo estimate of E[f2(X)]} 
+  \label{Table 2} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & estimate \\ 
+\hline \\[-1.8ex] 
+$30$ & $1.325422$ \\ 
+$80$ & $1.369527$ \\ 
+$100$ & $1.289178$ \\ 
+$150$ & $1.207762$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+The true value is $E[X^{2}] = \displaystyle{\int \limits_{0}^{2} x^{2} \cdot \dfrac{1}{2} dx} = \dfrac{4}{3} = 1.3333333$.
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1.est.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size}\hlopt{/}\hlnum{2}\hldef{)}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+  \hldef{x_dash} \hlkwb{<-} \hlkwd{h}\hldef{(}\hlnum{1} \hlopt{-} \hldef{u)}
+
+  \hldef{f1.est.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f1}\hldef{(x),} \hlkwd{f1}\hldef{(x_dash)))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df3} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{estimate} \hldef{= f1.est.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Estimate of E[f1(X)] from Antithetic Variable Technique} 
+  \label{Table 3} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & estimate \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.427867$ \\ 
+$80$ & $0.425985$ \\ 
+$100$ & $0.452750$ \\ 
+$150$ & $0.438812$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) x}\hlopt{^}\hlnum{2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f2.est.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[i]}
+
+  \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size}\hlopt{/}\hlnum{2}\hldef{)}
+
+  \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+  \hldef{x_dash} \hlkwb{<-} \hlkwd{h}\hldef{(}\hlnum{1} \hlopt{-} \hldef{u)}
+
+  \hldef{f2.est.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f2}\hldef{(x),} \hlkwd{f2}\hldef{(x_dash)))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df4} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{estimate} \hldef{= f2.est.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Estimate of E[f2(X)] from Antithetic Variable Technique} 
+  \label{Table 4} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & estimate \\ 
+\hline \\[-1.8ex] 
+$30$ & $1.287661$ \\ 
+$80$ & $1.394847$ \\ 
+$100$ & $1.352673$ \\ 
+$150$ & $1.358554$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{B} \hlkwb{<-} \hlnum{1000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.f1.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{f1.est.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size)}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+
+    \hldef{f1.est.mc[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{f1}\hldef{(x))}
+  \hldef{\}}
+
+  \hldef{var.f1.mc[j]} \hlkwb{<-} \hlkwd{var}\hldef{(f1.est.mc)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df5} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variances} \hldef{= var.f1.mc)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Variance of estimate of E[f1(X)] from Monte Carlo Method} 
+  \label{Table 5} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variances \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.001918$ \\ 
+$80$ & $0.000675$ \\ 
+$100$ & $0.000568$ \\ 
+$150$ & $0.000365$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.f1.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{f1.est.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size}\hlopt{/}\hlnum{2}\hldef{)}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+    \hldef{x_dash} \hlkwb{<-} \hlkwd{h}\hldef{(}\hlnum{1} \hlopt{-} \hldef{u)}
+
+    \hldef{f1.est.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f1}\hldef{(x),} \hlkwd{f1}\hldef{(x_dash)))}
+  \hldef{\}}
+
+  \hldef{var.f1.antithetic[j]} \hlkwb{<-} \hlkwd{var}\hldef{(f1.est.antithetic)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df6} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variances} \hldef{= var.f1.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Variance of estimate of E[f1(X)] from Antithetic Variable Technique} 
+  \label{Table 6} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variances \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.000249$ \\ 
+$80$ & $0.000085$ \\ 
+$100$ & $0.000074$ \\ 
+$150$ & $0.000050$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{relative.gain.f1} \hlkwb{<-} \hldef{((var.f1.mc} \hlopt{-} \hldef{var.f1.antithetic)} \hlopt{/} \hldef{var.f1.mc)} \hlopt{*} \hlnum{100}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df7} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,} \hlkwc{gain} \hldef{= relative.gain.f1)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:26
+\begin{table}[!htbp] \centering 
+  \caption{Percentage Variance Reduction in estimation of E[f1(X)]} 
+  \label{Table 7} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & gain \\ 
+\hline \\[-1.8ex] 
+$30$ & $87.032$ \\ 
+$80$ & $87.345$ \\ 
+$100$ & $86.947$ \\ 
+$150$ & $86.302$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont We achieve significant reduction in variance of the estimates by using antithetic variable technique. \par}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.f2.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{f2.est.mc} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size)}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+
+    \hldef{f2.est.mc[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{f2}\hldef{(x))}
+  \hldef{\}}
+
+  \hldef{var.f2.mc[j]} \hlkwb{<-} \hlkwd{var}\hldef{(f2.est.mc)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df8} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variances} \hldef{= var.f2.mc)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:27
+\begin{table}[!htbp] \centering 
+  \caption{Variance of estimate of E[f2(X)] from Antithetic Variable Method} 
+  \label{Table 8} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variances \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.044867$ \\ 
+$80$ & $0.018023$ \\ 
+$100$ & $0.013553$ \\ 
+$150$ & $0.009031$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\newpage
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{var.f2.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+\hlkwa{for} \hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(sample.sizes)) \{}
+
+  \hldef{size} \hlkwb{<-} \hldef{sample.sizes[j]}
+
+  \hldef{f2.est.antithetic} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{B) \{}
+    \hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(size}\hlopt{/}\hlnum{2}\hldef{)}
+
+    \hldef{x} \hlkwb{<-} \hlkwd{h}\hldef{(u)}
+    \hldef{x_dash} \hlkwb{<-} \hlkwd{h}\hldef{(}\hlnum{1} \hlopt{-} \hldef{u)}
+
+    \hldef{f2.est.antithetic[i]} \hlkwb{<-} \hlkwd{mean}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{f2}\hldef{(x),} \hlkwd{f2}\hldef{(x_dash)))}
+  \hldef{\}}
+
+  \hldef{var.f2.antithetic[j]} \hlkwb{<-} \hlkwd{var}\hldef{(f2.est.antithetic)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df9} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,}
+                  \hlkwc{variances} \hldef{= var.f2.antithetic)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:27
+\begin{table}[!htbp] \centering 
+  \caption{Variance of estimate of E[f2(X)] from Antithetic Variable Technique} 
+  \label{Table 9} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & variances \\ 
+\hline \\[-1.8ex] 
+$30$ & $0.005751$ \\ 
+$80$ & $0.002204$ \\ 
+$100$ & $0.001778$ \\ 
+$150$ & $0.001162$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{relative.gain.f2} \hlkwb{<-} \hldef{((var.f2.mc} \hlopt{-} \hldef{var.f2.antithetic)} \hlopt{/} \hldef{var.f2.mc)} \hlopt{*} \hlnum{100}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df10} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample.size} \hldef{= sample.sizes,} \hlkwc{gain} \hldef{= relative.gain.f2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Tue, Apr 07, 2026 - 22:28:27
+\begin{table}[!htbp] \centering 
+  \caption{Percentage Variance Reduction in estimation of E[f2(X)]} 
+  \label{Table 10} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample.size & gain \\ 
+\hline \\[-1.8ex] 
+$30$ & $87.182$ \\ 
+$80$ & $87.769$ \\ 
+$100$ & $86.884$ \\ 
+$150$ & $87.137$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont We achieve significant reduction in variance of the estimates by using antithetic variable technique. \par}
+
+\end{enumerate}
+
+
+
+\end{document}
