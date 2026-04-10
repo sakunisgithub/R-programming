@@ -66,7 +66,7 @@ For bootstrapping, we proceed as follows :
 
 \item Obtain an estimate of $\theta$ as $\hat{\theta} = \dfrac{1}{\bar{x}}$.
 
-\item Plug in $\hat{\theta}$ in place of $\theta$ and generate a sample of size $n$ as $x_1^*, x_2^*, \ldots, x_n^* \sim F(x, \hat{\theta})$.
+\item Plug in $\hat{\theta}$ in place of $\theta$ and generate a sample of size $n$ as $x_1^*, x_2^*, \ldots, x_n^* \sim f(x, \hat{\theta})$.
 
 \item Based on bootstrapped sample $\{x_1^*, x_2^*, \ldots, x_n^*\}$, calculate $\widehat{\theta_{j}^{*}}$.
 
