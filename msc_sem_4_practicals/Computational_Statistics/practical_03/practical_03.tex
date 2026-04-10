@@ -83,7 +83,7 @@
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
 
-\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/3$. Let $X$ denote the number of correct answers of the student. 
+\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/4$. Let $X$ denote the number of correct answers of the student. 
 \begin{enumerate}[(i)]
 \item Assuming independence of questions, model $X$ using an appropriate probability distribution. 
 \item Write down its probability mass function, compute the probability that the student answers exactly $6$ questions correctly.
@@ -94,23 +94,23 @@
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
 
 \begin{itemize}
-\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{3}$. \\[0.2em]
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{4}$. \\[0.2em]
 
-We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right).$$
+We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{4}\right).$$
 
 \item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The Probability Mass Function of $X$ is given by 
 \begin{align*}
-P[X = x] = \binom{20}{x} \left(\dfrac{1}{3}\right)^x \left(\dfrac{2}{3}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
+P[X = x] = \binom{20}{x} \left(\dfrac{1}{4}\right)^x \left(\dfrac{3}{4}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
 \end{align*}
 
 Thus, the probability that the student answers exactly $6$ questions correctly will be
 \begin{align*}
-P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{20-6} \\[0.4em]
-&= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{14} \\[0.4em]
+P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{4}\right)^6 \left(\dfrac{3}{4}\right)^{20-6} \\[0.4em]
+&= \binom{20}{6} \left(\dfrac{1}{4}\right)^6 \left(\dfrac{3}{4}\right)^{14} \\[0.4em]
 &\approx 0.182.
 \end{align*}
 
-\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right)$, $E[X] = 20 \cdot \dfrac{1}{3} \approx 6.7$. So expected number of correct answers of the student is $6$.
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{4}\right)$, $E[X] = 20 \cdot \dfrac{1}{4} = 5$. So expected number of correct answers of the student is $5$.
 
 \item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
 \begin{enumerate}[I.]
@@ -148,7 +148,7 @@ P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{CDF_F} \hlkwb{<-} \hlkwd{pbinom}\hldef{(}\hlkwc{q} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{3}\hldef{)}
+\hldef{CDF_F} \hlkwb{<-} \hlkwd{pbinom}\hldef{(}\hlkwc{q} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{4}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -200,7 +200,7 @@ $$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{theo_prob} \hlkwb{<-} \hlkwd{dbinom}\hldef{(}\hlkwc{x} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{3}\hldef{)}
+\hldef{theo_prob} \hlkwb{<-} \hlkwd{dbinom}\hldef{(}\hlkwc{x} \hldef{=} \hlnum{0}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{20}\hldef{,} \hlkwc{prob} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{4}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -219,7 +219,7 @@ $$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Tue, Feb 17, 2026 - 07:02:21
+% Date and time: Sat, Apr 11, 2026 - 00:19:42
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{Table 1} 
@@ -228,25 +228,25 @@ $$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
 \hline \\[-1.8ex] 
 x & empirical.probability & theoretical.probability \\ 
 \hline \\[-1.8ex] 
-$0$ & $0.00060$ & $0.00030$ \\ 
-$1$ & $0.00250$ & $0.00301$ \\ 
-$2$ & $0.01300$ & $0.01428$ \\ 
-$3$ & $0.04500$ & $0.04285$ \\ 
-$4$ & $0.09110$ & $0.09106$ \\ 
-$5$ & $0.14250$ & $0.14570$ \\ 
-$6$ & $0.18190$ & $0.18213$ \\ 
-$7$ & $0.18550$ & $0.18213$ \\ 
-$8$ & $0.15300$ & $0.14798$ \\ 
-$9$ & $0.09540$ & $0.09865$ \\ 
-$10$ & $0.05360$ & $0.05426$ \\ 
-$11$ & $0.02340$ & $0.02466$ \\ 
-$12$ & $0.00880$ & $0.00925$ \\ 
-$13$ & $0.00250$ & $0.00285$ \\ 
-$14$ & $0.00120$ & $0.00071$ \\ 
-$15$ & $0$ & $0.00014$ \\ 
-$16$ & $0$ & $0.00002$ \\ 
-$17$ & $0$ & $0.000003$ \\ 
-$18$ & $0$ & $0.0000002$ \\ 
+$0$ & $0.00270$ & $0.00317$ \\ 
+$1$ & $0.02190$ & $0.02114$ \\ 
+$2$ & $0.06650$ & $0.06695$ \\ 
+$3$ & $0.13560$ & $0.13390$ \\ 
+$4$ & $0.18680$ & $0.18969$ \\ 
+$5$ & $0.20540$ & $0.20233$ \\ 
+$6$ & $0.17200$ & $0.16861$ \\ 
+$7$ & $0.11040$ & $0.11241$ \\ 
+$8$ & $0.05970$ & $0.06089$ \\ 
+$9$ & $0.02540$ & $0.02706$ \\ 
+$10$ & $0.00940$ & $0.00992$ \\ 
+$11$ & $0.00290$ & $0.00301$ \\ 
+$12$ & $0.00130$ & $0.00075$ \\ 
+$13$ & $0$ & $0.00015$ \\ 
+$14$ & $0$ & $0.00003$ \\ 
+$15$ & $0$ & $0.000003$ \\ 
+$16$ & $0$ & $0.0000004$ \\ 
+$17$ & $0$ & $0.0000000$ \\ 
+$18$ & $0$ & $0$ \\ 
 $19$ & $0$ & $0$ \\ 
 $20$ & $0$ & $0$ \\ 
 \hline \\[-1.8ex] 
@@ -340,7 +340,7 @@ $$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
 \end{alltt}
 \end{kframe}
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Tue, Feb 17, 2026 - 07:02:28
+% Date and time: Sat, Apr 11, 2026 - 00:19:53
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{Table 2} 

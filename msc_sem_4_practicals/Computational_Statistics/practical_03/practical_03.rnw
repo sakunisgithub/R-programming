@@ -33,7 +33,7 @@
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question 1}}
 
-\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/3$. Let $X$ denote the number of correct answers of the student. 
+\hspace{1cm} In a competitive examination, a student attempts 20 independent multiple-choice questions. Each question has four options, only one of which is correct, and the student answers each question randomly. The probability of answering any question correctly is therefore $1/4$. Let $X$ denote the number of correct answers of the student. 
 \begin{enumerate}[(i)]
 \item Assuming independence of questions, model $X$ using an appropriate probability distribution. 
 \item Write down its probability mass function, compute the probability that the student answers exactly $6$ questions correctly.
@@ -44,23 +44,23 @@
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
 
 \begin{itemize}
-\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{3}$. \\[0.2em]
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.1cm} In the given set-up, $X$ is said to have a Binomial distribution with parameters $n = 20$ and $p = \text{probability of success} = \dfrac{1}{4}$. \\[0.2em]
 
-We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right).$$
+We write $$X \sim \text{Binomial}\left(20, \dfrac{1}{4}\right).$$
 
 \item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.1cm} The Probability Mass Function of $X$ is given by 
 \begin{align*}
-P[X = x] = \binom{20}{x} \left(\dfrac{1}{3}\right)^x \left(\dfrac{2}{3}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
+P[X = x] = \binom{20}{x} \left(\dfrac{1}{4}\right)^x \left(\dfrac{3}{4}\right)^{20-x}; \,\, x = 0, 1, 2, \ldots, 20.
 \end{align*}
 
 Thus, the probability that the student answers exactly $6$ questions correctly will be
 \begin{align*}
-P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{20-6} \\[0.4em]
-&= \binom{20}{6} \left(\dfrac{1}{3}\right)^6 \left(\dfrac{2}{3}\right)^{14} \\[0.4em]
+P[X = 6] &= \binom{20}{6} \left(\dfrac{1}{4}\right)^6 \left(\dfrac{3}{4}\right)^{20-6} \\[0.4em]
+&= \binom{20}{6} \left(\dfrac{1}{4}\right)^6 \left(\dfrac{3}{4}\right)^{14} \\[0.4em]
 &\approx 0.182.
 \end{align*}
 
-\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{3}\right)$, $E[X] = 20 \cdot \dfrac{1}{3} \approx 6.7$. So expected number of correct answers of the student is $6$.
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.1cm} If $X \sim \text{Binomial}\left(20, \dfrac{1}{4}\right)$, $E[X] = 20 \cdot \dfrac{1}{4} = 5$. So expected number of correct answers of the student is $5$.
 
 \item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.1cm} The inverse transform method to generate samples from a discrete random variable $X$ is as follows.
 \begin{enumerate}[I.]
@@ -84,7 +84,7 @@ u <- runif(n)
 @
 
 <<>>=
-CDF_F <- pbinom(q = 0:20, size = 20, prob = 1/3)
+CDF_F <- pbinom(q = 0:20, size = 20, prob = 1/4)
 @
 
 <<>>=
@@ -121,7 +121,7 @@ emp_prob <- as.numeric(emp_prob)
 @
 
 <<>>=
-theo_prob <- dbinom(x = 0:20, size = 20, prob = 1/3)
+theo_prob <- dbinom(x = 0:20, size = 20, prob = 1/4)
 @
 
 <<>>=
