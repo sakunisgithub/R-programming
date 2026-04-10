@@ -75,6 +75,8 @@
 
 \newfontface\cbfont{CaveatBrush-Regular.ttf}
 % how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -111,7 +113,7 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hldef{(}\hlnum{22}\hldef{)}
+\hlkwd{set.seed}\hldef{(}\hlnum{14}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -127,8 +129,7 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
-\hldef{x} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\hldef{p} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{20} \hlopt{*} \hldef{x} \hlopt{*} \hldef{(}\hlnum{1}\hlopt{-}\hldef{x)}\hlopt{^}\hlnum{3}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -136,7 +137,7 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{p} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{20} \hlopt{*} \hldef{x} \hlopt{*} \hldef{(}\hlnum{1}\hlopt{-}\hldef{x)}\hlopt{^}\hlnum{3}
+\hldef{q} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -152,7 +153,24 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{good} \hlkwb{<-} \hldef{u} \hlopt{<=} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{M}
+\hldef{q1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) M} \hlopt{*} \hlkwd{q}\hldef{(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\hldef{y} \hlkwb{<-} \hlkwd{runif}\hldef{(n,} \hlkwc{min} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{max} \hldef{=} \hlkwd{q1}\hldef{(x))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{good} \hlkwb{<-} \hldef{y} \hlopt{<=} \hlkwd{p}\hldef{(x)}
 \hldef{accepted} \hlkwb{<-} \hldef{x[good]}
 \end{alltt}
 \end{kframe}
@@ -165,25 +183,16 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \hldef{count_accepted}
 \end{alltt}
 \begin{verbatim}
-## [1] 929
+## [1] 986
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-Thus we have a sample of size $929$ from $p(x)$. \\[0.3em]
+Thus we have a sample of size $986$ from $p(x)$. \\[0.3em]
 
-The \textbf{acceptance rate} was $0.4645$ whereas the \textbf{theoretical acceptance rate} is $0.4739336$.
+The \textbf{acceptance rate} was $0.493$ whereas the \textbf{theoretical acceptance rate} is $0.4739336$.
 
 \newpage
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{u} \hldef{= u,} \hlkwc{result} \hldef{=} \hlkwd{ifelse}\hldef{(good,} \hlsng{"accepted"}\hldef{,} \hlsng{"rejected"}\hldef{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
 Let us have a histogram of the generated sample.
 
 
@@ -191,17 +200,16 @@ Let us have a histogram of the generated sample.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{df} \hlopt{%>%}
-  \hlkwd{filter}\hldef{(result} \hlopt{==} \hlsng{"accepted"}\hldef{)} \hlopt{%>%}
-    \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x))} \hlopt{+}
-    \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{10}\hldef{,}
-                   \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"#27EEF5"}\hldef{)} \hlopt{+}
+\hlkwd{data.frame}\hldef{(accepted)} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= accepted))} \hlopt{+}
+  \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{10}\hldef{,}
+                 \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"#27EEF5"}\hldef{)} \hlopt{+}
   \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= p,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
   \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{"X"}\hldef{,} \hlkwc{y} \hldef{=} \hlsng{"Density"}\hldef{,}
        \hlkwc{title} \hldef{=} \hlsng{"Historgram of Generated Random Sample"}\hldef{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
 \end{knitrout}
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
@@ -215,26 +223,20 @@ Let us have a simple visualization of the rejection sampling technique.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{p_scaled} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{M}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{df} \hlopt{%>%}
-  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= u,} \hlkwc{shape} \hldef{= result))} \hlopt{+}
-  \hlkwd{geom_point}\hldef{()} \hlopt{+}
-  \hlkwd{scale_shape_manual}\hldef{(}\hlkwc{values} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"accepted"} \hldef{=} \hlnum{16}\hldef{,}
-                                \hlsng{"rejected"} \hldef{=} \hlnum{1}\hldef{))} \hlopt{+}
-  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= p_scaled,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{inherit.aes} \hldef{=} \hlnum{FALSE}\hldef{)} \hlopt{+}
-  \hlkwd{theme}\hldef{(}\hlkwc{legend.title} \hldef{=} \hlkwd{element_blank}\hldef{())}
+\hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{))} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= p,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{theme_classic}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= q,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"blue"}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= q1,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwc{size} \hldef{=} \hlnum{2}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x[good],} \hlkwc{y} \hldef{= y[good]),}
+             \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwc{size} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"green"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
 \end{knitrout}
 
-\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the scaled target density are accepted and rest are rejected.
+\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
 
 \end{document}

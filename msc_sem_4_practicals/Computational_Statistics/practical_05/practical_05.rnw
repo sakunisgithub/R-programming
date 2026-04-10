@@ -26,6 +26,8 @@
 \newfontface\cbfont{CaveatBrush-Regular.ttf}
 % how to use --- \myfont --write text here--
 
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
 \begin{document}
 
 \maketitle
@@ -59,7 +61,7 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow p(x
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
 
 <<>>=
-set.seed(22)
+set.seed(14)
 @
 
 <<>>=
@@ -67,12 +69,11 @@ n <- 2000
 @
 
 <<>>=
-u <- runif(n)
-x <- runif(n)
+p <- function(x) 20 * x * (1-x)^3
 @
 
 <<>>=
-p <- function(x) 20 * x * (1-x)^3
+q <- function(x) 1
 @
 
 <<>>=
@@ -80,7 +81,16 @@ M <- 2.11
 @
 
 <<>>=
-good <- u <= p(x) / M
+q1 <- function(x) M * q(x)
+@
+
+<<>>=
+x <- runif(n)
+y <- runif(n, min = 0, max = q1(x))
+@
+
+<<>>=
+good <- y <= p(x)
 accepted <- x[good]
 @
 
@@ -94,11 +104,6 @@ Thus we have a sample of size $\Sexpr{count_accepted}$ from $p(x)$. \\[0.3em]
 The \textbf{acceptance rate} was $\Sexpr{count_accepted / n}$ whereas the \textbf{theoretical acceptance rate} is $\Sexpr{1/M}$.
 
 \newpage
-
-<<>>=
-df <- data.frame(x = x, u = u, result = ifelse(good, "accepted", "rejected"))
-@
-
 Let us have a histogram of the generated sample.
 
 <<message=FALSE, warning=FALSE, echo=FALSE>>=
@@ -106,11 +111,10 @@ library(tidyverse)
 @
 
 <<>>=
-df %>%
-  filter(result == "accepted") %>%
-    ggplot(aes(x = x)) +
-    geom_histogram(aes(y = after_stat(density)), bins = 10, 
-                   linewidth = 1, color = "black", fill = "#27EEF5") +
+data.frame(accepted) %>%
+  ggplot(aes(x = accepted)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, 
+                 linewidth = 1, color = "black", fill = "#27EEF5") +
   stat_function(fun = p, linewidth = 1) +
   labs(x = "X", y = "Density",
        title = "Historgram of Generated Random Sample")
@@ -125,19 +129,17 @@ df %>%
 Let us have a simple visualization of the rejection sampling technique.
 
 <<>>=
-p_scaled <- function(x) p(x) / M
+data.frame(x = c(0, 1)) %>%
+  ggplot() +
+  stat_function(aes(x = x), fun = p, linewidth = 1.25) +
+  theme_classic() +
+  stat_function(aes(x = x), fun = q, linewidth = 1.25, col = "blue") +
+  stat_function(aes(x = x), fun = q1, linewidth = 1.25, col = "red") +
+  geom_point(data = data.frame(x = x, y = y), aes(x = x, y = y), size = 2) +
+  geom_point(data = data.frame(x = x[good], y = y[good]),
+             aes(x = x, y = y), size = 2, col = "green")
 @
 
-<<>>=
-df %>%
-  ggplot(aes(x = x, y = u, shape = result)) +
-  geom_point() +
-  scale_shape_manual(values = c("accepted" = 16,
-                                "rejected" = 1)) +
-  stat_function(fun = p_scaled, linewidth = 1.25, inherit.aes = FALSE) +
-  theme(legend.title = element_blank())
-@
-
-\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the scaled target density are accepted and rest are rejected.
+\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
 
 \end{document}
