@@ -26,6 +26,8 @@
 \newfontface\cbfont{CaveatBrush-Regular.ttf}
 % how to use --- \myfont --write text here--
 
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
 \begin{document}
 
 \maketitle
@@ -50,21 +52,21 @@ Suppose we have to generate random sample from $p(x)$, we call it our \textbf{ta
 
 Accepted samples follow the target distribution $p(x)$. \\[0.2em]
 
-Here, we are given that $p(x) = \dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}$. We take $q(x) = \dfrac{1}{2} e^{-\frac{x}{2}} \cdot I_{(0, \infty)}(x)$ \textit{i.e.} $\text{Exp}(\text{rate } = 1/2)$ distribution. \\[0.2em]
+Here, we are given that $p(x) = \dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}$. We take $q(x) = \dfrac{2}{3} e^{-\frac{2x}{3}} \cdot I_{(0, \infty)}(x)$ \textit{i.e.} $\text{Exp}(\text{mean } = 2/3)$ distribution as this is \textbf{most efficient}. \\[0.2em]
 
 To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow \dfrac{p(x)}{q(x)} \leq M$. \\[0.2em]
 
-Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{1}{2} e^{-\frac{x}{2}}} = \dfrac{4}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/2} = h(x)$, say. \\[0.2em]
+Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{2}{3} e^{-\frac{2x}{3}}} = \dfrac{3}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/3} = h(x)$, say. \\[0.2em]
 
-Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \dfrac{1}{2} \ln x - \dfrac{x}{2}$.
+Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \ln \dfrac{4}{\sqrt{\pi}} + \dfrac{1}{2} \ln x - \dfrac{x}{3}$.
 
 \begin{align*}
 \dfrac{d}{dx} \ln h(x) &= 0 \\[0.3em]
-\Rightarrow \dfrac{1}{2x} - \dfrac{1}{2} &= 0 \\[0.3em]
-\Rightarrow x &= 1
+\Rightarrow \dfrac{1}{2x} - \dfrac{1}{3} &= 0 \\[0.3em]
+\Rightarrow x &= \dfrac{3}{2}
 \end{align*}
 
-So $h(1) \approx 1.369$ is a suitable choice for $M$.
+So $h\left(\dfrac{3}{2}\right) \approx 1.257$ is a suitable choice for $M$.
 
 \newpage
 
@@ -79,24 +81,28 @@ n <- 2000
 @
 
 <<>>=
-u <- runif(n)
+p <- function(x) dgamma(x, shape = 3/2, scale = 1)
+@
+
+<<>>=
+q <- function(x) dexp(x, rate = 2/3)
+@
+
+<<>>=
+M <- 1.257
+@
+
+<<>>=
+q1 <- function(x) M * q(x)
+@
+
+<<>>=
 x <- rexp(n, rate = 1/2)
+y <- runif(n, min = 0, max = q1(x))
 @
 
 <<>>=
-p <- function(x) (2 / sqrt(pi)) * x^(1/2) * exp(-x)
-@
-
-<<>>=
-q <- function(x) (1/2) * exp(-x/2)
-@
-
-<<>>=
-M <- 1.369
-@
-
-<<>>=
-good <- u <= p(x) / (M * q(x))
+good <- y <= p(x)
 accepted <- x[good]
 @
 
@@ -111,10 +117,6 @@ The \textbf{acceptance rate} was $\Sexpr{count_accepted / n}$ whereas the \textb
 
 \newpage
 
-<<>>=
-df <- data.frame(x = x, u = u, result = ifelse(good, "accepted", "rejected"))
-@
-
 Let us have a histogram of the generated sample.
 
 <<message=FALSE, warning=FALSE, echo=FALSE>>=
@@ -122,11 +124,10 @@ library(tidyverse)
 @
 
 <<>>=
-df %>%
-  filter(result == "accepted") %>%
-    ggplot(aes(x = x)) +
-    geom_histogram(aes(y = after_stat(density)), bins = 10, 
-                   linewidth = 1, color = "black", fill = "#27EEF5") +
+data.frame(accepted) %>%
+  ggplot(aes(x = accepted)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, 
+                 linewidth = 1, color = "black", fill = "#27EEF5") +
   stat_function(fun = p, linewidth = 1) +
   labs(x = "X", y = "Density",
        title = "Historgram of Generated Random Sample")
@@ -141,19 +142,17 @@ df %>%
 Let us have a simple visualization of the rejection sampling technique.
 
 <<>>=
-h_scaled <- function(x) p(x) / (M * q(x))
+data.frame(x = c(0, 1)) %>%
+  ggplot() +
+  stat_function(aes(x = x), fun = p, linewidth = 1.25) +
+  theme_classic() +
+  stat_function(aes(x = x), fun = q, linewidth = 1.25, col = "blue") +
+  stat_function(aes(x = x), fun = q1, linewidth = 1.25, col = "red") +
+  geom_point(data = data.frame(x = x, y = y), aes(x = x, y = y), size = 0.5) +
+  geom_point(data = data.frame(x = x[good], y = y[good]),
+             aes(x = x, y = y), size = 0.5, col = "green")
 @
 
-<<>>=
-df %>%
-  ggplot(aes(x = x, y = u, shape = result)) +
-  geom_point() +
-  scale_shape_manual(values = c("accepted" = 16,
-                                "rejected" = 1)) +
-  stat_function(fun = h_scaled, linewidth = 1.25, inherit.aes = FALSE) +
-  theme(legend.title = element_blank())
-@
-
-\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the curve are accepted and rest are rejected.
+\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
 
 \end{document}

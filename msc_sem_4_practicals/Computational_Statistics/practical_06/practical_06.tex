@@ -75,6 +75,8 @@
 
 \newfontface\cbfont{CaveatBrush-Regular.ttf}
 % how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -100,21 +102,21 @@ Suppose we have to generate random sample from $p(x)$, we call it our \textbf{ta
 
 Accepted samples follow the target distribution $p(x)$. \\[0.2em]
 
-Here, we are given that $p(x) = \dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}$. We take $q(x) = \dfrac{1}{2} e^{-\frac{x}{2}} \cdot I_{(0, \infty)}(x)$ \textit{i.e.} $\text{Exp}(\text{rate } = 1/2)$ distribution. \\[0.2em]
+Here, we are given that $p(x) = \dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}$. We take $q(x) = \dfrac{2}{3} e^{-\frac{2x}{3}} \cdot I_{(0, \infty)}(x)$ \textit{i.e.} $\text{Exp}(\text{mean } = 2/3)$ distribution as this is \textbf{most efficient}. \\[0.2em]
 
 To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow \dfrac{p(x)}{q(x)} \leq M$. \\[0.2em]
 
-Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{1}{2} e^{-\frac{x}{2}}} = \dfrac{4}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/2} = h(x)$, say. \\[0.2em]
+Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{2}{3} e^{-\frac{2x}{3}}} = \dfrac{3}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/3} = h(x)$, say. \\[0.2em]
 
-Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \dfrac{1}{2} \ln x - \dfrac{x}{2}$.
+Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \ln \dfrac{4}{\sqrt{\pi}} + \dfrac{1}{2} \ln x - \dfrac{x}{3}$.
 
 \begin{align*}
 \dfrac{d}{dx} \ln h(x) &= 0 \\[0.3em]
-\Rightarrow \dfrac{1}{2x} - \dfrac{1}{2} &= 0 \\[0.3em]
-\Rightarrow x &= 1
+\Rightarrow \dfrac{1}{2x} - \dfrac{1}{3} &= 0 \\[0.3em]
+\Rightarrow x &= \dfrac{3}{2}
 \end{align*}
 
-So $h(1) \approx 1.369$ is a suitable choice for $M$.
+So $h\left(\dfrac{3}{2}\right) \approx 1.257$ is a suitable choice for $M$.
 
 \newpage
 
@@ -139,8 +141,40 @@ So $h(1) \approx 1.369$ is a suitable choice for $M$.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\hldef{p} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{dgamma}\hldef{(x,} \hlkwc{shape} \hldef{=} \hlnum{3}\hlopt{/}\hlnum{2}\hldef{,} \hlkwc{scale} \hldef{=} \hlnum{1}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{q} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{dexp}\hldef{(x,} \hlkwc{rate} \hldef{=} \hlnum{2}\hlopt{/}\hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{M} \hlkwb{<-} \hlnum{1.257}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{q1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) M} \hlopt{*} \hlkwd{q}\hldef{(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hldef{x} \hlkwb{<-} \hlkwd{rexp}\hldef{(n,} \hlkwc{rate} \hldef{=} \hlnum{1}\hlopt{/}\hlnum{2}\hldef{)}
+\hldef{y} \hlkwb{<-} \hlkwd{runif}\hldef{(n,} \hlkwc{min} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{max} \hldef{=} \hlkwd{q1}\hldef{(x))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -148,31 +182,7 @@ So $h(1) \approx 1.369$ is a suitable choice for $M$.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{p} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) (}\hlnum{2} \hlopt{/} \hlkwd{sqrt}\hldef{(pi))} \hlopt{*} \hldef{x}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hlnum{2}\hldef{)} \hlopt{*} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{q} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) (}\hlnum{1}\hlopt{/}\hlnum{2}\hldef{)} \hlopt{*} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{/}\hlnum{2}\hldef{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{M} \hlkwb{<-} \hlnum{1.369}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{good} \hlkwb{<-} \hldef{u} \hlopt{<=} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{(M} \hlopt{*} \hlkwd{q}\hldef{(x))}
+\hldef{good} \hlkwb{<-} \hldef{y} \hlopt{<=} \hlkwd{p}\hldef{(x)}
 \hldef{accepted} \hlkwb{<-} \hldef{x[good]}
 \end{alltt}
 \end{kframe}
@@ -185,24 +195,16 @@ So $h(1) \approx 1.369$ is a suitable choice for $M$.
 \hldef{count_accepted}
 \end{alltt}
 \begin{verbatim}
-## [1] 1471
+## [1] 1571
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-Thus we have a sample of size $1471$ from $p(x)$. \\[0.3em]
+Thus we have a sample of size $1571$ from $p(x)$. \\[0.3em]
 
-The \textbf{acceptance rate} was $0.7355$ whereas the \textbf{theoretical acceptance rate} is $0.7304602$.
+The \textbf{acceptance rate} was $0.7855$ whereas the \textbf{theoretical acceptance rate} is $0.7955449$.
 
 \newpage
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{u} \hldef{= u,} \hlkwc{result} \hldef{=} \hlkwd{ifelse}\hldef{(good,} \hlsng{"accepted"}\hldef{,} \hlsng{"rejected"}\hldef{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 Let us have a histogram of the generated sample.
 
@@ -211,11 +213,10 @@ Let us have a histogram of the generated sample.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{df} \hlopt{%>%}
-  \hlkwd{filter}\hldef{(result} \hlopt{==} \hlsng{"accepted"}\hldef{)} \hlopt{%>%}
-    \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x))} \hlopt{+}
-    \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{10}\hldef{,}
-                   \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"#27EEF5"}\hldef{)} \hlopt{+}
+\hlkwd{data.frame}\hldef{(accepted)} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= accepted))} \hlopt{+}
+  \hlkwd{geom_histogram}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)),} \hlkwc{bins} \hldef{=} \hlnum{10}\hldef{,}
+                 \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"#27EEF5"}\hldef{)} \hlopt{+}
   \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= p,} \hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
   \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{"X"}\hldef{,} \hlkwc{y} \hldef{=} \hlsng{"Density"}\hldef{,}
        \hlkwc{title} \hldef{=} \hlsng{"Historgram of Generated Random Sample"}\hldef{)}
@@ -235,26 +236,20 @@ Let us have a simple visualization of the rejection sampling technique.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{h_scaled} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{p}\hldef{(x)} \hlopt{/} \hldef{(M} \hlopt{*} \hlkwd{q}\hldef{(x))}
+\hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{))} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= p,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{)} \hlopt{+}
+  \hlkwd{theme_classic}\hldef{()} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= q,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"blue"}\hldef{)} \hlopt{+}
+  \hlkwd{stat_function}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x),} \hlkwc{fun} \hldef{= q1,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwc{size} \hldef{=} \hlnum{0.5}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{data} \hldef{=} \hlkwd{data.frame}\hldef{(}\hlkwc{x} \hldef{= x[good],} \hlkwc{y} \hldef{= y[good]),}
+             \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= y),} \hlkwc{size} \hldef{=} \hlnum{0.5}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"green"}\hldef{)}
 \end{alltt}
 \end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
 \end{knitrout}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{df} \hlopt{%>%}
-  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= u,} \hlkwc{shape} \hldef{= result))} \hlopt{+}
-  \hlkwd{geom_point}\hldef{()} \hlopt{+}
-  \hlkwd{scale_shape_manual}\hldef{(}\hlkwc{values} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"accepted"} \hldef{=} \hlnum{16}\hldef{,}
-                                \hlsng{"rejected"} \hldef{=} \hlnum{1}\hldef{))} \hlopt{+}
-  \hlkwd{stat_function}\hldef{(}\hlkwc{fun} \hldef{= h_scaled,} \hlkwc{linewidth} \hldef{=} \hlnum{1.25}\hldef{,} \hlkwc{inherit.aes} \hldef{=} \hlnum{FALSE}\hldef{)} \hlopt{+}
-  \hlkwd{theme}\hldef{(}\hlkwc{legend.title} \hldef{=} \hlkwd{element_blank}\hldef{())}
-\end{alltt}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
-\end{knitrout}
-
-\smallpencil \hspace{0.1cm} The $(x, u)$ pairs that fall under the curve are accepted and rest are rejected.
+\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
 
 \end{document}
