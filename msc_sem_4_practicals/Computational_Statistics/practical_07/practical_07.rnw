@@ -162,7 +162,7 @@ For inverse transform method, we
 
 \begin{enumerate}[I.]
 \item Generate random numbers $u_1, u_2, \ldots, u_n \sim U(0, 1)$.
-\item Evaluate $x_i = - \dfrac{1}{2} \log(1 - u_i) \,\, \forall i = 1(1)n$ or $x_i = \dfrac{1}{2} \log(1 - u_i)$ equivalently.
+\item Evaluate $x_i = - \dfrac{1}{2} \log(1 - u_i) \,\, \forall i = 1(1)n$ or $x_i = - \dfrac{1}{2} \log(u_i)$ equivalently.
 \end{enumerate}
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
