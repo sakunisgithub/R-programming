@@ -1,0 +1,252 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 0.6 in, bottom = 0.6 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{dingbat}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 15}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+A random variable $X$ follows an Exponential distribution with rate parameter $\lambda = 1$. The cost associated with the system is given by $C(X) = 50 + 20 \cdot \sqrt{X}$.
+
+\begin{enumerate}[(i)]
+\item Estimate the expected cost by Monte Carlo method.
+
+\item Estimate the expected cost by antithetic variable method.
+
+\item Compare the variances of both the techniques.
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+Given that $X \sim \text{Exp}(1)$. We have to estimate $\theta$ where the true value is
+
+\begin{align*}
+\theta &= E[C(X)] \\[0.2em]
+&= \displaystyle{50 + 20 \cdot \int \limits_{0}^{\infty} e^{-x} x^{1/2} dx} \\[0.5em]
+&= 50 + 20 \cdot \Gamma\left( \dfrac{3}{2} \right) \\[0.5em]
+&= 67.72454.
+\end{align*}
+
+$\bullet$ If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[C(X)]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} C(x_i).$$
+
+$\bullet$ Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [C(X_i) + C(X_i')]$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables. \\[0.5em]
+
+Here $h(u) = - \ln(u)$.
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] 
+
+<<>>=
+cost <- function(x) 50 + 20 * sqrt(x)
+@
+
+<<>>=
+h <- function(u) - log(u)
+@
+
+<<>>=
+sample.size <- c(20, 40, 60, 80, 100)
+@
+
+<<>>=
+theta.hat.monte.carlo <- c()
+
+for (i in 1:length(sample.size)) {
+  
+  size <- sample.size[i]
+  
+  u <- runif(size)
+  
+  theta.hat.monte.carlo[i] <- mean(cost(h(u)))
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample.size,
+                  theta.hat = theta.hat.monte.carlo)
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, 
+          label = "Table 1", 
+          title = "Monte Carlo estimate of E[C(X)]")
+@
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] 
+
+<<>>=
+theta.hat.antithetic <- c()
+
+for (i in 1:length(sample.size)) {
+  
+  size <- sample.size[i] / 2
+  
+  u <- runif(size)
+  
+  theta.hat.antithetic[i] <- mean(c(cost(h(u)), cost(h(1 - u))))
+}
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample.size,
+                  theta.hat = theta.hat.antithetic)
+@
+
+\newpage
+
+<<results='asis', echo=FALSE>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, 
+          label = "Table 2", 
+          title = "Estimate of E[C(X)] by Antithetic Variable Method")
+@
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] 
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.monte.carlo <- c()
+
+for (j in 1:length(sample.size)) {
+  
+  size <- sample.size[j]
+  
+  theta.hat.monte.carlo <- c()
+
+  for (i in 1:B) {
+    
+    u <- runif(size)
+    
+    theta.hat.monte.carlo[i] <- mean(cost(h(u)))
+  }
+  
+  var.monte.carlo[j] <- var(theta.hat.monte.carlo)
+}
+@
+
+
+<<>>=
+df3 <- data.frame(sample.size = sample.size,
+                  variances = var.monte.carlo)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df3, summary = FALSE, rownames = FALSE, 
+          label = "Table 3", 
+          title = "Variance of Monte Carlo Estimate of E[C(X)]")
+@
+
+<<>>=
+var.antithetic <- c()
+
+for (j in 1:length(sample.size)) {
+  
+  size <- sample.size[j] / 2
+  
+  theta.hat.antithetic <- c()
+
+  for (i in 1:B) {
+    
+    u <- runif(size)
+    
+    theta.hat.antithetic[i] <- mean(c(cost(h(u)), cost(h(1 - u))))
+  }
+  
+  var.antithetic[j] <- var(theta.hat.antithetic)
+}
+@
+
+<<>>=
+df4 <- data.frame(sample.size = sample.size,
+                  variances = var.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df4, summary = FALSE, rownames = FALSE, 
+          label = "Table 4", 
+          title = "Variance of Estimate of E[C(X)] from Antithetic Variable Method")
+@
+
+<<>>=
+relative.gain <- ((var.monte.carlo - var.antithetic) / var.monte.carlo) * 100
+@
+
+<<>>=
+df5 <- data.frame(sample.size = sample.size, gain = relative.gain)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df5, summary = FALSE, rownames = FALSE, 
+          label = "Table 5", 
+          title = "Percentage Variance Reduction in estimation of E[C(X)]")
+@
+
+\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont We achieve significant reduction in variance of the estimates by using antithetic variable technique. \par}
+
+\end{enumerate}
+
+
+\end{document}
