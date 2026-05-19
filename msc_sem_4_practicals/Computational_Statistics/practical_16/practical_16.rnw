@@ -8,7 +8,6 @@
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{dingbat}
 \usepackage{fontawesome5}
 \usepackage{tasks}
 \usepackage{bbding}
@@ -19,6 +18,8 @@
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{mathrsfs}
+\usepackage{pifont}
+\usepackage{hyperref}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -56,5 +57,460 @@ Consider a random variable $X \sim \mathscr{B}e(2, 5)$ with mean $E[X] = \dfrac{
 \end{enumerate}
 
 
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\begin{itemize}
+
+\item To generate random numbers from $\mathscr{B}e_1$ distribution, we recall
+
+$$X \sim U(0, 1) \Rightarrow - \ln X \sim \; \text{Exp}(1).$$
+
+Also, $$\sum \limits_{i = 1}^{n} - \ln X_i \sim \; \text{Gamma}(\text{shape} = n, \text{scale} = 1) \qquad \text{and}$$
+
+$$\dfrac{S_1}{S_1 + S_2} \sim \beta_1(m, n)$$
+where $S_1$ and $S_2$ are independent Gamma distributions with shape parameters $m$ and $n$ respectively.
+
+
+\item If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i.$$
+
+Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [X_i + X_i']$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables.
+
+
+\item If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[e^{-X}]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} e^{-x_i}.$$
+
+Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [e^{-X_i} + e^{-X_i'}]$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables; $g(x) = e^{-x}$ is a monotone decreasing function of $x$, consequently $e^{-X_i}$ and $e^{-X_i'}$ are negatively correlated random variables.
+
+
+\item If $x_1, x_2, \ldots, x_n$ is a sample of size $n$ from $X$, Monte Carlo estimate of $\theta = E[X^2]$ is $$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n} x_i^2.$$
+
+Estimate of $\theta$ by using antithetic variable will be
+
+$$\widehat{\theta} = \dfrac{1}{n} \sum \limits_{i = 1}^{n/2} [X_i^2 + X_i'^2]$$
+
+where $X_i$ and $X_i'$ are negatively correlated random variables; $g(x) = x^2$ is a monotone increasing function of $x$, consequently $X_i^2$ and $X_i'^2$ are negativly correlated random variables.
+
+\item Here
+
+$$X_i = h(\utilde{u}), \qquad \& \qquad X_i' = h(\mathbf{1} - \utilde{u})$$
+
+with
+
+$$\utilde{u} = (u_1, u_2, \ldots, u_7), \qquad \text{and}$$
+
+$$h(u_1, u_2, \ldots, u_7) = \dfrac{\sum \limits_{i = 1}^{2} - \ln u_i}{\sum \limits_{i = 1}^{2} - \ln u_i + \sum \limits_{i = 3}^{7} - \ln u_i}.$$
+
+\end{itemize}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+<<>>=
+h <- function(u, m, n){
+  u1 <- u[1:m]
+  u2 <- u[(m + 1) : (m + n)]
+    
+  x1 <- -sum(log(u1))
+  x2 <- -sum(log(u2))
+    
+  x <- x1 / (x1 + x2)
+}
+@
+
+<<>>=
+my.rbeta <- function(n, shape1, shape2, uniform.sample){
+  
+  s <- c()
+  
+  for (i in 1:n) {
+    s[i] <- h(uniform.sample[i,], shape1, shape2)
+  }
+  
+  return(s)
+}
+@
+
+<<>>=
+sample.sizes <- c(20, 50, 80, 100)
+@
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<>>=
+theta.hat.monte.carlo <- c()
+
+for (i in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+  theta.hat.monte.carlo[i] <- mean(my.rbeta(size, 2, 5, u))
+}
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<>>=
+theta.hat.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+  x <- my.rbeta(size / 2, 2, 5, u)
+  x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+  theta.hat.antithetic[i] <- mean(c(x, x_dash))
+}
+@
+
+<<>>=
+df1 <- data.frame(sample.size = sample.sizes,
+                  theta.hat.mc = theta.hat.monte.carlo,
+                  theta.hat.at = theta.hat.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df1, summary = FALSE, rownames = FALSE, 
+          label = "Table 1",
+          title = "Estimates from Two Different Techniques",
+          digits = 6)
+@
+
+True value is $\theta = E[X] = \dfrac{2}{7} = \Sexpr{2/7}$.
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.monte.carlo <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.monte.carlo <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+    theta.hat.monte.carlo[i] <- mean(my.rbeta(size, 2, 5, u))
+  }
+  
+  var.monte.carlo[j] <- var(theta.hat.monte.carlo)
+}
+@
+
+<<>>=
+var.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+    x <- my.rbeta(size / 2, 2, 5, u)
+    x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+    theta.hat.antithetic[i] <- mean(c(x, x_dash))
+  }
+  
+  var.antithetic[j] <- var(theta.hat.antithetic)
+}
+@
+
+<<>>=
+relative.gain <- ((var.monte.carlo - var.antithetic) / var.monte.carlo) * 100
+@
+
+<<>>=
+df2 <- data.frame(sample.size = sample.sizes,
+                  variance.mc = var.monte.carlo,
+                  variance.at = var.antithetic,
+                  percentage.reduction = relative.gain)
+@
+
+\newpage
+
+<<results='asis', echo=FALSE>>=
+stargazer(df2, summary = FALSE, rownames = FALSE, 
+          label = "Table 2", 
+          title = "Comparison of Variance of Two Techniques",
+          digits = 6)
+@
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+g <- function(x) exp(-x)
+@
+
+<<>>=
+theta.hat.monte.carlo <- c()
+
+for (i in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+  theta.hat.monte.carlo[i] <- mean(g(my.rbeta(size, 2, 5, u)))
+}
+@
+
+<<>>=
+theta.hat.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+  x <- my.rbeta(size / 2, 2, 5, u)
+  x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+  theta.hat.antithetic[i] <- mean(g(c(x, x_dash)))
+}
+@
+
+<<>>=
+df3 <- data.frame(sample.size = sample.sizes,
+                  theta.hat.mc = theta.hat.monte.carlo,
+                  theta.hat.at = theta.hat.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df3, summary = FALSE, rownames = FALSE, 
+          label = "Table 3",
+          title = "Estimates from Two Different Techniques",
+          digits = 6)
+@
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.monte.carlo <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.monte.carlo <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+    theta.hat.monte.carlo[i] <- mean(g(my.rbeta(size, 2, 5, u)))
+  }
+  
+  var.monte.carlo[j] <- var(theta.hat.monte.carlo)
+}
+@
+
+<<>>=
+var.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+    x <- my.rbeta(size / 2, 2, 5, u)
+    x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+    theta.hat.antithetic[i] <- mean(g(c(x, x_dash)))
+  }
+  
+  var.antithetic[j] <- var(theta.hat.antithetic)
+}
+@
+
+<<>>=
+relative.gain <- ((var.monte.carlo - var.antithetic) / var.monte.carlo) * 100
+@
+
+<<>>=
+df4 <- data.frame(sample.size = sample.sizes,
+                  variance.mc = var.monte.carlo,
+                  variance.at = var.antithetic,
+                  percentage.reduction = relative.gain)
+@
+
+\newpage
+
+<<results='asis', echo=FALSE>>=
+stargazer(df4, summary = FALSE, rownames = FALSE, 
+          label = "Table 4", 
+          title = "Comparison of Variance of Two Techniques",
+          digits = 6)
+@
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
+
+
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+<<>>=
+g <- function(x) x^2
+@
+
+<<>>=
+theta.hat.monte.carlo <- c()
+
+for (i in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+  theta.hat.monte.carlo[i] <- mean(g(my.rbeta(size, 2, 5, u)))
+}
+@
+
+<<>>=
+theta.hat.antithetic <- c()
+
+for (i in 1:length(sample.sizes)) {
+  size <- sample.sizes[i]
+  
+  u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+  x <- my.rbeta(size / 2, 2, 5, u)
+  x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+  theta.hat.antithetic[i] <- mean(g(c(x, x_dash)))
+}
+@
+
+<<>>=
+df5 <- data.frame(sample.size = sample.sizes,
+                  theta.hat.mc = theta.hat.monte.carlo,
+                  theta.hat.at = theta.hat.antithetic)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df5, summary = FALSE, rownames = FALSE, 
+          label = "Table 5",
+          title = "Estimates from Two Different Techniques",
+          digits = 6)
+@
+
+\newpage
+
+True value is
+
+\begin{align*}
+\theta &= E[X^2] \\[0.2em]
+&= \displaystyle{\int \limits_0^1 x^2 \cdot \dfrac{1}{\mathcal{B}(2, 5)} x (1 - x)^4 \; dx} \\[0.5em]
+&= \displaystyle{\dfrac{1}{\mathcal{B}(2, 5)} \int \limits_0^1 x^3 (1 - x)^4 \; dx} \\[0.5em]
+&= \dfrac{1}{\mathcal{B}(2, 5)} \cdot \mathcal{B}(4, 5) \\[0.5em]
+&= \dfrac{\Gamma(7)}{\Gamma(2) \cdot \Gamma(5)} \cdot \dfrac{\Gamma(4) \cdot \Gamma(5)}{\Gamma(9)} \\[0.5em]
+&= \dfrac{6!}{4!} \cdot \dfrac{3! \cdot 4!}{8!} \\[0.5em]
+&= \dfrac{6}{7 \times 8} \\[0.5em]
+&= \dfrac{3}{28} \\[0.5em]
+&= 0.1071429.
+\end{align*}
+
+<<>>=
+B <- 1000
+@
+
+<<>>=
+var.monte.carlo <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.monte.carlo <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif(size * (2 + 5)), nrow = size, ncol = (2 + 5))
+  
+    theta.hat.monte.carlo[i] <- mean(g(my.rbeta(size, 2, 5, u)))
+  }
+  
+  var.monte.carlo[j] <- var(theta.hat.monte.carlo)
+}
+@
+
+<<>>=
+var.antithetic <- c()
+
+for (j in 1:length(sample.sizes)) {
+  
+  size <- sample.sizes[j]
+  
+  theta.hat.antithetic <- c()
+  
+  for (i in 1:B) {
+    u <- matrix(runif((size / 2) * (2 + 5)), nrow = size / 2, ncol = (2 + 5))
+  
+    x <- my.rbeta(size / 2, 2, 5, u)
+    x_dash <- my.rbeta(size / 2, 2, 5, 1-u)
+  
+    theta.hat.antithetic[i] <- mean(g(c(x, x_dash)))
+  }
+  
+  var.antithetic[j] <- var(theta.hat.antithetic)
+}
+@
+
+<<>>=
+relative.gain <- ((var.monte.carlo - var.antithetic) / var.monte.carlo) * 100
+@
+
+<<>>=
+df6 <- data.frame(sample.size = sample.sizes,
+                  variance.mc = var.monte.carlo,
+                  variance.at = var.antithetic,
+                  percentage.reduction = relative.gain)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(df6, summary = FALSE, rownames = FALSE, 
+          label = "Table 6", 
+          title = "Comparison of Variance of Two Techniques",
+          digits = 6)
+@
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont We achieve significant reduction in variance of the estimates by using antithetic variable technique.}
+
+\end{enumerate}
 
 \end{document}
