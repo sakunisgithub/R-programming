@@ -1,0 +1,275 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{mathrsfs}
+\usepackage{pifont}
+\usepackage{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 17}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\begin{enumerate}[(i)]
+\item Generate a sample of size $1000$ from a mixture of Gaussians given by the following PDF.
+
+$$f(x) = 0.3 \cdot \mathcal{N}(-4, 1) + 0.3 \cdot \mathcal{N}(0, 1) + 0.4 \cdot \mathcal{N}(4, 1).$$
+
+Each $x_i$ is generated from $\mathcal{N}(-4, 1)$ with probability $0.3$ or from $\mathcal{N}(0, 1)$ with probability $0.3$ or from $\mathcal{N}(4, 1)$ with probability $0.4$. Assume that you are given only $x_i$'s and you don't know which of the two Gaussians each $x_i$ comes from.
+
+\item Use Expectation-Maximization algorithm to estimate the mixing proportions, $\phi_1, \phi_2, \phi_3$, say; the Gaussian means, $\mu_1$, $\mu_2$, $\mu_3$, say and the Gaussian variances $\sigma_1^2$, $\sigma_2^2$, $\sigma_3^2$ say.
+\end{enumerate}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\vspace{1cm}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.2cm} Data simulation :
+
+\begin{itemize}
+\item Generate $u_1, \ldots, u_n \sim U(0, 1)$.
+
+\item Set $$\forall i = 1(1)n, \; x_i = \begin{cases} x \sim \mathcal{N}\!\left(-4, 1\right) \text{ if } u_i <= 0.3 \\[0.5em] x \sim \mathcal{N}\!\left(0, 1\right) \text{ if } 0.3 < u_i <= 0.6 \\[0.5em] x \sim \mathcal{N}\!\left(4, 1\right)\text{ if } u_i > 0.6 \end{cases}.$$
+\end{itemize}
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.2cm} EM Algorithm :
+
+\begin{itemize}
+\item $\bs{\theta} = \left\{ \phi_1, \phi_2, \phi_3, \mu_1, \mu_2, \mu_3, \sigma_1^2, \sigma_2^2, \sigma_3^2\right\}$.
+
+\item Start with an initial value $\bs{\theta}^{(0)}$.
+
+\item Repeat until convergence $\left\{ \right.$
+
+\begin{align*}
+&\text{(E-Step) For each} 
+\begin{aligned}[t]
+i, j &: \\[1em]
+w_{j}^{(i)} &:= p \left( z_{j}^{(i)} = 1 \mid {x}^{(i)}, \bs{\theta}^{(t)} \right)
+\end{aligned}\\[1em]
+&\text{(M-Step) } 
+\begin{aligned}[t]
+\text{Update} &: \\[1em]
+\hspace{-2em}\phi_j &:= \dfrac{1}{n} \sum \limits_{i=1}^{n}w_j^{(i)}, \\[1em]
+{\mu}_j &:= \dfrac{\sum \limits_{i = 1}^{n} w_j^{(i)} {x}^{(i)}}{\sum \limits_{i = 1}^{n} w_j^{(i)}}, \\[1em]
+{\sigma}_j^2 &:= \dfrac{\sum \limits_{i=1}^{n} w_j^{(i)} \left({x}^{(i)}-{\mu}_{j}\right)^2}{\sum \limits_{i=1}^{n} w_j^{(i)}}
+\end{aligned}
+\end{align*}
+
+$\left. \right\}$.
+\end{itemize}
+
+\end{enumerate}
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<echo=FALSE>>=
+set.seed(14)
+@
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+<<>>=
+n <- 1000; u <- runif(n)
+@
+
+<<>>=
+theta.true <- c(0.3, 0.3, 0.4, -4, 0, 4, 1, 1, 1)
+
+phi.true <- theta.true[1:3]
+mu.true <- theta.true[4:6]
+sigma.sq.true <- theta.true[7:9]
+@
+
+<<>>=
+z <- sample.int(3, size = n, replace = TRUE, prob = phi.true)
+@
+
+<<>>=
+x <- rnorm(n, mean = mu.true[z], sd = sqrt(sigma.sq.true[z]))
+@
+
+\newpage
+
+Here is a histogram of the generated sample.
+
+<<warning=FALSE, message=FALSE>>=
+library(tidyverse)
+@
+
+<<>>=
+data.frame(x) %>%
+  ggplot(aes(x = x)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 20,
+                 color = "black", fill = "#F527A6")
+@
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont Clearly the sample is from a multimodal distribution, each peak governed by a Gaussian.}
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+<<>>=
+theta <- c(0.4, 0.4, 0.2, -2, 0, 3, 1, 2, 2)
+@
+
+<<>>=
+epsilon <- 0.0001
+@
+
+<<>>=
+repeat{
+  # current setting
+  phi1 <- theta[1]; phi2 <- theta[2]; phi3 <- theta[3]
+  mu1 <- theta[4]; sigma1.sq <- theta[7]
+  mu2 <- theta[5]; sigma2.sq <- theta[8]
+  mu3 <- theta[6]; sigma3.sq <- theta[9]
+  
+  # E-Step
+  joint.prob <- matrix(NA, nrow = n, ncol = 3)
+  joint.prob[,1] <- dnorm(x, mu1, sqrt(sigma1.sq)) * phi1
+  joint.prob[,2] <- dnorm(x, mu2, sqrt(sigma2.sq)) * phi2
+  joint.prob[,3] <- dnorm(x, mu3, sqrt(sigma3.sq)) * phi3
+  
+  marginal.prob <- rowSums(joint.prob)
+  
+  posterior.prob <- joint.prob / marginal.prob # using recycling property of R
+  
+  # M-Step
+  
+  theta.new <- c()
+  
+  # update phi
+  theta.new[c(1, 2, 3)] <- colMeans(posterior.prob)
+  
+  # update mu
+  theta.new[c(4, 5, 6)] <- colSums(posterior.prob * x) / colSums(posterior.prob)
+  
+  # update sigma.sq
+  temp <- (x - matrix(rep(c(mu1, mu2, mu3), n), nrow = n, ncol = 3, byrow = TRUE))^2
+  
+  theta.new[c(7, 8, 9)] <- colSums(posterior.prob * temp) / colSums(posterior.prob)
+  
+  if(max(abs(theta - theta.new)) < epsilon){
+    theta <- theta.new
+    break
+  }else{
+    theta <- theta.new
+  }
+}
+@
+
+<<>>=
+theta
+@
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\centering
+\begin{tabular}{ccc}
+\hline
+Parameter & Estimate & True Value \\[0.5em]
+\hline \\[-0.8em]
+
+$\widehat{\phi_1}$ 
+& \Sexpr{round(theta[1], digits = 3)} 
+& \Sexpr{theta.true[1]} \\[1em]
+
+$\widehat{\phi_2}$ 
+& \Sexpr{round(theta[2], digits = 3)} 
+& \Sexpr{theta.true[2]} \\[1em]
+
+$\widehat{\phi_3}$ 
+& \Sexpr{round(theta[3], digits = 3)} 
+& \Sexpr{theta.true[3]} \\[1em]
+
+$\widehat{\mu_1}$ 
+& \Sexpr{round(theta[4], digits = 3)} 
+& \Sexpr{theta.true[4]} \\[1em]
+
+$\widehat{\mu_2}$ 
+& \Sexpr{round(theta[5], digits = 3)} 
+& \Sexpr{theta.true[5]} \\[1em]
+
+$\widehat{\mu_3}$ 
+& \Sexpr{round(theta[6], digits = 3)} 
+& \Sexpr{theta.true[6]} \\[1em]
+
+$\widehat{\sigma_1^2}$ 
+& \Sexpr{round(theta[7], digits = 3)} 
+& \Sexpr{theta.true[7]} \\[1em]
+
+$\widehat{\sigma_2^2}$ 
+& \Sexpr{round(theta[8], digits = 3)} 
+& \Sexpr{theta.true[8]} \\[0.5em]
+
+$\widehat{\sigma_3^2}$ 
+& \Sexpr{round(theta[9], digits = 3)} 
+& \Sexpr{theta.true[9]} \\[1em]
+\hline
+\end{tabular}
+\caption{Estimated and true parameter values}
+\end{table}
+
+\vspace{1cm}
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont Even though EM algorithm has a tendency to converge to the local optima, it has performed considerably well in our problem.}
+
+\end{document}
