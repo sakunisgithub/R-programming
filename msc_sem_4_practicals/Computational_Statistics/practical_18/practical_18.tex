@@ -1,0 +1,548 @@
+\documentclass[11pt, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[top = 1 in, bottom = 1 in, left = 0.8 in, right = 0.8 in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+
+\allowdisplaybreaks[4]
+
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{fontawesome5}
+\usepackage{tasks}
+\usepackage{bbding}
+\usepackage{undertilde}
+\usepackage{twemojis}
+% how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
+\usepackage{fontspec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{mathrsfs}
+\usepackage{pifont}
+\usepackage{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{MSMS 408 : Practical 18}
+\author{{\fontsize{25}{20} \benyorithafont Ananda Biswas} \\[1em] Exam Roll No. : 24419STC053}
+\date{\today}
+
+\newfontface\benyorithafont{Benyoritha-G334D.otf}
+
+\newfontface\myfont{Myfont1-Regular.ttf}[LetterSpace=0.05em]
+
+\newfontface\cbfont{CaveatBrush-Regular.ttf}
+% how to use --- \myfont --write text here--
+
+\newfontface\gloriahallelujahfont{GLORIAHALLELUJAH-REGULAR.TTF}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Question}}
+
+\begin{enumerate}[(i)]
+\item Generate a sample of size $1000$, each denoting the number of heads from $10$ tosses of \textit{either} a biased coin A with probability $0.4$ \textit{or} a biased coin B with probability $0.6$. $P_A(\text{Head}) = \theta_A = 0.3$, $P_B(\text{Head}) = \theta_B = 0.8$ be the respective bias of the coins A and B.
+
+Assume that you are given only $h_i$'s and you don't know which of the two coins each $h_i$ comes from.
+
+\item Use Expectation-Maximization algorithm to estimate the mixing proportion, $\phi$, say and the bias $\theta_A$, $\theta_B$.
+
+\item Show the parameter updates and increase in log-likelihood in successive iterations.
+
+\item Using the parameter estimates, predict which coin each $h_i$ might have been generated from.
+\end{enumerate}
+
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Theory}}
+
+\vspace{1cm}
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}] \hspace{0.2cm} Data simulation :
+
+\begin{itemize}
+\item Generate $u_1, \ldots, u_n \sim U(0, 1)$.
+
+\item Set $$\forall i = 1(1)n, \; h_i = \begin{cases} x \sim \text{Binomial}(10, 0.3) \text{ if } u_i <= 0.4 \\[0.5em] x \sim \text{Binomial}(10, 0.8)\text{ if } u_i > 0.4 \end{cases}.$$
+\end{itemize}
+
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}] \hspace{0.2cm} EM Algorithm :
+
+\begin{itemize}
+\item $\bs{\theta} = \left\{ \phi, \theta_A, \theta_B \right\}$.
+
+\item Start with an initial value $\bs{\theta}^{(0)}$.
+
+\item Repeat until convergence $\left\{ \right.$
+
+\begin{align*}
+&\text{(E-Step) } 
+\begin{aligned}[t]
+\text{For each } i &: \\[1em]
+\gamma^{(i)} &:= P \left( z^{(i)} = A \mid h_i, \bs{\theta}^{(t)} \right) \\[1em]
+1 - \gamma^{(i)} &:= P \left( z^{(i)} = B \mid h_i, \bs{\theta}^{(t)} \right)
+\end{aligned}\\[1em]
+&\text{(M-Step) } 
+\begin{aligned}[t]
+\text{Update} &: \\[1em]
+\hspace{-2em}\phi &:= \dfrac{1}{n} \sum \limits_{i=1}^{n}\gamma^{(i)}, \\[1em]
+{\theta}_A &:= \dfrac{\sum \limits_{i = 1}^{n} \gamma^{(i)} h_i}{\sum \limits_{i = 1}^{n} \gamma^{(i)} \cdot (h_i + t_i)}, \\[1em]
+{\theta}_B &:= \dfrac{\sum \limits_{i=1}^{n} (1 - \gamma^{(i)}) \cdot h_i}{\sum \limits_{i=1}^{n} (1 - \gamma^{(i)}) \cdot (h_i + t_i)}
+\end{aligned}
+\end{align*}
+
+$\left. \right\}$.
+\end{itemize}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.2cm} Predict 
+
+$$x^{(i)} \in 
+\begin{cases} \text{Coin A if } \gamma^{(i)} > 1 - \gamma^{(i)} \\[0.5em]
+              \text{Coin B if } \gamma^{(i)} \leq 1 - \gamma^{(i)}
+\end{cases}$$
+
+where $\gamma^{(i)}, 1 - \gamma^{(i)}$ are evaluated on the final estimates of $\bs{\theta}$.
+
+\end{enumerate}
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
+
+
+
+
+
+
+\begin{enumerate}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 1}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{true.theta} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.4}\hldef{,} \hlnum{0.3}\hldef{,} \hlnum{0.8}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{true.phi} \hlkwb{<-} \hldef{true.theta[}\hlnum{1}\hldef{]}
+\hldef{true.theta.A} \hlkwb{<-} \hldef{true.theta[}\hlnum{2}\hldef{]; true.theta.B} \hlkwb{<-} \hldef{true.theta[}\hlnum{3}\hldef{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{1000}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{u} \hlkwb{<-} \hlkwd{runif}\hldef{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{ifelse}\hldef{(u} \hlopt{<=} \hldef{true.phi,} \hlkwd{rbinom}\hldef{(n,} \hlnum{10}\hldef{, true.theta.A),} \hlkwd{rbinom}\hldef{(n,} \hlnum{10}\hldef{, true.theta.B))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{head}\hldef{(x)}
+\end{alltt}
+\begin{verbatim}
+## [1]  3  8 10  8  8  9
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 2}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.9}\hldef{,} \hlnum{0.5}\hldef{,} \hlnum{0.6}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{epsilon} \hlkwb{<-} \hlnum{0.00001}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta.history} \hlkwb{<-} \hlkwd{list}\hldef{(); iter} \hlkwb{<-} \hlnum{1}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{repeat}\hldef{\{}
+  \hlcom{# Current Setting}
+  \hldef{phi} \hlkwb{<-} \hldef{theta[}\hlnum{1}\hldef{]}
+  \hldef{thetaA} \hlkwb{<-} \hldef{theta[}\hlnum{2}\hldef{]; thetaB} \hlkwb{<-} \hldef{theta[}\hlnum{3}\hldef{]}
+
+  \hlcom{# E-Step}
+  \hldef{joint.prob} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{= n,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{)}
+  \hldef{joint.prob[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{dbinom}\hldef{(x,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= thetaA)} \hlopt{*} \hldef{phi}
+  \hldef{joint.prob[,}\hlnum{2}\hldef{]} \hlkwb{<-} \hlkwd{dbinom}\hldef{(x,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= thetaB)} \hlopt{*} \hldef{(}\hlnum{1} \hlopt{-} \hldef{phi)}
+
+  \hldef{marginal.prob} \hlkwb{<-} \hlkwd{rowSums}\hldef{(joint.prob)}
+
+  \hldef{posterior.prob} \hlkwb{<-} \hldef{joint.prob} \hlopt{/} \hldef{marginal.prob}
+
+
+  \hlcom{# M-Step}
+  \hldef{theta.new} \hlkwb{<-} \hlkwd{c}\hldef{()}
+
+  \hlcom{# update phi}
+  \hldef{theta.new[}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{)]} \hlkwb{<-} \hlkwd{colMeans}\hldef{(posterior.prob)[}\hlnum{1}\hldef{]}
+
+  \hlcom{# update thetaA}
+  \hldef{theta.new[}\hlkwd{c}\hldef{(}\hlnum{2}\hldef{,} \hlnum{3}\hldef{)]} \hlkwb{<-} \hlkwd{colSums}\hldef{(posterior.prob} \hlopt{*} \hldef{x)} \hlopt{/} \hlkwd{colSums}\hldef{(posterior.prob} \hlopt{*} \hlnum{10}\hldef{)}
+
+  \hldef{theta.history[[iter]]} \hlkwb{<-} \hldef{theta.new}
+  \hldef{iter} \hlkwb{<-} \hldef{iter} \hlopt{+} \hlnum{1}
+
+  \hlkwa{if}\hldef{(}\hlkwd{max}\hldef{(}\hlkwd{abs}\hldef{(theta} \hlopt{-} \hldef{theta.new))} \hlopt{<} \hldef{epsilon)\{}
+    \hldef{theta} \hlkwb{<-} \hldef{theta.new}
+    \hlkwa{break}
+  \hldef{\}}\hlkwa{else}\hldef{\{}
+    \hldef{theta} \hlkwb{<-} \hldef{theta.new}
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{theta}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.4262251 0.2950755 0.8017629
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}]
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df1} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{do.call}\hldef{(rbind, theta.history))}
+\hlkwd{colnames}\hldef{(df1)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{,} \hlsng{"theta.A"}\hldef{,} \hlsng{"theta.B"}\hldef{)}
+\hlkwd{rownames}\hldef{(df1)} \hlkwb{<-} \hlkwd{paste}\hldef{(}\hlsng{"Iteration "}\hldef{,} \hlnum{1}\hlopt{:}\hldef{(iter}\hlopt{-}\hlnum{1}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Thu, May 21, 2026 - 19:43:09
+\begin{table}[!htbp] \centering 
+  \caption{Estimates in Successive Iterations} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & phi & theta.A & theta.B \\ 
+\hline \\[-1.8ex] 
+Iteration  1 & $0.839103$ & $0.546305$ & $0.791771$ \\ 
+Iteration  2 & $0.724858$ & $0.478870$ & $0.867506$ \\ 
+Iteration  3 & $0.622958$ & $0.417766$ & $0.863429$ \\ 
+Iteration  4 & $0.551534$ & $0.374707$ & $0.845408$ \\ 
+Iteration  5 & $0.502562$ & $0.343931$ & $0.830160$ \\ 
+Iteration  6 & $0.471302$ & $0.323857$ & $0.819307$ \\ 
+Iteration  7 & $0.452258$ & $0.311592$ & $0.812207$ \\ 
+Iteration  8 & $0.441052$ & $0.304416$ & $0.807833$ \\ 
+Iteration  9 & $0.434603$ & $0.300324$ & $0.805237$ \\ 
+Iteration  10 & $0.430938$ & $0.298016$ & $0.803732$ \\ 
+Iteration  11 & $0.428869$ & $0.296721$ & $0.802873$ \\ 
+Iteration  12 & $0.427705$ & $0.295995$ & $0.802386$ \\ 
+Iteration  13 & $0.427051$ & $0.295588$ & $0.802111$ \\ 
+Iteration  14 & $0.426684$ & $0.295361$ & $0.801957$ \\ 
+Iteration  15 & $0.426479$ & $0.295233$ & $0.801870$ \\ 
+Iteration  16 & $0.426364$ & $0.295161$ & $0.801821$ \\ 
+Iteration  17 & $0.426299$ & $0.295121$ & $0.801794$ \\ 
+Iteration  18 & $0.426263$ & $0.295099$ & $0.801779$ \\ 
+Iteration  19 & $0.426243$ & $0.295086$ & $0.801770$ \\ 
+Iteration  20 & $0.426232$ & $0.295079$ & $0.801766$ \\ 
+Iteration  21 & $0.426225$ & $0.295075$ & $0.801763$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log.likelihood.single} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{,} \hlkwc{h}\hldef{)\{}
+  \hldef{a} \hlkwb{<-} \hldef{theta[}\hlnum{1}\hldef{]} \hlopt{*} \hlkwd{dbinom}\hldef{(h,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= theta[}\hlnum{2}\hldef{])}
+  \hldef{b} \hlkwb{<-} \hldef{(}\hlnum{1} \hlopt{-} \hldef{theta[}\hlnum{1}\hldef{])} \hlopt{*} \hlkwd{dbinom}\hldef{(h,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= theta[}\hlnum{3}\hldef{])}
+
+  \hlkwd{return}\hldef{(}\hlkwd{log}\hldef{(a}\hlopt{+}\hldef{b))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log.likelihood} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{theta}\hldef{)} \hlkwd{sum}\hldef{(}\hlkwd{log.likelihood.single}\hldef{(theta, x))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{log.likelihood.history} \hlkwb{<-} \hlkwd{apply}\hldef{(df1,} \hlnum{1}\hldef{, log.likelihood)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{iteration} \hldef{=} \hlnum{1}\hlopt{:}\hldef{(iter}\hlopt{-}\hlnum{1}\hldef{),}
+           \hlkwc{log.likelihood} \hldef{= log.likelihood.history)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{df2} \hlopt{%>%}
+  \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= iteration,} \hlkwc{y} \hldef{= log.likelihood))} \hlopt{+}
+  \hlkwd{geom_line}\hldef{(}\hlkwc{linewidth} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"blue"}\hldef{)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwc{size} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{)} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{"Iteration"}\hldef{,} \hlkwc{y} \hldef{=} \hlsng{"Log-likelihood"}\hldef{,} \hlkwc{title} \hldef{=} \hlsng{"EM Convergence"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23-1} 
+\end{knitrout}
+
+\item[\scalebox{2.0}{\twemoji{keycap: 4}}] \hspace{0.2cm} We now calculate the posterior probabilities using the latest setting of the parameters, hence provide an estimate of which Gaussian each $h_i$ might belong to.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{phi} \hlkwb{<-} \hldef{theta[}\hlnum{1}\hldef{]}
+\hldef{thetaA} \hlkwb{<-} \hldef{theta[}\hlnum{2}\hldef{]; thetaB} \hlkwb{<-} \hldef{theta[}\hlnum{3}\hldef{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{joint.prob} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{= n,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{)}
+\hldef{joint.prob[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{dbinom}\hldef{(x,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= thetaA)} \hlopt{*} \hldef{phi}
+\hldef{joint.prob[,}\hlnum{2}\hldef{]} \hlkwb{<-} \hlkwd{dbinom}\hldef{(x,} \hlkwc{size} \hldef{=} \hlnum{10}\hldef{,} \hlkwc{prob} \hldef{= thetaB)} \hlopt{*} \hldef{(}\hlnum{1} \hlopt{-} \hldef{phi)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{marginal.prob} \hlkwb{<-} \hlkwd{rowSums}\hldef{(joint.prob)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+ 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{posterior.prob} \hlkwb{<-} \hldef{joint.prob} \hlopt{/} \hldef{marginal.prob}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{head}\hldef{(posterior.prob)}
+\end{alltt}
+\begin{verbatim}
+##              [,1]       [,2]
+## [1,] 9.962580e-01 0.00374204
+## [2,] 3.151660e-03 0.99684834
+## [3,] 3.386525e-05 0.99996613
+## [4,] 3.151660e-03 0.99684834
+## [5,] 3.151660e-03 0.99684834
+## [6,] 3.271128e-04 0.99967289
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{assignment} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample} \hldef{= x,}
+                         \hlkwc{predicted.coin} \hldef{=} \hlkwd{ifelse}\hldef{(}\hlkwd{max.col}\hldef{(posterior.prob)} \hlopt{==} \hlnum{1}\hldef{,}
+                                                 \hlsng{"A"}\hldef{,} \hlsng{"B"}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Thu, May 21, 2026 - 19:43:12
+\begin{table}[!htbp] \centering 
+  \caption{Assignment to Coins} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample & predicted.coin \\ 
+\hline \\[-1.8ex] 
+$3$ & A \\ 
+$8$ & B \\ 
+$10$ & B \\ 
+$8$ & B \\ 
+$8$ & B \\ 
+$9$ & B \\ 
+$9$ & B \\ 
+$8$ & B \\ 
+$7$ & B \\ 
+$1$ & A \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+\end{enumerate}
+
+\newpage
+
+\section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
+
+\begin{table}[!htbp]
+\def\arraystretch{1.5}
+
+\centering
+\begin{tabular}{ccc}
+\hline
+Parameter & Estimate & True Value \\[0.5em]
+\hline \\[-0.8em]
+
+$\widehat{\phi}$ 
+& 0.426 
+& 0.4 \\[1em]
+
+$\widehat{\theta_A}$ 
+& 0.295 
+& 0.3 \\[1em]
+
+$\widehat{\theta_B}$ 
+& 0.802 
+& 0.8 \\[1em]
+
+\hline
+\end{tabular}
+\caption{Estimated and true parameter values}
+\end{table}
+
+\vspace{1cm}
+
+{\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont Even though EM algorithm has a tendency to converge to the local optima, it has performed considerably well in our problem.}
+
+\end{document}
