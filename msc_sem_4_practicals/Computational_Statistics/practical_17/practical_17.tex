@@ -106,6 +106,8 @@ $$f(x) = 0.6 \cdot \mathcal{N}(0, 1) + 0.4 \cdot \mathcal{N}(4, 1).$$
 Each $x_i$ is generated from $\mathcal{N}(0, 1)$ with probability $0.6$ or from $\mathcal{N}(4, 1)$ with probability $0.4$. Assume that you are given only $x_i$'s and you don't know which of the two Gaussians each $x_i$ comes from.
 
 \item Use Expectation-Maximization algorithm to estimate the mixing proportions, $\phi_1, \phi_2$, say; the Gaussian means, $\mu_1$, $\mu_2$, say and the Gaussian variances $\sigma_1^2$, $\sigma_2^2$, say.
+
+\item Using the parameter estimates, predict which Gaussian each $x_i$ might have been generated from.
 \end{enumerate}
 
 
@@ -152,7 +154,9 @@ w_{j}^{(i)} &:= p \left( z_{j}^{(i)} = 1 \mid {x}^{(i)}, \bs{\theta}^{(t)} \righ
 $\left. \right\}$.
 \end{itemize}
 
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.2cm} Predict $x^{(i)} \in k-$th Gaussian where $k = \operatorname*{argmax}\limits_{j} w_{j}^{(i)}$, evaluated on the final estimates of $\bs{\theta}$.
 \end{enumerate}
+
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
 
 
@@ -297,6 +301,100 @@ Here is a histogram of the generated sample.
 \end{kframe}
 \end{knitrout}
 
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.2cm} We now calculate the posterior probabilities using the latest setting of the parameters, hence provide an estimate of which Gaussian each $x^{(i)}$ might belong to.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{phi1} \hlkwb{<-} \hldef{theta[}\hlnum{1}\hldef{]; phi2} \hlkwb{<-} \hldef{theta[}\hlnum{2}\hldef{]}
+\hldef{mu1} \hlkwb{<-} \hldef{theta[}\hlnum{3}\hldef{]; sigma1.sq} \hlkwb{<-} \hldef{theta[}\hlnum{5}\hldef{]}
+\hldef{mu2} \hlkwb{<-} \hldef{theta[}\hlnum{4}\hldef{]; sigma2.sq} \hlkwb{<-} \hldef{theta[}\hlnum{6}\hldef{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{joint.prob} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow} \hldef{= n,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{)}
+\hldef{joint.prob[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{dnorm}\hldef{(x, mu1,} \hlkwd{sqrt}\hldef{(sigma1.sq))} \hlopt{*} \hldef{phi1}
+\hldef{joint.prob[,}\hlnum{2}\hldef{]} \hlkwb{<-} \hlkwd{dnorm}\hldef{(x, mu2,} \hlkwd{sqrt}\hldef{(sigma2.sq))} \hlopt{*} \hldef{phi2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{marginal.prob} \hlkwb{<-} \hlkwd{rowSums}\hldef{(joint.prob)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{posterior.prob} \hlkwb{<-} \hldef{joint.prob} \hlopt{/} \hldef{marginal.prob}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{head}\hldef{(posterior.prob)}
+\end{alltt}
+\begin{verbatim}
+##              [,1]        [,2]
+## [1,] 9.978936e-01 0.002106382
+## [2,] 1.076164e-03 0.998923836
+## [3,] 4.350004e-03 0.995649996
+## [4,] 9.820819e-01 0.017918144
+## [5,] 3.066863e-05 0.999969331
+## [6,] 9.923596e-01 0.007640374
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{assignment} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{sample} \hldef{= x,}
+                         \hlkwc{predicted.Gaussian} \hldef{=} \hlkwd{max.col}\hldef{(posterior.prob))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Thu, May 21, 2026 - 14:45:16
+\begin{table}[!htbp] \centering 
+  \caption{Assignment to Gaussians} 
+  \label{Table 1} 
+\begin{tabular}{@{\extracolsep{5pt}} cc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+sample & predicted.Gaussian \\ 
+\hline \\[-1.8ex] 
+$0.175$ & $1$ \\ 
+$3.544$ & $2$ \\ 
+$3.218$ & $2$ \\ 
+$0.799$ & $1$ \\ 
+$4.341$ & $2$ \\ 
+$0.553$ & $1$ \\ 
+$4.440$ & $2$ \\ 
+$$-$1.383$ & $1$ \\ 
+$0.351$ & $1$ \\ 
+$1.130$ & $1$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
 \end{enumerate}
 
 \newpage
@@ -344,5 +442,6 @@ $\widehat{\sigma_2^2}$
 \vspace{1cm}
 
 {\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont Even though EM algorithm has a tendency to converge to the local optima, it has performed considerably well in our problem.}
+
 
 \end{document}

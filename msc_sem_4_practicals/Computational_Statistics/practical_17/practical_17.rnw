@@ -56,6 +56,8 @@ $$f(x) = 0.6 \cdot \mathcal{N}(0, 1) + 0.4 \cdot \mathcal{N}(4, 1).$$
 Each $x_i$ is generated from $\mathcal{N}(0, 1)$ with probability $0.6$ or from $\mathcal{N}(4, 1)$ with probability $0.4$. Assume that you are given only $x_i$'s and you don't know which of the two Gaussians each $x_i$ comes from.
 
 \item Use Expectation-Maximization algorithm to estimate the mixing proportions, $\phi_1, \phi_2$, say; the Gaussian means, $\mu_1$, $\mu_2$, say and the Gaussian variances $\sigma_1^2$, $\sigma_2^2$, say.
+
+\item Using the parameter estimates, predict which Gaussian each $x_i$ might have been generated from.
 \end{enumerate}
 
 
@@ -102,7 +104,9 @@ w_{j}^{(i)} &:= p \left( z_{j}^{(i)} = 1 \mid {x}^{(i)}, \bs{\theta}^{(t)} \righ
 $\left. \right\}$.
 \end{itemize}
 
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.2cm} Predict $x^{(i)} \in k-$th Gaussian where $k = \operatorname*{argmax}\limits_{j} w_{j}^{(i)}$, evaluated on the final estimates of $\bs{\theta}$.
 \end{enumerate}
+
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{R Program}}
 
 
@@ -207,6 +211,49 @@ repeat{
 theta
 @
 
+\newpage
+
+\item[\scalebox{2.0}{\twemoji{keycap: 3}}] \hspace{0.2cm} We now calculate the posterior probabilities using the latest setting of the parameters, hence provide an estimate of which Gaussian each $x^{(i)}$ might belong to.
+
+<<>>=
+phi1 <- theta[1]; phi2 <- theta[2]
+mu1 <- theta[3]; sigma1.sq <- theta[5]
+mu2 <- theta[4]; sigma2.sq <- theta[6]
+@
+
+<<>>=
+joint.prob <- matrix(NA, nrow = n, ncol = 2)
+joint.prob[,1] <- dnorm(x, mu1, sqrt(sigma1.sq)) * phi1
+joint.prob[,2] <- dnorm(x, mu2, sqrt(sigma2.sq)) * phi2
+@
+
+<<>>=
+marginal.prob <- rowSums(joint.prob)
+@
+
+<<>>=
+posterior.prob <- joint.prob / marginal.prob
+@
+
+<<>>=
+head(posterior.prob)
+@
+
+<<>>=
+assignment <- data.frame(sample = x,
+                         predicted.Gaussian = max.col(posterior.prob))
+@
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(stargazer)
+@
+
+<<results='asis', echo=FALSE>>=
+stargazer(assignment[1:10,], summary = FALSE, rownames = FALSE,
+          label = "Table 1",
+          title = "Assignment to Gaussians")
+@
+
 \end{enumerate}
 
 \newpage
@@ -254,5 +301,6 @@ $\widehat{\sigma_2^2}$
 \vspace{1cm}
 
 {\fontsize{25}{20} \ding{46}} \hspace{0.1cm} {\fontsize{12}{20}\gloriahallelujahfont Even though EM algorithm has a tendency to converge to the local optima, it has performed considerably well in our problem.}
+
 
 \end{document}
