@@ -64,3 +64,24 @@ repeat{
 
 # Final estimates
 theta
+
+# posterior probabilities using the latest setting of the parameters
+
+# latest setting
+phi1 <- theta[1]; phi2 <- theta[2]
+mu1 <- theta[3]; sigma1.sq <- theta[5]
+mu2 <- theta[4]; sigma2.sq <- theta[6]
+
+joint.prob <- matrix(NA, nrow = n, ncol = 2)
+joint.prob[,1] <- dnorm(x, mu1, sqrt(sigma1.sq)) * phi1
+joint.prob[,2] <- dnorm(x, mu2, sqrt(sigma2.sq)) * phi2
+
+marginal.prob <- rowSums(joint.prob)
+
+posterior.prob <- joint.prob / marginal.prob
+
+head(posterior.prob)
+
+# assignments
+assignment <- max.col(posterior.prob)
+head(assignment)
