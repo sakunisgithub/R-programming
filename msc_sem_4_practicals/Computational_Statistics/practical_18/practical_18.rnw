@@ -301,7 +301,7 @@ assignment <- data.frame(sample = x,
 
 <<results='asis', echo=FALSE>>=
 stargazer(assignment[1:10,], summary = FALSE, rownames = FALSE,
-          label = "Table 1",
+          label = "Table 2",
           title = "Assignment to Coins")
 @
 
