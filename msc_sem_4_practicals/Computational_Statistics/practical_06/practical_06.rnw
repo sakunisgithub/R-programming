@@ -8,14 +8,13 @@
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{dingbat}
 \usepackage{fontawesome5}
 \usepackage{tasks}
 \usepackage{bbding}
 \usepackage{twemojis}
 % how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
 \usepackage{fontspec}
-
+\usepackage{pifont}
 
 \title{MSMS 408 : Practical 06}
 \author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
@@ -58,7 +57,7 @@ To find constant $M$ recall that we need $p(x) \leq M \cdot q(x) \Rightarrow \df
 
 Now, $\dfrac{p(x)}{q(x)} = \dfrac{\dfrac{2}{\sqrt{\pi}} x^{\frac{1}{2}}e^{-x}}{\dfrac{2}{3} e^{-\frac{2x}{3}}} = \dfrac{3}{\sqrt{\pi}} x^{\frac{1}{2}} e^{-x/3} = h(x)$, say. \\[0.2em]
 
-Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \ln \dfrac{4}{\sqrt{\pi}} + \dfrac{1}{2} \ln x - \dfrac{x}{3}$.
+Maximizing $h(x)$ is equivalent to maximizing $\ln h(x) = \ln \dfrac{3}{\sqrt{\pi}} + \dfrac{1}{2} \ln x - \dfrac{x}{3}$.
 
 \begin{align*}
 \dfrac{d}{dx} \ln h(x) &= 0 \\[0.3em]
@@ -135,7 +134,7 @@ data.frame(accepted) %>%
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont The actual density curve fits the histogram well. \par}
 
 \newpage
 
@@ -153,6 +152,6 @@ data.frame(x = c(0, 1)) %>%
              aes(x = x, y = y), size = 0.5, col = "green")
 @
 
-\smallpencil {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
+{\fontsize{25}{20} \ding{46}} {\fontsize{12}{20} \gloriahallelujahfont The accepted points are shown in green, these points lie under the envelop as well as the target density.}
 
 \end{document}
