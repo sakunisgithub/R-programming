@@ -58,14 +58,13 @@
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{dingbat}
 \usepackage{fontawesome5}
 \usepackage{tasks}
 \usepackage{bbding}
 \usepackage{twemojis}
 % how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
 \usepackage{fontspec}
-
+\usepackage{pifont}
 
 \title{MSMS 408 : Practical 03}
 \author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
@@ -181,7 +180,7 @@ Let us have a barplot of the generated sample.
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
 \end{knitrout}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
 
 \newpage
 
@@ -219,7 +218,7 @@ $$\hat{P}(X = x) = \dfrac{\text{count}(x)}{n}; \,\, \forall \, x = 0(1)20.$$
 
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Sat, Apr 11, 2026 - 00:19:42
+% Date and time: Fri, Jun 05, 2026 - 21:30:33
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{Table 1} 
@@ -290,7 +289,7 @@ Let us have a grouped barplot from comparison of empirical and theoretical proba
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
 
 \newpage
 
@@ -313,7 +312,7 @@ $$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{n} \hlkwb{<-} \hlnum{10000}\hldef{; u} \hlkwb{<-} \hlkwd{runif}\hldef{(n); CDF_F} \hlkwb{<-} \hldef{(}\hlnum{1}\hlopt{:}\hlnum{6}\hldef{)} \hlopt{/} \hlnum{6}
+\hldef{n} \hlkwb{<-} \hlnum{100}\hldef{; u} \hlkwb{<-} \hlkwd{runif}\hldef{(n); CDF_F} \hlkwb{<-} \hldef{(}\hlnum{1}\hlopt{:}\hlnum{6}\hldef{)} \hlopt{/} \hlnum{6}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -340,7 +339,7 @@ $$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
 \end{alltt}
 \end{kframe}
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Sat, Apr 11, 2026 - 00:19:53
+% Date and time: Fri, Jun 05, 2026 - 21:30:43
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{Table 2} 
@@ -349,12 +348,12 @@ $$F(x) = \dfrac{x}{6}; \,\, x = 1(1)6.$$
 \hline \\[-1.8ex] 
 x & count \\ 
 \hline \\[-1.8ex] 
-$1$ & $1,676$ \\ 
-$2$ & $1,656$ \\ 
-$3$ & $1,642$ \\ 
-$4$ & $1,655$ \\ 
-$5$ & $1,654$ \\ 
-$6$ & $1,717$ \\ 
+$1$ & $13$ \\ 
+$2$ & $15$ \\ 
+$3$ & $22$ \\ 
+$4$ & $19$ \\ 
+$5$ & $14$ \\ 
+$6$ & $17$ \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
@@ -400,6 +399,6 @@ Here we have a plot to compare the observed relative frequencies and theoretical
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
 
 \end{document}

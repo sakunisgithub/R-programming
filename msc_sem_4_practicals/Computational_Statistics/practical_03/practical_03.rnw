@@ -8,14 +8,13 @@
 \usepackage{enumerate}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{dingbat}
 \usepackage{fontawesome5}
 \usepackage{tasks}
 \usepackage{bbding}
 \usepackage{twemojis}
 % how to use bull's eye ----- \scalebox{2.0}{\twemoji{bullseye}}
 \usepackage{fontspec}
-
+\usepackage{pifont}
 
 \title{MSMS 408 : Practical 03}
 \author{Ananda Biswas \\[1em] Exam Roll No. : 24419STC053}
@@ -108,7 +107,7 @@ data.frame(x) %>%
        title = "Barplot of Generated Sample")
 @
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Most of the sample values are in between 1 and 13. Values in the tail have a very small probability mass, so with n = 10000 only, it is unlikely to observe them and exactly that has happened to be the case. \par}
 
 \newpage
 
@@ -167,7 +166,7 @@ df_melted %>%
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Empirical probabilities very much agree with theoretical probabilities. \par}
 
 \newpage
 
@@ -190,7 +189,7 @@ rm(list = ls())
 @
 
 <<>>=
-n <- 10000; u <- runif(n); CDF_F <- (1:6) / 6
+n <- 100; u <- runif(n); CDF_F <- (1:6) / 6
 @
 
 <<>>=
@@ -235,6 +234,6 @@ df1 %>%
 
 \section*{\faArrowAltCircleRight[regular] \textcolor{blue}{Conclusion}}
 
-\smallpencil \hspace{0.1cm} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
+{\fontsize{25}{20} \ding{46}} {\setlength{\spaceskip}{1em plus 0.5em minus 0.5em} \fontsize{17}{20}\myfont Observed relative frequencies are consistent with theoretical probability. \par}
 
 \end{document}
